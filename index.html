@@ -11,7 +11,7 @@
     
     <div class="header-box">
         <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 V 4.0 Ultimate (Επαγγελματική Αρχιτεκτονική)</p>
+        <p>💻 V 5.0 Modular (Pro Architecture)</p>
     </div>
 
     <div class="ai-settings">
@@ -44,7 +44,7 @@
             <span id="cfg_arrow">⬇️ Άνοιγμα</span>
         </div>
         <div id="cfg_settings_panel" style="display: none; margin-top: 10px;">
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Αν θελήσετε να φτιάξετε δικογραφία για άλλη Υπηρεσία/Περιοχή, αλλάξτε τα παρακάτω. Αν κάτι πάει στραβά, πατήστε Επαναφορά.</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Αν θελήσετε να φτιάξετε δικογραφία για άλλη Υπηρεσία/Περιοχή, αλλάξτε τα παρακάτω κουτιά. Αν κάτι πάει στραβά, πατήστε Επαναφορά.</p>
             <div class="grid-form" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="form-group"><label>Τόπος Σύνταξης</label><input type="text" id="cfg_city"></div>
                 <div class="form-group"><label>Τμήμα Σύντομο</label><input type="text" id="cfg_dept"></div>
@@ -165,6 +165,10 @@
                     </select>
                 </div>
             </div>
+
+            <div class="info-text" style="background-color: #fff3cd; border-left: 4px solid #ffc107; font-size: 13px;">
+                <strong>💡 Ο χρυσός κανόνας της προανάκρισης!</strong> Απαντήστε: <b>ΠΟΥ, ΠΟΤΕ, ΠΟΙΟΣ, ΤΙ, ΓΙΑΤΙ</b>. 
+            </div>
             
             <div style="margin-top: 15px;">
                 <div style="display: flex; gap: 5px; margin-bottom: 5px;">
@@ -260,6 +264,12 @@
                 <p style="font-size: 12px; color: #555; margin-bottom: 5px; margin-top: 5px;">
                     Περιγράψτε με απλά λόγια τι συνέβη. Η AI θα γράψει αυτόματα το "Βασικό Κατηγορητήριο" και τα "Πραγματικά Περιστατικά" σε νομική γλώσσα.
                 </p>
+                <div class="gdpr-warning" style="margin-top: 5px; margin-bottom: 10px;">
+                    <span style="font-size: 18px;">🛡️</span>
+                    <div>
+                        Προστασία Δεδομένων: Συστήνεται να αποφεύγεται η χρήση πραγματικών ονομάτων. Γράψτε με αρχικά (π.χ. "ο Κ.Μ. μπήκε στο σπίτι").
+                    </div>
+                </div>
                 <div style="display: flex; gap: 10px;">
                     <textarea id="ai_rough_notes" style="flex: 2; height: 50px; border: 2px dashed #8e44ad; padding: 8px;" placeholder="π.χ. Σήμερα το πρωί ο Α.Β. μπήκε στο περίπτερο του Γ.Δ. και..." oninput="saveMem(this.id)"></textarea>
                     <button class="btn-ai" id="btn_generate_charge" style="flex: 1;" onclick="generateChargeAI()">
@@ -458,6 +468,8 @@
     </div>
 </div>
 
-<script src="script.js"></script>
+<script src="ui.js"></script>
+<script src="ai.js"></script>
+<script src="export.js"></script>
 </body>
 </html>
