@@ -15,8 +15,8 @@ function formatTextToParagraphs(text) {
 }
 
 function addSelectedCrime() {
-    let dd = document.getElementById("ai_crime_search"); 
-    let sc = dd.value.trim(); 
+    let dd = document.getElementById("ai_crime_dropdown"); 
+    let sc = dd.value; 
     if (!sc) return;
     
     let lawInput = document.getElementById("ai_law");
