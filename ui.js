@@ -316,3 +316,7 @@ function copyProfileText() {
     navigator.clipboard.writeText(text).then(() => { alert("Τα στοιχεία αντιγράφηκαν επιτυχώς στο πρόχειρο!"); })
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { keepOnlyGreek };
+}
