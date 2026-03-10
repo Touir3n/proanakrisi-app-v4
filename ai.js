@@ -1,5 +1,5 @@
 // ==========================================
-// AI LOGIC (GEMINI API) & ΑΣΦΑΛΕΙΑ
+// AI LOGIC (GEMINI API)
 // ==========================================
 function sanitizeForAI(text) {
     if(!text) return "";
