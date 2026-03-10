@@ -154,6 +154,7 @@ window.onload = function() {
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging");
+    loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
     
     if (localStorage.getItem("gemini_api_key")) {
         document.getElementById("gemini_api_key").value = localStorage.getItem("gemini_api_key");
@@ -314,24 +315,4 @@ function copyProfileText() {
     if(!text || text.trim().length < 10) { alert("Δεν υπάρχουν επαρκή στοιχεία για αντιγραφή."); return; }
     navigator.clipboard.writeText(text).then(() => { alert("Τα στοιχεία αντιγράφηκαν επιτυχώς στο πρόχειρο!"); })
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
-}
-
-function addSelectedCrime() {
-    let dd = document.getElementById("ai_crime_dropdown"); let sc = dd.value; if (!sc) return;
-    let lawInput = document.getElementById("ai_law");
-    lawInput.value = lawInput.value.trim() === "" ? sc : lawInput.value + " και " + sc;
-    dd.value = ""; 
-}
-
-function clearCrimes() { document.getElementById("ai_law").value = ""; }
-
-function generateAutoCharge() {
-    let lawInput = document.getElementById("ai_law").value.trim();
-    if (!lawInput) { alert("Επιλέξτε αδίκημα."); return; }
-    let isMultiple = lawInput.includes("και") || lawInput.includes(",");
-    let actStr = isMultiple ? "πράξεις οι οποίες έλαβαν χώρα" : "πράξη η οποία έλαβε χώρα";
-    let arthraStr = isMultiple ? "των άρθρων" : "του άρθρου";
-    document.getElementById("apologia_charge_short").value = `παράβαση ${arthraStr} ${lawInput}, ${actStr} την ${document.getElementById("ai_date").value.trim()} και ώρα ${document.getElementById("ai_time").value.trim()} στο/στην ${document.getElementById("ai_loc").value.trim()}`;
-    if(document.getElementById("apologia_charge_details").value.trim() === "") document.getElementById("apologia_charge_details").value = "Ειδικότερα, την ανωτέρω ημέρα, ώρα και τόπο... ";
-    saveMem("apologia_charge_short"); saveMem("apologia_charge_details");
 }
