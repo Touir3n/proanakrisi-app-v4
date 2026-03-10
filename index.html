@@ -282,33 +282,29 @@
             <div style="border: 1px solid #ccc; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                 <span style="font-size: 13px; color: #333; font-weight: bold;">Χειροκίνητη Σύνθεση Βασικού Κατηγορητηρίου:</span>
                 <div style="display: flex; gap: 10px; margin-top: 10px; align-items: flex-end;">
-                    <div class="form-group" style="flex: 2;">
-                        <label>Λίστα Αδικημάτων:</label>
-                        <select id="ai_crime_dropdown">
-                            <option value="">-- Επιλέξτε αδίκημα από τη λίστα --</option>
-                            <optgroup label="Ποινικός Κώδικας">
-                                <option value="Αρ. 386 Π.Κ. «Απάτη»">Απάτη (386 Π.Κ.)</option>
-                                <option value="Αρ. 372 Π.Κ. «Κλοπή»">Κλοπή (372 Π.Κ.)</option>
-                                <option value="Αρ. 374 Π.Κ. «Διακεκριμένη Κλοπή»">Διακεκριμένη Κλοπή (374 Π.Κ.)</option>
-                                <option value="Αρ. 380 Π.Κ. «Ληστεία»">Ληστεία (380 Π.Κ.)</option>
-                                <option value="Αρ. 308 Π.Κ. «Απλή Σωματική Βλάβη»">Απλή Σωματική Βλάβη (308 Π.Κ.)</option>
-                                <option value="Αρ. 309 Π.Κ. «Επικίνδυνη Σωματική Βλάβη»">Επικίνδυνη Σωματική Βλάβη (309 Π.Κ.)</option>
-                                <option value="Αρ. 333 Π.Κ. «Απειλή»">Απειλή (333 Π.Κ.)</option>
-                                <option value="Αρ. 361 Π.Κ. «Εξύβριση»">Εξύβριση (361 Π.Κ.)</option>
-                                <option value="Αρ. 378 Π.Κ. «Φθορά ξένης ιδιοκτησίας»">Φθορά ξένης ιδιοκτησίας (378 Π.Κ.)</option>
-                                <option value="Αρ. 216 Π.Κ. «Πλαστογραφία»">Πλαστογραφία (216 Π.Κ.)</option>
-                                <option value="Αρ. 167 Π.Κ. «Βία κατά υπαλλήλων»">Αντίσταση (167 Π.Κ.)</option>
-                                <option value="Αρ. 169 Π.Κ. «Απείθεια»">Απείθεια (169 Π.Κ.)</option>
-                            </optgroup>
-                            <optgroup label="Ειδικοί Ποινικοί Νόμοι">
-                                <option value="Ν. 4139/2013 «Περί Εξαρτησιογόνων Ουσιών»">Ναρκωτικά (Ν. 4139/2013)</option>
-                                <option value="Ν. 3500/2006 «Περί Ενδοοικογενειακής Βίας»">Ενδοοικογενειακή Βία (Ν. 3500/2006)</option>
-                                <option value="Ν. 4830/2021 «Περί Ευζωίας Ζώων Συντροφιάς»">Κακοποίηση Ζώων (Ν. 4830/2021)</option>
-                                <option value="Ν. 2168/1993 «Περί Όπλων»">Όπλα / Πυρομαχικά (Ν. 2168/1993)</option>
-                                <option value="Ν. 2696/1999 «Κώδικας Οδικής Κυκλοφορίας»">Κ.Ο.Κ. (Ν. 2696/1999)</option>
-                                <option value="Ν. 4251/2014 «Κώδικας Μετανάστευσης»">Αλλοδαποί / Παράνομη Διαμονή (Ν. 4251/2014)</option>
-                            </optgroup>
-                        </select>
+                   <div class="form-group" style="flex: 2;">
+                        <label>Αναζήτηση Αδικήματος (Πληκτρολογήστε):</label>
+                        <input type="text" id="ai_crime_search" list="crime_list" placeholder="π.χ. 308, Κλοπή, Όπλα..." style="width: 100%;">
+                        <datalist id="crime_list">
+                            <option value="Αρ. 386 Π.Κ. «Απάτη»">
+                            <option value="Αρ. 372 Π.Κ. «Κλοπή»">
+                            <option value="Αρ. 374 Π.Κ. «Διακεκριμένη Κλοπή»">
+                            <option value="Αρ. 380 Π.Κ. «Ληστεία»">
+                            <option value="Αρ. 308 Π.Κ. «Απλή Σωματική Βλάβη»">
+                            <option value="Αρ. 309 Π.Κ. «Επικίνδυνη Σωματική Βλάβη»">
+                            <option value="Αρ. 333 Π.Κ. «Απειλή»">
+                            <option value="Αρ. 361 Π.Κ. «Εξύβριση»">
+                            <option value="Αρ. 378 Π.Κ. «Φθορά ξένης ιδιοκτησίας»">
+                            <option value="Αρ. 216 Π.Κ. «Πλαστογραφία»">
+                            <option value="Αρ. 167 Π.Κ. «Βία κατά υπαλλήλων»">
+                            <option value="Αρ. 169 Π.Κ. «Απείθεια»">
+                            <option value="Ν. 4139/2013 «Περί Εξαρτησιογόνων Ουσιών»">
+                            <option value="Ν. 3500/2006 «Περί Ενδοοικογενειακής Βίας»">
+                            <option value="Ν. 4830/2021 «Περί Ευζωίας Ζώων Συντροφιάς»">
+                            <option value="Ν. 2168/1993 «Περί Όπλων»">
+                            <option value="Ν. 2696/1999 «Κώδικας Οδικής Κυκλοφορίας»">
+                            <option value="Ν. 4251/2014 «Κώδικας Μετανάστευσης»">
+                        </datalist>
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <button type="button" class="btn-add" onclick="addSelectedCrime()">➕ Προσθήκη</button>
