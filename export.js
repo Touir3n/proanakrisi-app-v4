@@ -14,6 +14,29 @@ function formatTextToParagraphs(text) {
     return html;
 }
 
+function addSelectedCrime() {
+    let dd = document.getElementById("ai_crime_search"); 
+    let sc = dd.value.trim(); 
+    if (!sc) return;
+    
+    let lawInput = document.getElementById("ai_law");
+    lawInput.value = lawInput.value.trim() === "" ? sc : lawInput.value + " και " + sc;
+    dd.value = ""; 
+}
+
+function clearCrimes() { document.getElementById("ai_law").value = ""; }
+
+function generateAutoCharge() {
+    let lawInput = document.getElementById("ai_law").value.trim();
+    if (!lawInput) { alert("Επιλέξτε αδίκημα."); return; }
+    let isMultiple = lawInput.includes("και") || lawInput.includes(",");
+    let actStr = isMultiple ? "πράξεις οι οποίες έλαβαν χώρα" : "πράξη η οποία έλαβε χώρα";
+    let arthraStr = isMultiple ? "των άρθρων" : "του άρθρου";
+    document.getElementById("apologia_charge_short").value = `παράβαση ${arthraStr} ${lawInput}, ${actStr} την ${document.getElementById("ai_date").value.trim()} και ώρα ${document.getElementById("ai_time").value.trim()} στο/στην ${document.getElementById("ai_loc").value.trim()}`;
+    if(document.getElementById("apologia_charge_details").value.trim() === "") document.getElementById("apologia_charge_details").value = "Ειδικότερα, την ανωτέρω ημέρα, ώρα και τόπο... ";
+    saveMem("apologia_charge_short"); saveMem("apologia_charge_details");
+}
+
 function makeDoc(title, headerTitle, bodyContent, filename) {
     let finalHtml = `${headerTitle}${bodyContent}`;
     let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; }</style></head><body style="background-color: white; color: black;">${finalHtml}</body></html>`;
@@ -187,7 +210,7 @@ function exportArrest() {
     let arrDT = (d.v("arr_street_date") ? ` την ${d.v("arr_street_date")}` : ``) + (d.v("arr_street_time") ? ` και περί ώρα ${d.v("arr_street_time")}` : ``);
     let locText = d.v("arr_loc") ? ` ${d.v("arr_loc")}` : ``;
     
-    let sig4 = `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 20pt; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0"><tr><td style="width: 25%; vertical-align: top;">${d.v("gender")==='M'?"Ο Συλληφθείς":"Η Συλληφθείσα"}</td><td style="width: 25%; vertical-align: top;">Ο Συλλαβών</td><td style="width: 25%; vertical-align: top;">Ο Β΄ Ανακριτ. Υπάλλ.</td><td style="width: 25%; vertical-align: top;">Ο Ανακριτ. Υπάλληλος</td></tr></table>`;
+    let sig4 = `<p style="${pStyle}">&nbsp;</p><p style="${pStyle}">&nbsp;</p><table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0"><tr><td style="width: 25%; vertical-align: top;">${d.v("gender")==='M'?"Ο Συλληφθείς":"Η Συλληφθείσα"}</td><td style="width: 25%; vertical-align: top;">Ο Συλλαβών</td><td style="width: 25%; vertical-align: top;">Ο Β΄ Ανακριτ. Υπάλλ.</td><td style="width: 25%; vertical-align: top;">Ο Ανακριτ. Υπάλληλος</td></tr></table>`;
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">Ε Κ Θ Ε Σ Η &nbsp;&nbsp;&nbsp; Σ Υ Λ Λ Η Ψ Η Σ</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${d.v("arr_start")} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, κατοίκων ομοίως, οδηγήθηκε στο Κατάστημα της Υπηρεσίας μας, ${d.deptFull}, ${d.a_o} ${d.prof}, ${d.v("arr_officer") ? `από τον ${d.v("arr_officer")} που τ${d.a_ton} συνέλαβε` : `που συνελήφθη`}${arrDT}${locText}, ${sentence}.</p>
