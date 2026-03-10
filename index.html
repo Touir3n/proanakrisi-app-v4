@@ -11,7 +11,7 @@
     
     <div class="header-box">
         <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 V 5.0 Modular (Pro Architecture)</p>
+        <p>💻 V 5.0 (Pro Modular Architecture)</p>
     </div>
 
     <div class="ai-settings">
@@ -182,7 +182,7 @@
             <div class="gdpr-warning">
                 <span style="font-size: 18px;">🛡️</span>
                 <div>
-                    <strong>Προστασία Δεδομένων:</strong> Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Επειδή το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα ή τοπωνύμια, αν σκοπεύετε να χρησιμοποιήσετε την Τεχνητή Νοημοσύνη παρακαλούμε αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια κειμένου.
+                    <b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα. Αν σκοπεύετε να χρησιμοποιήσετε την Τεχνητή Νοημοσύνη (AI), αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια.
                 </div>
             </div>
 
@@ -267,7 +267,7 @@
                 <div class="gdpr-warning" style="margin-top: 5px; margin-bottom: 10px;">
                     <span style="font-size: 18px;">🛡️</span>
                     <div>
-                        <strong>Προστασία Δεδομένων:</strong> Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Επειδή το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα ή τοπωνύμια, αν σκοπεύετε να χρησιμοποιήσετε την Τεχνητή Νοημοσύνη παρακαλούμε αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια κειμένου.
+                        <b>Προστασία Δεδομένων:</b> Αποφύγετε τη χρήση πραγματικών ονομάτων. Γράψτε με αρχικά.
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -282,7 +282,7 @@
             <div style="border: 1px solid #ccc; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                 <span style="font-size: 13px; color: #333; font-weight: bold;">Χειροκίνητη Σύνθεση Βασικού Κατηγορητηρίου:</span>
                 <div style="display: flex; gap: 10px; margin-top: 10px; align-items: flex-end;">
-                   <div class="form-group" style="flex: 2;">
+                    <div class="form-group" style="flex: 2;">
                         <label>Αναζήτηση Αδικήματος (Πληκτρολογήστε):</label>
                         <input type="text" id="ai_crime_search" list="crime_list" placeholder="π.χ. 308, Κλοπή, Όπλα..." style="width: 100%;">
                         <datalist id="crime_list">
@@ -313,15 +313,15 @@
 
                 <div class="form-group" style="margin-top: 10px; margin-bottom: 12px;">
                     <div style="display: flex; gap: 5px;">
-                        <input type="text" id="ai_law" placeholder="Τα επιλεγμένα αδικήματα θα μπουν εδώ..." style="flex: 1;">
+                        <input type="text" id="ai_law" placeholder="Τα επιλεγμένα αδικήματα θα μπουν εδώ..." style="flex: 1;" oninput="saveMem(this.id)">
                         <button type="button" class="btn-clear" onclick="clearCrimes()" title="Εκκαθάριση Λίστας" style="padding: 0 10px;">🗑️</button>
                     </div>
                 </div>
 
                 <div class="grid-form" style="margin-top: 0;">
-                    <div class="form-group"><label>Ημερομηνία Τέλεσης:</label><input type="text" id="ai_date"></div>
-                    <div class="form-group"><label>Ώρα Τέλεσης:</label><input type="text" id="ai_time"></div>
-                    <div class="form-group" style="grid-column: span 2;"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης"></div>
+                    <div class="form-group"><label>Ημερομηνία Τέλεσης:</label><input type="text" id="ai_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Τέλεσης:</label><input type="text" id="ai_time" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης" oninput="saveMem(this.id)"></div>
                 </div>
                 
                 <button type="button" class="btn-add" style="width: 100%; margin-top: 10px;" onclick="generateAutoCharge()">Σύνθεση Κειμένου</button>
@@ -358,8 +358,8 @@
             <div class="step-box" style="border-color: #f5c6cb; background: #fcf1f1;">
                 <div class="step-title" style="color: #dc3545;">ΒΗΜΑ 1ο: ΣΥΛΛΗΨΗ</div>
                 <div class="arrest-grid">
-                    <div class="form-group"><label>Ημερ. Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_date"></div>
-                    <div class="form-group"><label>Ώρα Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_time"></div>
+                    <div class="form-group"><label>Ημερ. Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_time" oninput="saveMem(this.id)"></div>
                     <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Σύλληψης: *</label><input type="text" id="arr_loc" placeholder="π.χ. επί της Εγνατίας Οδού" oninput="saveMem(this.id)"></div>
                     <div class="form-group" style="grid-column: span 2;"><label>Συλλαβών Αστυνομικός (σε Αιτιατική):</label><input type="text" id="arr_officer" placeholder="π.χ. Αστυφύλακα ΓΕΩΡΓΙΟΥ Γεώργιο της Ο.Π.Κ.Ε." oninput="saveMem(this.id)"></div>
                     <div class="form-group" style="grid-column: span 2;"><label>Πρόσθετη Αιτιολογία (προαιρετικό):</label><input type="text" id="arr_reason" placeholder="π.χ. κατελήφθη σε γενόμενο αστυνομικό έλεγχο να έχει..." oninput="saveMem(this.id)"></div>
@@ -375,8 +375,8 @@
 
             <div class="step-box" style="border-color: #c3e6cb; background: #f1fcf3;">
                 <div class="step-title" style="color: #28a745;">ΒΗΜΑ 3ο: ΑΠΟΛΟΓΙΑ</div>
-                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</label><input type="text" id="apologia_rights" value="Όχι."></div>
-                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Κατηγορήθηκες άλλη φορά και για ποια αιτία;</label><input type="text" id="apologia_past" value="Όχι, δεν έχω κατηγορηθεί ξανά."></div>
+                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</label><input type="text" id="apologia_rights" value="Όχι." oninput="saveMem(this.id)"></div>
+                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Κατηγορήθηκες άλλη φορά και για ποια αιτία;</label><input type="text" id="apologia_past" value="Όχι, δεν έχω κατηγορηθεί ξανά." oninput="saveMem(this.id)"></div>
                 
                 <div class="form-group" style="margin-bottom:15px;">
                     <div style="display: flex; gap: 5px; margin-bottom: 5px;">
@@ -398,7 +398,7 @@
             <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Τύπος Έρευνας / Κατάσχεσης:</label>
-                    <select id="drug_search_type">
+                    <select id="drug_search_type" oninput="saveMem(this.id)">
                         <option value="ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Σωματική Έρευνα και Κατάσχεση</option>
                         <option value="ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Παράδοση και Κατάσχεση</option>
                         <option value="ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Έρευνα Αυτοκινήτου και Κατάσχεση</option>
@@ -467,5 +467,6 @@
 <script src="ui.js"></script>
 <script src="ai.js"></script>
 <script src="export.js"></script>
+
 </body>
 </html>
