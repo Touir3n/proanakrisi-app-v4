@@ -11,7 +11,7 @@
     
     <div class="header-box">
         <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 V 5.0 Modular (Pro Architecture)</p>
+        <p>💻 V 5.1 (Ενιαία Προκαταρκτική & Pro Architecture)</p>
     </div>
 
     <div class="ai-settings">
@@ -182,7 +182,7 @@
             <div class="gdpr-warning">
                 <span style="font-size: 18px;">🛡️</span>
                 <div>
-                    Προστασία Δεδομένων: Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα. Αν σκοπεύετε να χρησιμοποιήσετε τα εργαλεία Τεχνητής Νοημοσύνης (AI), συστήνεται να αποφεύγεται η χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια κειμένου.
+                    Προστασία Δεδομένων: Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Επειδή το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα ή τοπωνύμια, αν σκοπεύετε να χρησιμοποιήσετε την Τεχνητή Νοημοσύνη (AI), αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια.
                 </div>
             </div>
 
@@ -267,7 +267,7 @@
                 <div class="gdpr-warning" style="margin-top: 5px; margin-bottom: 10px;">
                     <span style="font-size: 18px;">🛡️</span>
                     <div>
-                        Προστασία Δεδομένων: Συστήνεται να αποφεύγεται η χρήση πραγματικών ονομάτων. Γράψτε με αρχικά.
+                        Προστασία Δεδομένων: Αποφύγετε τη χρήση πραγματικών ονομάτων. Γράψτε με αρχικά.
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -432,6 +432,18 @@
                         <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας: *</label>
                         <input type="text" id="prok_abm" placeholder="π.χ. την υπ' αριθ. Α22/1234 παραγγελία κ. Εισαγγελέα..." oninput="saveMem(this.id)">
                     </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label style="color: #e67300;">Αποδιδόμενη Πράξη / Κατηγορία: *</label>
+                        <textarea id="prok_charge" style="height: 50px; border: 1px solid #ccc; padding: 8px; font-family: Arial; font-size: 13px;" placeholder="π.χ. παράβαση του Αρ. 29§1, 81§1α του Ν. 4495/2017 «Αυθαίρετη Κατασκευή», καθότι..." oninput="saveMem(this.id)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ΕΡΩΤΗΣΗ: Χρήση Δικαιωμάτων;</label>
+                        <input type="text" id="prok_rights_ans" value="Επιθυμώ να λάβω γνώση του υλικού της δικογραφίας." oninput="saveMem(this.id)">
+                    </div>
+                    <div class="form-group">
+                        <label>ΕΡΩΤΗΣΗ: Ποινικό Παρελθόν;</label>
+                        <input type="text" id="prok_past" value="Όχι." oninput="saveMem(this.id)">
+                    </div>
                     <div class="form-group">
                         <label>Χορήγηση Προθεσμίας έως (Ημερομηνία):</label>
                         <input type="text" id="prok_dead_date" placeholder="π.χ. 12-05-2026" oninput="saveMem(this.id)">
@@ -458,10 +470,10 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
-                <button class="btn-word" style="background-color: #28a745;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί (Χωρίς Προθεσμία)</button>
+                <button class="btn-word" style="background-color: #28a745;" onclick="exportProkNoDeadline()">⚡ 2. Ενιαία Ανωμοτί (Δικαιώματα + Εξηγήσεις)</button>
                 <button class="btn-word" style="background-color: #ffc107; color: #333;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
                 <button class="btn-word" style="background-color: #17a2b8;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
-                <button class="btn-word" style="background-color: #6c757d;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
+                <button class="btn-word" style="background-color: #6c757d; grid-column: span 2;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
             </div>
         </div>
 
