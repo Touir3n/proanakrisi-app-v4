@@ -150,7 +150,17 @@ window.onload = function() {
 
     // Load Mem
     loadMem("doc_testimony_simple");
-    loadMem("prok_abm"); loadMem("prok_plea"); loadMem("prok_dead_date"); loadMem("prok_dead_time"); loadMem("prok_pages");
+    
+    // Prok Mem
+    loadMem("prok_abm"); 
+    loadMem("prok_charge"); 
+    loadMem("prok_rights_ans"); 
+    loadMem("prok_past"); 
+    loadMem("prok_plea"); 
+    loadMem("prok_dead_date"); 
+    loadMem("prok_dead_time"); 
+    loadMem("prok_pages");
+    
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging");
