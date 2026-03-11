@@ -5,6 +5,7 @@ body { font-family: Arial, sans-serif; margin: 15px; background-color: #e9ecef; 
 .header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
 .header-box p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; color: #ffeb3b; font-weight: bold;}
 
+/* Κουτιά Ρυθμίσεων */
 .ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
 .global-settings { background: #f4faeb; border: 1px solid #81c784; border-left: 5px solid #4caf50; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
 
