@@ -163,7 +163,7 @@ window.onload = function() {
     
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
-    loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging");
+    loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
     
     if (localStorage.getItem("gemini_api_key")) {
