@@ -11,7 +11,7 @@
     
     <div class="header-box">
         <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 V 5.1 (Ενιαία Προκαταρκτική & Pro Architecture)</p>
+        <p>💻 V 5.5 (Official Templates, Grammar Engine & AI Accents)</p>
     </div>
 
     <div class="ai-settings">
@@ -74,7 +74,7 @@
     <div class="section">
         <div class="section-title">ΒΗΜΑ 2: Έλεγχος & Συμπλήρωση Στοιχείων</div>
         <div class="info-text">
-            <strong>⚠️ ΕΛΕΓΧΟΣ ΤΟΝΙΣΜΟΥ:</strong> Παρακαλώ ελέγξτε και διορθώστε τους τόνους στα πεδία με την <b>κόκκινη γραμμή</b>.
+            <strong>💡 ΝΕΟ:</strong> Πατήστε το "AI Τονισμός" για να διορθωθούν αυτόματα τα κεφαλαία-πεζά και οι τόνοι!
         </div>
         <div class="grid-form">
             <div class="form-group"><label>Φύλο (Αυτόματο)</label><select id="gender"><option value="M">Άνδρας</option><option value="F">Γυναίκα</option></select></div>
@@ -97,7 +97,10 @@
             <div class="form-group"><label>Τηλέφωνο</label><input type="text" id="phone" class="manual-input"></div>
             <div class="form-group"><label>Email</label><input type="text" id="email" class="manual-input"></div>
         </div>
-        <button class="btn-copy" onclick="copyProfileText()">📋 Αντιγραφή Στοιχείων Προσώπου (Για επικόλληση αλλού)</button>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-copy" style="margin-top: 0; flex: 2;" onclick="copyProfileText()">📋 Αντιγραφή Στοιχείων Προσώπου (Για επικόλληση αλλού)</button>
+            <button class="btn-ai" style="margin-top: 0; flex: 1; background: #28a745; box-shadow: 0 2px 4px rgba(40,167,69,0.3);" id="btn_tonismos" onclick="tonismosAI()"><span id="spin_tonismos" class="spinner" style="display:none;"></span>✨ AI Τονισμός Ονομάτων</button>
+        </div>
     </div>
 
     <div class="section">
@@ -182,7 +185,7 @@
             <div class="gdpr-warning">
                 <span style="font-size: 18px;">🛡️</span>
                 <div>
-                    Προστασία Δεδομένων: Το σύστημα αποκρύπτει αυτόματα αριθμούς, Α.Δ.Τ., τηλέφωνα και πινακίδες κυκλοφορίας. Επειδή το πρόγραμμα δεν μπορεί να αναγνωρίσει αυτόματα ονόματα ή τοπωνύμια, αν σκοπεύετε να χρησιμοποιήσετε την Τεχνητή Νοημοσύνη (AI), αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων στα μεγάλα πλαίσια.
+                    <b>Προστασία Δεδομένων:</b> Αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων μέσα στα πλαίσια του κειμένου. Η εφαρμογή τα στέλνει κρυπτογραφημένα στο AI για διόρθωση, αλλά καλό είναι να χρησιμοποιείτε αρχικά γράμματα.
                 </div>
             </div>
 
@@ -267,7 +270,7 @@
                 <div class="gdpr-warning" style="margin-top: 5px; margin-bottom: 10px;">
                     <span style="font-size: 18px;">🛡️</span>
                     <div>
-                        Προστασία Δεδομένων: Αποφύγετε τη χρήση πραγματικών ονομάτων. Γράψτε με αρχικά.
+                        <b>Προστασία Δεδομένων:</b> Αποφύγετε τη χρήση πραγματικών ονομάτων. Γράψτε με αρχικά (π.χ. "ο Κ.Μ. μπήκε στο σπίτι").
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -409,9 +412,10 @@
                         <option value="ΕΡΕΥΝΑΣ ΟΙΚΙΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Έρευνα Οικίας και Κατάσχεση</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε αιτιατική): *</label><input type="text" id="drug_type" placeholder="π.χ. Ακατέργαστη Κάνναβη, Ηρωίνη" oninput="saveMem(this.id)"></div>
+                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε αιτιατική): *</label><input type="text" id="drug_type" placeholder="π.χ. ακατέργαστη κάνναβη" oninput="saveMem(this.id)"></div>
                 <div class="form-group"><label>Μικτό Βάρος (σε αριθμό): *</label><input type="text" id="drug_weight" placeholder="π.χ. 2,5" oninput="saveMem(this.id)"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Συσκευασία / Περιγραφή Αντικειμένου: *</label><input type="text" id="drug_packaging" placeholder="π.χ. μία (1) αυτοσχέδια νάιλον συσκευασία" oninput="saveMem(this.id)"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης (Για Έρευνα):</label><input type="text" id="drug_found_loc" placeholder="π.χ. στην αριστερή τσέπη του παντελονιού του" oninput="saveMem(this.id)"></div>
             </div>
 
             <div style="display: flex; gap: 15px;">
