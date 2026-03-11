@@ -1,6 +1,3 @@
-// ==========================================
-// AI LOGIC (GEMINI API)
-// ==========================================
 function sanitizeForAI(text) {
     if(!text) return "";
     let sanitized = text;
@@ -15,19 +12,14 @@ function sanitizeForAI(text) {
 function toggleAI() {
     let panel = document.getElementById("ai_settings_panel");
     let arrow = document.getElementById("ai_arrow");
-    if (panel.style.display === "none") {
-        panel.style.display = "block"; arrow.innerHTML = "⬆️ Κλείσιμο";
-    } else {
-        panel.style.display = "none"; arrow.innerHTML = "⬇️ Άνοιγμα";
-    }
+    if (panel.style.display === "none") { panel.style.display = "block"; arrow.innerHTML = "⬆️ Κλείσιμο"; } 
+    else { panel.style.display = "none"; arrow.innerHTML = "⬇️ Άνοιγμα"; }
 }
 
 function logoutAI() {
-    localStorage.removeItem('gemini_api_key');
-    localStorage.removeItem('gemini_model');
-    document.getElementById('gemini_api_key').value = '';
-    document.getElementById('model_selection_div').style.display = 'none';
-    alert("Το API Key διαγράφηκε επιτυχώς. Το σύστημα είναι ασφαλές για τον επόμενο χρήστη.");
+    localStorage.removeItem('gemini_api_key'); localStorage.removeItem('gemini_model');
+    document.getElementById('gemini_api_key').value = ''; document.getElementById('model_selection_div').style.display = 'none';
+    alert("Το API Key διαγράφηκε επιτυχώς.");
 }
 
 async function saveApiKeyAndFetchModels() {
@@ -40,20 +32,16 @@ async function saveApiKeyAndFetchModels() {
         let data = await res.json();
         if(data.error) { alert("Σφάλμα ελέγχου κλειδιού: " + data.error.message); return; }
         
-        let select = document.getElementById("gemini_model");
-        select.innerHTML = ""; 
+        let select = document.getElementById("gemini_model"); select.innerHTML = ""; 
         let validModels = data.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
         
         validModels.forEach(m => {
             let opt = document.createElement("option");
-            opt.value = m.name.replace("models/", "");
-            opt.text = m.displayName + " (" + opt.value + ")";
+            opt.value = m.name.replace("models/", ""); opt.text = m.displayName + " (" + opt.value + ")";
             select.appendChild(opt);
         });
         
-        let pref = validModels.find(m => m.name.includes("gemini-1.5-flash-8b")) || 
-                   validModels.find(m => m.name.includes("gemini-1.5-flash")) || 
-                   validModels.find(m => m.name.includes("gemini-1.0-pro"));
+        let pref = validModels.find(m => m.name.includes("gemini-1.5-flash-8b")) || validModels.find(m => m.name.includes("gemini-1.5-flash")) || validModels.find(m => m.name.includes("gemini-1.0-pro"));
         if(pref) { select.value = pref.name.replace("models/", ""); }
         
         document.getElementById("model_selection_div").style.display = "flex";
@@ -66,8 +54,7 @@ async function saveApiKeyAndFetchModels() {
 async function callGeminiAPI(prompt, buttonId, spinnerId) {
     let apiKey = localStorage.getItem("gemini_api_key");
     let modelName = document.getElementById("gemini_model").value || localStorage.getItem("gemini_model");
-    if (!apiKey) { alert("Απαιτείται Gemini API Key! Ανοίξτε τις 'Ρυθμίσεις Τεχνητής Νοημοσύνης' στην κορυφή."); return null; }
-    if (!modelName) { alert("Παρακαλώ πατήστε 'Σύνδεση & Εύρεση Μοντέλων' στις ρυθμίσεις AI."); return null; }
+    if (!apiKey) { alert("Απαιτείται Gemini API Key! Ανοίξτε τις ρυθμίσεις AI."); return null; }
 
     let btn = document.getElementById(buttonId); let spinner = document.getElementById(spinnerId);
     btn.disabled = true; spinner.style.display = "inline-block";
@@ -79,13 +66,7 @@ async function callGeminiAPI(prompt, buttonId, spinnerId) {
         });
         let data = await response.json();
         btn.disabled = false; spinner.style.display = "none";
-
-        if (data.error) {
-            if(data.error.message.includes("quota") || data.error.code === 429) {
-                 alert(`Όριο χρήσης! Παρακαλώ διαλέξτε άλλο μοντέλο από τις ρυθμίσεις (π.χ. gemini-1.5-flash).`); return null;
-            }
-            throw new Error(data.error.message);
-        }
+        if (data.error) { throw new Error(data.error.message); }
         return data.candidates[0].content.parts[0].text;
     } catch (e) {
         btn.disabled = false; spinner.style.display = "none";
@@ -96,48 +77,58 @@ async function callGeminiAPI(prompt, buttonId, spinnerId) {
 async function refineTextAI(elementId, spinnerId, btnId) {
     let el = document.getElementById(elementId);
     let text = el.value.trim();
-    if (!text) { alert("Το πεδίο είναι κενό. Γράψτε πρώτα το κείμενό σας."); return; }
-    
+    if (!text) { alert("Το πεδίο είναι κενό."); return; }
     window.originalTexts[elementId] = text;
-    let safeText = sanitizeForAI(text);
-    
-    let prompt = `Είσαι βοηθός Προανακριτικού Υπαλλήλου. Διόρθωσε το παρακάτω προανακριτικό κείμενο (κατάθεση/απολογία) συντακτικά και ορθογραφικά. Βελτίωσε τη νομική/αστυνομική του ορολογία. ΜΗΝ αλλάξεις το νόημα, ΜΗΝ προσθέσεις δικά σου γεγονότα. Επίστρεψε ΜΟΝΟ το τελικό, διορθωμένο κείμενο:\n\n"${safeText}"`;
-    
-    let resultText = await callGeminiAPI(prompt, btnId, spinnerId);
-    if (resultText) {
-        el.value = resultText.trim();
-        saveMem(elementId);
-    }
+    let prompt = `Διόρθωσε συντακτικά, ορθογραφικά και την αστυνομική ορολογία στο παρακάτω προανακριτικό κείμενο. ΜΗΝ προσθέσεις γεγονότα. Επίστρεψε ΜΟΝΟ το διορθωμένο κείμενο:\n\n"${sanitizeForAI(text)}"`;
+    let result = await callGeminiAPI(prompt, btnId, spinnerId);
+    if (result) { el.value = result.trim(); saveMem(elementId); }
 }
 
 async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
     let text = document.getElementById(sourceId).value.trim();
     let resDiv = document.getElementById(resultId);
-    if (!text) {
-        resDiv.innerHTML = "Παρακαλώ γράψτε πρώτα την κατάθεση."; resDiv.className = "ai-result error"; resDiv.style.display = "block"; return;
-    }
-    let safeText = sanitizeForAI(text);
-    let prompt = `Είσαι βοηθός Προανακριτικού Υπαλλήλου. Διάβασε την κατάθεση. Έλεγξε αν καλύπτονται: 1) ΠΟΥ (τόπος), 2) ΠΟΤΕ (χρόνος), 3) ΠΟΙΟΣ (δράστης), 4) ΤΙ (αξιόποινη πράξη), 5) ΓΙΑΤΙ (κίνητρο). ΠΡΟΣΟΧΗ: Αν ο μάρτυρας αναφέρει "δεν γνωρίζω γιατί" ή "αναίτια", το "ΓΙΑΤΙ" θεωρείται ότι ΑΠΑΝΤΗΘΗΚΕ ΕΠΙΤΥΧΩΣ (✅). Επίστρεψε ΜΟΝΟ μια σύντομη αναφορά με bullets (✅ ή ❌). Κατάθεση: "${safeText}"`;
+    if (!text) { resDiv.innerHTML = "Γράψτε πρώτα την κατάθεση."; resDiv.className = "ai-result error"; resDiv.style.display = "block"; return; }
+    let prompt = `Διάβασε την κατάθεση. Έλεγξε αν καλύπτονται: 1) ΠΟΥ (τόπος), 2) ΠΟΤΕ (χρόνος), 3) ΠΟΙΟΣ (δράστης), 4) ΤΙ (πράξη), 5) ΓΙΑΤΙ (κίνητρο). Αν αναφέρει "αναίτια", το "ΓΙΑΤΙ" είναι ✅. Επίστρεψε ΜΟΝΟ bullets (✅ ή ❌). Κατάθεση: "${sanitizeForAI(text)}"`;
     resDiv.style.display = "none"; resDiv.className = "ai-result";
-    let resultText = await callGeminiAPI(prompt, btnId, spinnerId);
-    if (resultText) { resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + resultText.replace(/\n/g, "<br>"); resDiv.style.display = "block"; }
+    let result = await callGeminiAPI(prompt, btnId, spinnerId);
+    if (result) { resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + result.replace(/\n/g, "<br>"); resDiv.style.display = "block"; }
 }
 
 async function generateChargeAI() {
     let text = document.getElementById("ai_rough_notes").value.trim();
-    if (!text) { alert("Παρακαλώ γράψτε μια σύντομη περιγραφή."); return; }
-    let safeText = sanitizeForAI(text);
-    let prompt = `Είσαι νομικός βοηθός Προανακριτικού Υπαλλήλου. Διάβασε την περιγραφή συμβάντος: "${safeText}".
-    Σύνταξε: 1. Το 'Βασικό Κατηγορητήριο' βρίσκοντας τα άρθρα του ΠΚ. Αν είναι συρροή (ίδιος χρόνος/τόπος), ΕΝΩΣΕ ΤΑ ("παράβαση των άρθρων Χ, Υ Π.Κ., πράξεις οι οποίες έλαβαν χώρα...").
-    2. Τα 'Πραγματικά Περιστατικά' (π.χ. "Ειδικότερα, την ανωτέρω ημέρα και ώρα..."). Μην βάζεις πραγματικά ονόματα.
-    Δώσε απάντηση ΑΥΣΤΗΡΑ με δομή: [ΒΑΣΙΚΟ] κείμενο 1 [ΠΕΡΙΣΤΑΤΙΚΑ] κείμενο 2`;
-    let resultText = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
-    if (resultText) {
+    if (!text) { alert("Γράψτε περιγραφή."); return; }
+    let prompt = `Σύνταξε νομικά: 1. Βασικό Κατηγορητήριο (άρθρα ΠΚ) και 2. Πραγματικά Περιστατικά. Δομή απάντησης αυστηρά: [ΒΑΣΙΚΟ] κείμενο [ΠΕΡΙΣΤΑΤΙΚΑ] κείμενο. Περιγραφή: "${sanitizeForAI(text)}"`;
+    let result = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
+    if (result) {
         try {
-            let parts = resultText.split("[ΠΕΡΙΣΤΑΤΙΚΑ]");
+            let parts = result.split("[ΠΕΡΙΣΤΑΤΙΚΑ]");
             document.getElementById("apologia_charge_short").value = parts[0].replace("[ΒΑΣΙΚΟ]", "").trim();
             document.getElementById("apologia_charge_details").value = parts[1].trim();
             saveMem("apologia_charge_short"); saveMem("apologia_charge_details");
-        } catch (e) { alert("Αποτυχία ανάγνωσης απάντησης AI."); }
+        } catch (e) { alert("Σφάλμα ανάγνωσης."); }
+    }
+}
+
+async function tonismosAI() {
+    let fields = ['surname', 'name', 'father', 'mother', 'pob', 'area', 'dimos', 'odos', 'auth'];
+    let vals = fields.map(id => document.getElementById(id).value.trim());
+    if(vals.join('') === '') { alert("Η φόρμα είναι άδεια. Κάντε πρώτα άντληση POL."); return; }
+
+    let prompt = `Διόρθωσε τους τόνους και τα πεζά/κεφαλαία στα παρακάτω ελληνικά ονόματα/τοπωνύμια.
+Το 'Επώνυμο' κάντο ΟΛΟ ΚΕΦΑΛΑΙΑ (χωρίς τόνους).
+Τα υπόλοιπα κάντα 'Title Case' (Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά) και βάλε τον ΣΩΣΤΟ ΤΟΝΟ.
+Στα πατρώνυμα/μητρώνυμα βάλε κατάληξη Γενικής Πτώσης (π.χ. αν είναι ΓΕΩΡΓΙΟΣ κάντο Γεωργίου, αν είναι ΜΑΡΙΑ κάντο Μαρίας).
+Επίστρεψε ΑΥΣΤΗΡΑ ΚΑΙ ΜΟΝΟ τα διορθωμένα πεδία, ενωμένα με το σύμβολο | (χωρίς καθόλου κενά γύρω από το |). Μην προσθέσεις ΚΑΜΙΑ άλλη λέξη.
+Δεδομένα: ${vals.join('|')}`;
+
+    let result = await callGeminiAPI(prompt, 'btn_tonismos', 'spin_tonismos');
+    if(result) {
+        let newVals = result.trim().split('|');
+        if(newVals.length === fields.length) {
+            fields.forEach((id, idx) => {
+                let el = document.getElementById(id);
+                if(el) { el.value = newVals[idx].trim(); el.classList.remove('accent-warning'); saveMem(id); }
+            });
+        } else { alert("Η Τεχνητή Νοημοσύνη δεν επέστρεψε σωστή δομή. Δοκιμάστε ξανά."); }
     }
 }
