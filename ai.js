@@ -114,21 +114,30 @@ async function tonismosAI() {
     let vals = fields.map(id => document.getElementById(id).value.trim());
     if(vals.join('') === '') { alert("Η φόρμα είναι άδεια. Κάντε πρώτα άντληση POL."); return; }
 
-    let prompt = `Διόρθωσε τους τόνους και τα πεζά/κεφαλαία στα παρακάτω ελληνικά ονόματα/τοπωνύμια.
-Το 'Επώνυμο' κάντο ΟΛΟ ΚΕΦΑΛΑΙΑ (χωρίς τόνους).
-Τα υπόλοιπα κάντα 'Title Case' (Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά) και βάλε τον ΣΩΣΤΟ ΤΟΝΟ.
-Στα πατρώνυμα/μητρώνυμα βάλε κατάληξη Γενικής Πτώσης (π.χ. αν είναι ΓΕΩΡΓΙΟΣ κάντο Γεωργίου, αν είναι ΜΑΡΙΑ κάντο Μαρίας).
-Επίστρεψε ΑΥΣΤΗΡΑ ΚΑΙ ΜΟΝΟ τα διορθωμένα πεδία, ενωμένα με το σύμβολο | (χωρίς καθόλου κενά γύρω από το |). Μην προσθέσεις ΚΑΜΙΑ άλλη λέξη.
-Δεδομένα: ${vals.join('|')}`;
+    let prompt = `Act as a data parser. Correct the Greek accents and capitalization for the following fields separated by "|".
+Rules:
+1. 1st field (Surname): ALL CAPS, NO ACCENTS.
+2. All other fields: Title Case (First letter capitalized, rest lowercase), WITH CORRECT ACCENT.
+3. 3rd and 4th fields (Father/Mother name): Convert to Greek Genitive case (e.g., from ΝΙΚΟΛΑΟΣ to Νικολάου, from ΜΑΡΙΑ to Μαρίας).
+Data: ${vals.join('|')}
+You MUST output ONLY the corrected values separated by "|". Do NOT add any markdown, quotes, intro, or formatting. Output exactly ${fields.length} items.`;
 
     let result = await callGeminiAPI(prompt, 'btn_tonismos', 'spin_tonismos');
     if(result) {
-        let newVals = result.trim().split('|');
+        let raw = result.replace(/```/g, '').replace(/html/g, '').trim();
+        let newVals = raw.split('|').map(s => s.trim());
+        
         if(newVals.length === fields.length) {
             fields.forEach((id, idx) => {
                 let el = document.getElementById(id);
-                if(el) { el.value = newVals[idx].trim(); el.classList.remove('accent-warning'); saveMem(id); }
+                if(el && newVals[idx]) { 
+                    el.value = newVals[idx]; 
+                    el.classList.remove('accent-warning'); 
+                    saveMem(id); 
+                }
             });
-        } else { alert("Η Τεχνητή Νοημοσύνη δεν επέστρεψε σωστή δομή. Δοκιμάστε ξανά."); }
+        } else { 
+            alert("Η Τεχνητή Νοημοσύνη δεν επέστρεψε σωστή δομή. Παρακαλώ ξαναδοκιμάστε."); 
+        }
     }
 }
