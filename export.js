@@ -42,7 +42,7 @@ function makeDoc(title, headerTitle, bodyContent, filename) {
 
 // Υπογραφές 3 στηλών (0 κενά πάνω, 3 κενά κάτω)
 function sigBlock(role1, role2, role3) {
-    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 15pt; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
+    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0pt; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
     <tr>
         <td style="width: 33%; vertical-align: top;">${role1}</td>
         <td style="width: 33%; vertical-align: top;">${role2}</td>
@@ -53,7 +53,7 @@ function sigBlock(role1, role2, role3) {
 
 // Υπογραφές 4 στηλών (0 κενά πάνω, 3 κενά κάτω)
 function sigBlock4(role1, role2, role3, role4) {
-    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 15pt; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
+    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0pt; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
     <tr>
         <td style="width: 25%; vertical-align: top;">${role1}</td>
         <td style="width: 25%; vertical-align: top;">${role2}</td>
@@ -359,8 +359,7 @@ function exportSeizure() {
     if (tType === "ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ" || tType === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ" || tType === "ΕΡΕΥΝΑΣ ΟΙΚΙΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
         body = `<p style="${pStyle}">- Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("doc_start")} εμείς ο ${d.anakr} του ${d.deptFull}, παρισταμένου και του ${d.banakr} της ως άνω Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εκθέτουμε τα εξής:</p>
-        <p style="${pStyle}">- Ενεργούντες προανάκριση για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» όπως τροπ. με το άρθρο 10 του Ν. 4322/2015 και έχοντες βάσιμες υπόνοιες ότι ${d.a_o} ${d.prof} έχει στην κατοχή ${d.a_tou} ναρκωτικές ουσίες, καλέσαμε ${d.a_auton} όπως μας τα παραδώσει και ${d.a_autou} ${d.a_dil} ότι δεν φέρει ταύτα, προβήκαμε στη σωματική ${d.a_tou} έρευνα, στην οποία διαπιστώσαμε ότι${foundLoc}υπήρχαν: ${d.v("drug_packaging")} περιέχουσα ποσότητα της ναρκωτικής ουσίας «${d.v("drug_type")}» συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων περίπου, τα οποία εμπίπτουν στις διατάξεις του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» και προβήκαμε στην κατάσχεση αυτών προκειμένου αποσταλούν ως πειστήρια στον κ. ${d.prosecutor}.</p>
-        <p style="${pStyle}">- Αναφέρεται ότι η έρευνα ${d.a_ston} ανωτέρω έγινε από εμάς.</p>
+<p style="${pStyle}">- Ενεργούντες προανάκριση για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» όπως τροπ. με το άρθρο 10 του Ν. 4322/2015 και έχοντες βάσιμες υπόνοιες ότι ${d.a_o} ${d.prof} έχει στην κατοχή ${d.a_tou} ναρκωτικές ουσίες, καλέσαμε ${d.a_auton} όπως μας τα παραδώσει και ${d.a_autou} ${d.a_dil} ότι δεν φέρει ταύτα, προβήκαμε στη σωματική ${d.a_tou} έρευνα, στην οποία διαπιστώσαμε ότι${foundLoc}υπήρχαν: ${d.v("drug_packaging")} περιέχουσα ποσότητα της ναρκωτικής ουσίας «${d.v("drug_type")}» μικτού βάρους ${d.v("drug_weight")} γραμμαρίων περίπου, τα οποία εμπίπτουν στις διατάξεις του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» και προβήκαμε στην κατάσχεση αυτών προκειμένου αποσταλούν ως πειστήρια στον κ. ${d.prosecutor}.</p>        <p style="${pStyle}">- Αναφέρεται ότι η έρευνα ${d.a_ston} ανωτέρω έγινε από εμάς.</p>
         <p style="${pStyle}">- Γίνεται μνεία, ότι η παρούσα έρευνα άρχισε την ${d.v("doc_start")} ώρα της ${d.v("doc_date")} και περατώθηκε την ${d.v("doc_end")} ώρα της ${d.v("doc_date")} η δε σύνταξη της παρούσας άρχισε την ${d.v("doc_start")} ώρα και περατώθηκε την ${d.v("doc_end")} ώρα.-</p>
         <p style="${pStyle}">- Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock4("Ο Καθ' ου η έρευνα", "Ο εν. την έρευνα", "Ο Β' Αν. Υπάλληλος", "Ο Αν. Υπάλληλος")}`;
@@ -379,8 +378,7 @@ function exportWeighing() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD();
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΖΥΓΙΣΗΣ ΚΑΙ ΣΦΡΑΓΙΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
-    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("doc_start")} ενώπιον εμού του ${d.anakr} του ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, κατ. ενταύθα (${d.dept}), επί παρουσία και ${d.a_tou} κατηγορούμενου για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) ${d.prof} προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας, της υπηρεσίας, της ανευρεθείσας, ${d.a_ston} ανωτέρω ${d.a_katig_acc} και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι ${d.v("drug_packaging")} περιέχουσας ποσότητας ναρκωτικής ουσίας, πιθανώς «${d.v("drug_type")}» η οποία βρέθηκε να έχει συνολικό μικτό βάρος ${d.v("drug_weight")} γραμμαρίων περίπου.</p>
-    <p style="${pStyle}">Κατόπιν τούτου η ανωτέρω ναρκωτική ουσία σφραγίστηκε σε ταυτάριθμο φάκελο.</p>
+let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("doc_start")} ενώπιον εμού του ${d.anakr} του ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, κατ. ενταύθα (${d.dept}), επί παρουσία και ${d.a_tou} κατηγορούμενου για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) ${d.prof} προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας, της υπηρεσίας, της ανευρεθείσας, ${d.a_ston} ανωτέρω ${d.a_katig_acc} και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι ${d.v("drug_packaging")} περιέχουσας ποσότητας ναρκωτικής ουσίας, πιθανώς «${d.v("drug_type")}» η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων περίπου.</p>    <p style="${pStyle}">Κατόπιν τούτου η ανωτέρω ναρκωτική ουσία σφραγίστηκε σε ταυτάριθμο φάκελο.</p>
     <p style="${pStyle}">Η παρούσα άρχισε να συντάσσεται ώρα ${d.v("doc_start")} και περατώθηκε ώρα ${d.v("doc_end")}.</p>
     <p style="${pStyle}">Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ ανακριτικός υπάλληλος", "Ο ανακριτικός υπάλληλος")}`;
