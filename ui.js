@@ -178,20 +178,16 @@ function parsePOL() {
     let cleanTxtForAdt = txt.replace(/Αντικατάστασης\s*[Α-ΩA-Z0-9]+/g, "");
     let adts = cleanTxtForAdt.match(/[Α-ΩA-Z]{1,3}\d{5,8}/g);
 
-    document.getElementById("surname").value = surname; 
-    document.getElementById("name").value = name; 
-    document.getElementById("father").value = father; 
-    document.getElementById("mother").value = mother; 
+    document.getElementById("surname").value = surname.toUpperCase(); 
+    document.getElementById("name").value = toTitleCaseWords(name); 
+    document.getElementById("father").value = toTitleCaseWords(father); 
+    document.getElementById("mother").value = toTitleCaseWords(mother); 
     document.getElementById("dob").value = dobMatch ? dobMatch[1].replace(/\//g, "-") : "";
-    document.getElementById("pob").value = pobFull.split(/\s+/)[0];
-    document.getElementById("area").value = extract(/Περιοχή(.*?)\s*Οδός/); 
-    document.getElementById("dimos").value = dimos;
-    document.getElementById("odos").value = extract(/Οδός(.*?)\s*Αριθμός/);
+    document.getElementById("pob").value = toTitleCaseWords(pobFull.split(/\s+/)[0]);
+    document.getElementById("area").value = toTitleCaseWords(extract(/Περιοχή(.*?)\s*Οδός/)); 
+    document.getElementById("dimos").value = toTitleCaseWords(dimos);
+    document.getElementById("odos").value = toTitleCaseWords(extract(/Οδός(.*?)\s*Αριθμός/));
     document.getElementById("arithmos").value = arithmosMatch ? arithmosMatch[1].trim() : "";
-    document.getElementById("adt").value = adts && adts.length > 0 ? adts[adts.length - 1] : "";
-    document.getElementById("authDate").value = authDateMatch ? authDateMatch[1].replace(/\//g, "-") : "";
-    document.getElementById("auth").value = authFull;
-    if (phoneMatch) document.getElementById("phone").value = phoneMatch[1];
     
     document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 }
