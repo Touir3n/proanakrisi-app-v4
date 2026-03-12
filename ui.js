@@ -93,8 +93,10 @@ window.onload = function() {
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
+    loadMem("seiz_start"); loadMem("seiz_end"); loadMem("weigh_start"); loadMem("weigh_end"); loadMem("notif_start"); loadMem("notif_end");
+    loadMem("prok_rights_start"); loadMem("prok_rights_end"); loadMem("prok_main_start"); loadMem("prok_main_end"); loadMem("prok_after_start"); loadMem("prok_after_end"); loadMem("prok_service_start"); loadMem("prok_service_end");
     
-    // Εισαγγελία Default
+    // Εισαγγελία Default όπως το ζήτησες!
     if(!document.getElementById("prok_abm").value) {
         document.getElementById("prok_abm").value = "την υπ' αριθμ. ....... παραγγελία της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
     }
@@ -120,28 +122,90 @@ function buildDVForm() {
     loadMem("dv_q_main"); dvQuestions.forEach((q, i) => loadMem("dv_q_" + i)); loadMem("dv_q_last");
 }
 
+function setInputIfExists(id, value) {
+    let el = document.getElementById(id);
+    if (el) el.value = value;
+}
+
 function refreshTimes() {
     const days = ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'];
     const months = ['Ιανουαρίου', 'Φεβρουαρίου', 'Μαρτίου', 'Απριλίου', 'Μαΐου', 'Ιουνίου', 'Ιουλίου', 'Αυγούστου', 'Σεπτεμβρίου', 'Οκτωβρίου', 'Νοεμβρίου', 'Δεκεμβρίου'];
     const now = new Date();
     const dateStr = String(now.getDate()).padStart(2, '0') + "-" + String(now.getMonth()+1).padStart(2, '0') + "-" + now.getFullYear();
-    
-    document.getElementById('doc_day').value = days[now.getDay()];
-    document.getElementById('doc_date').value = String(now.getDate()).padStart(2, '0');
-    document.getElementById('doc_month').value = months[now.getMonth()];
-    document.getElementById('doc_year').value = now.getFullYear();
+
+    setInputIfExists('doc_day', days[now.getDay()]);
+    setInputIfExists('doc_date', String(now.getDate()).padStart(2, '0'));
+    setInputIfExists('doc_month', months[now.getMonth()]);
+    setInputIfExists('doc_year', now.getFullYear());
 
     const addMins = (date, mins) => new Date(date.getTime() + mins * 60000);
     const timeStr = (date) => String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+
+    // Απλή Έκθεση
+    const docStart = now;
+    const docEnd = addMins(docStart, 15);
+
+    // Σειρά Ναρκωτικά / Σύλληψη (1.Κατάσχεση -> 2.Σύλληψη -> 3.Ζύγιση -> 4.Γνωστοποίηση -> 5.Δικαιώματα -> 6.Απολογία)
+    const seizStart = addMins(docEnd, 1);
+    const seizEnd = addMins(seizStart, 8);
     
-    document.getElementById('doc_start').value = timeStr(now); document.getElementById('doc_end').value = timeStr(addMins(now, 15));
-    let t1 = now; let t2 = addMins(t1, 10); let t3 = addMins(t2, 10); let t4 = addMins(t3, 15); 
-    document.getElementById('arr_start').value = timeStr(t1); document.getElementById('arr_end').value = timeStr(t2);
-    document.getElementById('rig_start').value = timeStr(t2); document.getElementById('rig_end').value = timeStr(t3);
-    document.getElementById('apo_start').value = timeStr(t3); document.getElementById('apo_end').value = timeStr(t4);
+    const arrStart = addMins(seizEnd, 1);
+    const arrEnd = addMins(arrStart, 10);
     
-    document.getElementById('ai_date').value = dateStr; document.getElementById('ai_time').value = timeStr(now);
-    document.getElementById('arr_street_date').value = dateStr; document.getElementById('arr_street_time').value = timeStr(now);
+    const weighStart = addMins(arrEnd, 1);
+    const weighEnd = addMins(weighStart, 6);
+    
+    const notifStart = addMins(weighEnd, 1);
+    const notifEnd = addMins(notifStart, 6);
+    
+    const rigStart = addMins(notifEnd, 1);
+    const rigEnd = addMins(rigStart, 10);
+    
+    const apoStart = addMins(rigEnd, 1);
+    const apoEnd = addMins(apoStart, 15);
+
+    // Σειρά Προκαταρκτική (Δικαιώματα -> Ανωμοτί -> Μετά την Προθεσμία -> Υπόμνημα)
+    const prokRightsStart = addMins(apoEnd, 5);
+    const prokRightsEnd = addMins(prokRightsStart, 10);
+    
+    const prokMainStart = addMins(prokRightsEnd, 1);
+    const prokMainEnd = addMins(prokMainStart, 15);
+    
+    const prokAfterStart = addMins(prokMainEnd, 1);
+    const prokAfterEnd = addMins(prokAfterStart, 10);
+    
+    const prokServiceStart = addMins(prokAfterEnd, 1);
+    const prokServiceEnd = addMins(prokServiceStart, 8);
+
+    setInputIfExists('doc_start', timeStr(docStart));
+    setInputIfExists('doc_end', timeStr(docEnd));
+
+    setInputIfExists('seiz_start', timeStr(seizStart));
+    setInputIfExists('seiz_end', timeStr(seizEnd));
+    setInputIfExists('arr_start', timeStr(arrStart));
+    setInputIfExists('arr_end', timeStr(arrEnd));
+    setInputIfExists('weigh_start', timeStr(weighStart));
+    setInputIfExists('weigh_end', timeStr(weighEnd));
+    setInputIfExists('notif_start', timeStr(notifStart));
+    setInputIfExists('notif_end', timeStr(notifEnd));
+    setInputIfExists('rig_start', timeStr(rigStart));
+    setInputIfExists('rig_end', timeStr(rigEnd));
+    setInputIfExists('apo_start', timeStr(apoStart));
+    setInputIfExists('apo_end', timeStr(apoEnd));
+
+    setInputIfExists('prok_rights_start', timeStr(prokRightsStart));
+    setInputIfExists('prok_rights_end', timeStr(prokRightsEnd));
+    setInputIfExists('prok_main_start', timeStr(prokMainStart));
+    setInputIfExists('prok_main_end', timeStr(prokMainEnd));
+    setInputIfExists('prok_after_start', timeStr(prokAfterStart));
+    setInputIfExists('prok_after_end', timeStr(prokAfterEnd));
+    setInputIfExists('prok_service_start', timeStr(prokServiceStart));
+    setInputIfExists('prok_service_end', timeStr(prokServiceEnd));
+
+    setInputIfExists('ai_date', dateStr);
+    setInputIfExists('ai_time', timeStr(now));
+    setInputIfExists('arr_street_date', dateStr);
+    setInputIfExists('arr_street_time', timeStr(arrStart));
 }
 
 function switchTab(tabId, btnElement) {
@@ -162,11 +226,18 @@ function clearFields() {
 
 function toTitleCaseWords(str) {
     if (!str) return "";
-    return str.split(" ").map(w => {
-        if (w.toUpperCase() === "Α.Τ.") return "Α.Τ.";
-        if (w.toUpperCase() === "Τ.Α.") return "Τ.Α.";
-        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-    }).join(" ");
+    return str
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim()
+        .split(/([ '\-])/)
+        .map(part => {
+            if (!part || /^[ '\-]$/.test(part)) return part;
+            if (part.toUpperCase() === "Α.Τ.") return "Α.Τ.";
+            if (part.toUpperCase() === "Τ.Α.") return "Τ.Α.";
+            return part.charAt(0).toUpperCase() + part.slice(1);
+        })
+        .join("");
 }
 
 function parsePOL() {
@@ -174,7 +245,7 @@ function parsePOL() {
     if (!rawTxt) { alert("Παρακαλώ επικολλήστε τα στοιχεία."); return; }
     var txt = rawTxt.replace(/[\n\r\t\u00A0]+/g, " ").replace(/\s+/g, " ");
     function extract(regex) { var m = txt.match(regex); return m && m[1] ? m[1].trim() : ""; }
-    
+
     document.getElementById("gender").value = (/Γυναίκα/i.test(txt) || /ΓΥΝΑΙΚΑ/i.test(txt)) ? "F" : "M";
 
     let surname = extract(/Επώνυμο(.*?)\s*Επώνυμο \(Λατιν\.\)/) || extract(/Επώνυμο(.*?)\s*Όνομα/);
@@ -184,7 +255,7 @@ function parsePOL() {
     let dobMatch = txt.match(/Ημ\/νία Γέννησης\s*(\d{2}\/\d{2}\/\d{4})/);
     let pobFull = extract(/Τόπος Γέννησης(.*?)(?:Χώρα Γέννησης|Υπηρεσία χρέωσης)/).replace(/[a-zA-Z]/g, '').trim();
     let authDateMatch = txt.match(/Ημ\/νια Έκδοσης\s*(\d{2}\/\d{2}\/\d{4})/);
-    let authFull = extract(/Αρχή Έκδοσης(.*?)\s*Ημ\/νια Έκδοσης/).replace(/^\d+\s*-\s*/, ""); 
+    let authFull = extract(/Αρχή Έκδοσης(.*?)\s*Ημ\/νια Έκδοσης/).replace(/^\d+\s*-\s*/, "");
     let dimosFull = extract(/Δημότης(.*?)\s*Αριθμός Δημοτολογίου/);
     let dimos = dimosFull ? dimosFull.split(" ")[0] + (dimosFull.split(" ")[1] ? " " + dimosFull.split(" ")[1] : "") : "";
     let arithmosMatch = txt.match(/Οδός.*?Αριθμός(.*?)\s*(?:Ταχ\.Κώδικας|Τηλέφωνο|Άλλα)/);
@@ -192,21 +263,25 @@ function parsePOL() {
     let cleanTxtForAdt = txt.replace(/Αντικατάστασης\s*[Α-ΩA-Z0-9]+/g, "");
     let adts = cleanTxtForAdt.match(/[Α-ΩA-Z]{1,3}\d{5,8}/g);
 
-    document.getElementById("surname").value = surname.toUpperCase(); 
-    document.getElementById("name").value = toTitleCaseWords(name); 
-    document.getElementById("father").value = toTitleCaseWords(father); 
-    document.getElementById("mother").value = toTitleCaseWords(mother); 
+    let pobClean = pobFull.split(',')[0].trim() || pobFull.trim();
+    let areaClean = extract(/Περιοχή(.*?)\s*Οδός/);
+    let odosClean = extract(/Οδός(.*?)\s*Αριθμός/);
+
+    document.getElementById("surname").value = (surname || "").toUpperCase();
+    document.getElementById("name").value = toTitleCaseWords(name);
+    document.getElementById("father").value = toTitleCaseWords(father);
+    document.getElementById("mother").value = toTitleCaseWords(mother);
     document.getElementById("dob").value = dobMatch ? dobMatch[1].replace(/\//g, "-") : "";
-    document.getElementById("pob").value = toTitleCaseWords(pobFull.split(/\s+/)[0]);
-    document.getElementById("area").value = toTitleCaseWords(extract(/Περιοχή(.*?)\s*Οδός/)); 
+    document.getElementById("pob").value = toTitleCaseWords(pobClean);
+    document.getElementById("area").value = toTitleCaseWords(areaClean);
     document.getElementById("dimos").value = toTitleCaseWords(dimos);
-    document.getElementById("odos").value = toTitleCaseWords(extract(/Οδός(.*?)\s*Αριθμός/));
+    document.getElementById("odos").value = toTitleCaseWords(odosClean);
     document.getElementById("arithmos").value = arithmosMatch ? arithmosMatch[1].trim() : "";
     document.getElementById("adt").value = adts && adts.length > 0 ? adts[adts.length - 1] : "";
     document.getElementById("authDate").value = authDateMatch ? authDateMatch[1].replace(/\//g, "-") : "";
     document.getElementById("auth").value = toTitleCaseWords(authFull);
     if (phoneMatch) document.getElementById("phone").value = phoneMatch[1];
-    
+
     document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 }
 
