@@ -437,8 +437,12 @@
                         <input type="text" id="prok_abm" value="την υπ' αριθμ. ....... παραγγελία της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης" oninput="saveMem(this.id)">
                     </div>
                     <div class="form-group" style="grid-column: span 2;">
-                        <label style="color: #e67300;">Αποδιδόμενη Πράξη / Κατηγορία: *</label>
-                        <textarea id="prok_charge" style="height: 50px; border: 1px solid #ccc; padding: 8px; font-family: Arial; font-size: 13px;" placeholder="π.χ. παράβαση του Αρ. 29§1, 81§1α του Ν. 4495/2017 «Αυθαίρετη Κατασκευή», καθότι..." oninput="saveMem(this.id)"></textarea>
+                        <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center;">
+                            <label style="color: #e67300; flex: 1; margin: 0;">Αποδιδόμενη Πράξη / Κατηγορία: *</label>
+                            <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_charge" onclick="explainLawAI()"><span id="spin_ref_charge" class="spinner" style="display:none;"></span>✨ AI Νόμος</button>
+                            <button class="btn-undo" type="button" onclick="undoText('prok_charge')">↩️ Αναίρεση</button>
+                        </div>
+                        <textarea id="prok_charge" style="height: 50px; border: 1px solid #ccc; padding: 8px; font-family: Arial; font-size: 13px;" placeholder="π.χ. Ν. 5092/2024 ή αρ. 23 Α.Ν. 1539/38" oninput="saveMem(this.id)"></textarea>
                     </div>
                     <div class="form-group">
                         <label>ΕΡΩΤΗΣΗ: Χρήση Δικαιωμάτων;</label>
@@ -472,6 +476,25 @@
                 </div>
             </div>
 
+            <div class="time-grid-wrapper" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
+                <div class="form-group">
+                    <label>Δικαιώματα (Έναρξη - Λήξη)</label>
+                    <div class="time-box"><input type="text" id="prok_rights_start" oninput="saveMem(this.id)"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)"></div>
+                </div>
+                <div class="form-group">
+                    <label>Ανωμοτί / Προθεσμία (Έναρξη - Λήξη)</label>
+                    <div class="time-box"><input type="text" id="prok_main_start" oninput="saveMem(this.id)"><input type="text" id="prok_main_end" oninput="saveMem(this.id)"></div>
+                </div>
+                <div class="form-group">
+                    <label>Μετά το Πέρας Προθεσμίας</label>
+                    <div class="time-box"><input type="text" id="prok_after_start" oninput="saveMem(this.id)"><input type="text" id="prok_after_end" oninput="saveMem(this.id)"></div>
+                </div>
+                <div class="form-group">
+                    <label>Έκθεση Εγχείρισης</label>
+                    <div class="time-box"><input type="text" id="prok_service_start" oninput="saveMem(this.id)"><input type="text" id="prok_service_end" oninput="saveMem(this.id)"></div>
+                </div>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
                 <button class="btn-word" style="background-color: #28a745;" onclick="exportProkNoDeadline()">⚡ 2. Ενιαία Ανωμοτί (Δικαιώματα + Εξηγήσεις)</button>
@@ -480,9 +503,6 @@
                 <button class="btn-word" style="background-color: #6c757d; grid-column: span 2;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
             </div>
         </div>
-
-    </div>
-</div>
 
 <script src="ui.js"></script>
 <script src="ai.js"></script>
