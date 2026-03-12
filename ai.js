@@ -91,7 +91,14 @@ async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
     let text = document.getElementById(sourceId).value.trim();
     let resDiv = document.getElementById(resultId);
     if (!text) { resDiv.innerHTML = "Γράψτε πρώτα την κατάθεση."; resDiv.className = "ai-result error"; resDiv.style.display = "block"; return; }
-    let prompt = `Διάβασε την κατάθεση. Έλεγξε αν καλύπτονται: 1) ΠΟΥ (τόπος), 2) ΠΟΤΕ (χρόνος), 3) ΠΟΙΟΣ (δράστης), 4) ΤΙ (πράξη), 5) ΓΙΑΤΙ (κίνητρο). Αν αναφέρει "αναίτια", το "ΓΙΑΤΙ" είναι ✅. Επίστρεψε ΜΟΝΟ bullets (✅ ή ❌). Κατάθεση: "${sanitizeForAI(text)}"`;
+    let prompt = `Αξιολόγησε το παρακάτω κείμενο με βάση τον Χρυσό Κανόνα της αστυνομίας.
+Ανάλυσε και απάντησε ΑΥΣΤΗΡΑ με την εξής μορφή λίστας:
+- ΠΟΥ (Τόπος): ✅ (ή ❌ αν λείπει)
+- ΠΟΤΕ (Χρόνος): ✅ (ή ❌ αν λείπει)
+- ΠΟΙΟΣ (Δράστης): ✅ (ή ❌ αν λείπει)
+- ΤΙ (Πράξη): ✅ (ή ❌ αν λείπει)
+- ΓΙΑΤΙ (Κίνητρο): ✅ (ή ❌ αν λείπει. Σημείωση: Αν λέει "αναίτια", βάλε ✅).
+Κείμενο: "${sanitizeForAI(text)}"`;
     resDiv.style.display = "none"; resDiv.className = "ai-result";
     let result = await callGeminiAPI(prompt, btnId, spinnerId);
     if (result) { resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + result.replace(/\n/g, "<br>"); resDiv.style.display = "block"; }
@@ -100,7 +107,10 @@ async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
 async function generateChargeAI() {
     let text = document.getElementById("ai_rough_notes").value.trim();
     if (!text) { alert("Γράψτε περιγραφή."); return; }
-    let prompt = `Διάβασε την περιγραφή: "${sanitizeForAI(text)}" Σύνταξε ΑΥΣΤΗΡΑ με την εξής μορφή (αντικαθιστώντας τα κενά με τα σωστά στοιχεία): [ΒΑΣΙΚΟ] παράβαση του [Άρθρο/Νόμος], πράξη που έλαβε χώρα την [Ημερομηνία] και ώρα [Ώρα] στο/στην [Τόπος]. [ΠΕΡΙΣΤΑΤΙΚΑ] Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης (ΠΕΡΙΓΡΑΨΕ ΜΕ ΕΝΑ-ΔΥΟ ΛΟΓΙΑ ΑΠΛΑ ΤΗΝ ΠΡΑΞΗ, ΧΩΡΙΣ ΝΑ ΠΡΟΣΘΕΣΕΙΣ ΔΙΚΑ ΣΟΥ ΓΕΓΟΝΟΤΑ ΚΑΙ ΧΩΡΙΣ ΠΡΑΓΜΑΤΙΚΑ ΟΝΟΜΑΤΑ).`;
+    let prompt = `Είσαι αστυνομικός ανακριτής. Διάβασε το συμβάν: "${sanitizeForAI(text)}"
+Σύνταξε το κατηγορητήριο ΑΥΣΤΗΡΑ με την εξής δομή (χωρίς να μαντεύεις έξτρα γεγονότα):
+[ΒΑΣΙΚΟ] παράβαση του [Άρθρο/Νόμος], πράξη που έλαβε χώρα την [Ημερομηνία] και ώρα [Ώρα] στο/στην [Τόπος].
+[ΠΕΡΙΣΤΑΤΙΚΑ] Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης [Γράψε σε 1-2 γραμμές την πράξη, χωρίς πραγματικά ονόματα].`;
     let result = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
     if (result) {
         try {
@@ -115,39 +125,25 @@ async function generateChargeAI() {
 async function explainLawAI() {
     let el = document.getElementById("prok_charge");
     let lawText = el.value.trim();
-    
-    if (!lawText) { 
-        alert("Γράψτε πρώτα τη διάταξη/νόμο (π.χ. αρ. 23 Α.Ν. 1539/38) και μετά πατήστε το κουμπί."); 
-        return; 
-    }
-    
+    if (!lawText) { alert("Γράψτε πρώτα τη διάταξη (π.χ. αρ. 23 Α.Ν. 1539/38)."); return; }
     window.originalTexts["prok_charge"] = lawText;
-    
-    let prompt = `Είσαι βοηθός Αξιωματικού Υπηρεσίας της Ελληνικής Αστυνομίας. Ο χρήστης σου δίνει μια νομική διάταξη. 
-Βρες ποιο είναι το αδίκημα και επίστρεψε ΑΥΣΤΗΡΑ ΚΑΙ ΜΟΝΟ ένα ωραία διατυπωμένο κείμενο για το πεδίο "Αποδιδόμενη Πράξη", της μορφής: "παράβαση του [Άρθρο/Νόμος] «[Τίτλος Αδικήματος]»". 
-Αν ο νόμος αναφέρεται σε "κατάληψη δημόσιου κτήματος", γράψτο έτσι.
-Μην βάλεις καμία άλλη λέξη, σχόλιο ή εισαγωγή στην απάντησή σου.
-Διάταξη που έδωσε ο χρήστης: "${sanitizeForAI(lawText)}"`;
-
+    let prompt = `Βρες ποιο είναι το αδίκημα που αντιστοιχεί στη διάταξη: "${sanitizeForAI(lawText)}". 
+Επίστρεψε ΜΟΝΟ ένα κείμενο της μορφής: "παράβαση του [Άρθρο/Νόμος] «[Τίτλος Αδικήματος]»".
+Αν ο νόμος 1539 αφορά κατάληψη δημόσιου κτήματος/αιγιαλού, γράψτο έτσι. Μην προσθέσεις τίποτα άλλο.`;
     let result = await callGeminiAPI(prompt, "btn_ref_charge", "spin_ref_charge");
-    
-    if (result) { 
-        el.value = result.trim(); 
-        saveMem("prok_charge"); 
-    }
+    if (result) { el.value = result.trim(); saveMem("prok_charge"); }
 }
 
 async function tonismosAI() {
     let fields = ['surname', 'name', 'father', 'mother', 'pob', 'area', 'dimos', 'odos', 'auth'];
     let vals = fields.map(id => document.getElementById(id).value.trim());
-    if(vals.join('') === '') { alert("Η φόρμα είναι άδεια. Κάντε πρώτα άντληση POL."); return; }
+    if(vals.join('') === '') { alert("Η φόρμα είναι άδεια."); return; }
 
-    let prompt = `Διόρθωσε τα παρακάτω 9 πεδία (χωρισμένα με |). 
-ΚΑΝΟΝΕΣ: 
-Πεδίο 1 (Επώνυμο): ΜΟΝΟ ΚΕΦΑΛΑΙΑ, ΧΩΡΙΣ ΤΟΝΟΥΣ. 
-Πεδία 2 έως 9: Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά. ΒΑΛΕ ΤΟΝ ΣΩΣΤΟ ΤΟΝΟ. 
-Πεδία 3 και 4 (Πατρώνυμο/Μητρώνυμο): Βάλε τα σε Γενική Πτώση (π.χ. 'Δημητρίου').
-Επίστρεψε ΜΟΝΟ τα 9 πεδία ενωμένα με | χωρίς καμία άλλη λέξη.
+    let prompt = `Διόρθωσε τα εξής 9 στοιχεία προσώπου (χωρισμένα με |). 
+Κανόνας 1: Το 1ο στοιχείο (Επώνυμο) άστο ΑΚΡΙΒΩΣ όπως είναι (κεφαλαία, χωρίς τόνους).
+Κανόνας 2: Τα υπόλοιπα 8 στοιχεία κάντα Title Case (Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά) και ΒΑΛΕ ΤΟΝ ΣΩΣΤΟ ΤΟΝΟ στα ελληνικά.
+Κανόνας 3: Το 3ο και 4ο στοιχείο (Πατρώνυμο/Μητρώνυμο) μετάτρεψέ τα σε ΓΕΝΙΚΗ ΠΤΩΣΗ (π.χ. ΔΗΜΗΤΡΙΟΣ -> Δημητρίου).
+Επίστρεψε ΜΟΝΟ τα 9 στοιχεία, ενωμένα ξανά με το |, χωρίς απολύτως καμία άλλη λέξη στην απάντησή σου.
 Δεδομένα: ${vals.join('|')}`;
 
     let result = await callGeminiAPI(prompt, 'btn_tonismos', 'spin_tonismos');
@@ -158,14 +154,8 @@ async function tonismosAI() {
         if(newVals.length === fields.length) {
             fields.forEach((id, idx) => {
                 let el = document.getElementById(id);
-                if(el && newVals[idx]) { 
-                    el.value = newVals[idx]; 
-                    el.classList.remove('accent-warning'); 
-                    saveMem(id); 
-                }
+                if(el && newVals[idx]) { el.value = newVals[idx]; el.classList.remove('accent-warning'); saveMem(id); }
             });
-        } else { 
-            alert("Η Τεχνητή Νοημοσύνη δεν επέστρεψε σωστή δομή. Παρακαλώ ξαναδοκιμάστε."); 
-        }
+        } else { alert("Η Τεχνητή Νοημοσύνη δεν επέστρεψε σωστή δομή. Παρακαλώ ξαναδοκιμάστε."); }
     }
 }
