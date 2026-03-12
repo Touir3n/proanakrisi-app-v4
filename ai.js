@@ -100,7 +100,7 @@ async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
 async function generateChargeAI() {
     let text = document.getElementById("ai_rough_notes").value.trim();
     if (!text) { alert("Γράψτε περιγραφή."); return; }
-    let prompt = `Σύνταξε νομικά: 1. Βασικό Κατηγορητήριο (άρθρα ΠΚ) και 2. Πραγματικά Περιστατικά. Δομή απάντησης αυστηρά: [ΒΑΣΙΚΟ] κείμενο [ΠΕΡΙΣΤΑΤΙΚΑ] κείμενο. Περιγραφή: "${sanitizeForAI(text)}"`;
+    let prompt = `Διάβασε την περιγραφή: "${sanitizeForAI(text)}" Σύνταξε ΑΥΣΤΗΡΑ με την εξής μορφή (αντικαθιστώντας τα κενά με τα σωστά στοιχεία): [ΒΑΣΙΚΟ] παράβαση του [Άρθρο/Νόμος], πράξη που έλαβε χώρα την [Ημερομηνία] και ώρα [Ώρα] στο/στην [Τόπος]. [ΠΕΡΙΣΤΑΤΙΚΑ] Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης (ΠΕΡΙΓΡΑΨΕ ΜΕ ΕΝΑ-ΔΥΟ ΛΟΓΙΑ ΑΠΛΑ ΤΗΝ ΠΡΑΞΗ, ΧΩΡΙΣ ΝΑ ΠΡΟΣΘΕΣΕΙΣ ΔΙΚΑ ΣΟΥ ΓΕΓΟΝΟΤΑ ΚΑΙ ΧΩΡΙΣ ΠΡΑΓΜΑΤΙΚΑ ΟΝΟΜΑΤΑ).`;
     let result = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
     if (result) {
         try {
