@@ -2,7 +2,7 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <title>Προανακριτική Μηχανή - AI Edition</title>
+    <title>Προανακριτική Μηχανή</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,8 +10,13 @@
 <div class="container">
     
     <div class="header-box">
-        <h1>⚖️ Προανακριτικη Μηχανη</h1>
-        <p>Βοηθός Ανακριτικού Υπαλλήλου</p>
+        <h1>🏛️ ΠΡΟΑΝΑΚΡΙΤΙΚΗ ΜΗΧΑΝΗ</h1>
+        <p>ΕΦΑΡΜΟΓΗ ΑΝΑΚΡΙΤΙΚΟΥ ΥΠΑΛΛΗΛΟΥ</p>
+    </div>
+
+    <div class="privacy-banner">
+        <span style="font-size: 18px;">🔒</span>
+        <span><b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα Α.Δ.Τ., Α.Φ.Μ., τηλέφωνα και πινακίδες. Για ασφαλή χρήση ΤΝ, αντικαταστήστε τα πλήρη ονόματα με αρχικά (π.χ. «Κ»).</span>
     </div>
 
     <div class="ai-settings">
@@ -74,7 +79,7 @@
     <div class="section">
         <div class="section-title">ΒΗΜΑ 2: Έλεγχος & Συμπλήρωση Στοιχείων</div>
         <div class="info-text">
-            <strong>💡 ΝΕΟ:</strong> Πατήστε το "AI Τονισμός" για να διορθωθούν αυτόματα τα κεφαλαία-πεζά!
+            <strong>💡 ΝΕΟ:</strong> Πατήστε το "AI Τονισμός" για να διορθωθούν αυτόματα τα κεφαλαία-πεζά και οι τόνοι!
         </div>
         <div class="grid-form">
             <div class="form-group"><label>Φύλο (Αυτόματο)</label><select id="gender"><option value="M">Άνδρας</option><option value="F">Γυναίκα</option></select></div>
@@ -181,13 +186,6 @@
                 </div>
                 <textarea id="doc_testimony_simple" style="height: 150px;" placeholder="Περιγράψτε την υπόθεση..." oninput="saveMem(this.id)"></textarea>
             </div>
-            
-            <div class="gdpr-warning">
-                <span style="font-size: 18px;">🛡️</span>
-                <div>
-                    <b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα αριθμούς από ταυτότητες, Α.Φ.Μ. και πινακίδες κυκλοφορίας. Επειδή όμως δεν μπορεί να αναγνωρίσει αξιόπιστα τα ονόματα, καλό είναι να αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων μέσα στα πλαίσια του κειμένου αν πρόκειται να χρησιμοποιήσετε τα AI εργαλεία. Χρησιμοποιήστε αρχικά γράμματα.
-                </div>
-            </div>
 
             <div style="margin-top: 10px;">
                 <button class="btn-ai" id="btn_check_rule" onclick="checkGoldenRule('doc_testimony_simple', 'ai_golden_rule_result', 'spinner_rule', 'btn_check_rule')">
@@ -267,12 +265,6 @@
                 <p style="font-size: 12px; color: #555; margin-bottom: 5px; margin-top: 5px;">
                     Περιγράψτε με απλά λόγια τι συνέβη. Η AI θα γράψει αυτόματα το "Βασικό Κατηγορητήριο" και τα "Πραγματικά Περιστατικά" σε νομική γλώσσα.
                 </p>
-                <div class="gdpr-warning" style="margin-top: 5px; margin-bottom: 10px;">
-                    <span style="font-size: 18px;">🛡️</span>
-                    <div>
-                        <b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα αριθμούς από ταυτότητες, Α.Φ.Μ. και πινακίδες κυκλοφορίας. Επειδή όμως δεν μπορεί να αναγνωρίσει αξιόπιστα τα ονόματα, καλό είναι να αποφύγετε τη χρήση πραγματικών ονοματεπωνύμων μέσα στα πλαίσια του κειμένου αν πρόκειται να χρησιμοποιήσετε τα AI εργαλεία. Χρησιμοποιήστε αρχικά γράμματα.
-                    </div>
-                </div>
                 <div style="display: flex; gap: 10px;">
                     <textarea id="ai_rough_notes" style="flex: 2; height: 50px; border: 2px dashed #8e44ad; padding: 8px;" placeholder="π.χ. Σήμερα το πρωί ο Α.Β. μπήκε στο περίπτερο του Γ.Δ. και..." oninput="saveMem(this.id)"></textarea>
                     <button class="btn-ai" id="btn_generate_charge" style="flex: 1;" onclick="generateChargeAI()">
@@ -282,7 +274,7 @@
                 </div>
             </div>
 
-            <div style="border: 1px solid #ccc; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+            <div style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <span style="font-size: 13px; color: #333; font-weight: bold;">Χειροκίνητη Σύνθεση Βασικού Κατηγορητηρίου:</span>
                 <div style="display: flex; gap: 10px; margin-top: 10px; align-items: flex-end;">
                     <div class="form-group" style="flex: 2;">
@@ -405,7 +397,7 @@
 
         <div id="tab_drugs" class="tab-content" style="background-color: #f4f8fb;">
             <div class="info-text" style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; color: #0c5460;">
-                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Οι ώρες συγχρονίζονται με το tab της Σύλληψης αν έχετε τσεκάρει το αντίστοιχο κουτάκι.
+                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας και εξάγετε αυτόματα τα σχετικά έγγραφα.
             </div>
             
             <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
@@ -451,7 +443,7 @@
                 <strong>📁 ΠΡΟΚΑΤΑΡΚΤΙΚΗ ΕΞΕΤΑΣΗ (Άρθρο 244 Κ.Π.Δ.):</strong> Εξαγωγή εγγράφων για ενημέρωση δικαιωμάτων υπόπτου, χορήγηση προθεσμίας και ανωμοτί κατάθεση.
             </div>
             
-            <div style="border: 1px solid #ffcc80; background: #fffcf8; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+            <div style="border: 1px solid #ffcc80; background: #fffcf8; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 10px;">
                     <div class="form-group" style="grid-column: span 2;">
                         <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας: *</label>
@@ -501,7 +493,7 @@
                     <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1; margin-top: 0;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
                     <button class="btn-word" style="background-color: #28a745; margin-top: 0;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί Χωρίς Προθεσμία</button>
                     
-                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #fafafa;">
+                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fafafa;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <div class="form-group" style="flex: 1;">
                                 <label>Έως (Ημερομηνία):</label>
