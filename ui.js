@@ -93,10 +93,12 @@ window.onload = function() {
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
+    
+    // Φόρτωση των custom ωρών από τη μνήμη αν υπήρχαν
     loadMem("seiz_start"); loadMem("seiz_end"); loadMem("weigh_start"); loadMem("weigh_end"); loadMem("notif_start"); loadMem("notif_end");
+    loadMem("arr_start"); loadMem("arr_end"); loadMem("rig_start"); loadMem("rig_end"); loadMem("apo_start"); loadMem("apo_end");
     loadMem("prok_rights_start"); loadMem("prok_rights_end"); loadMem("prok_main_start"); loadMem("prok_main_end"); loadMem("prok_after_start"); loadMem("prok_after_end"); loadMem("prok_service_start"); loadMem("prok_service_end");
     
-    // Εισαγγελία Default όπως το ζήτησες!
     if(!document.getElementById("prok_abm").value) {
         document.getElementById("prok_abm").value = "την υπ' αριθμ. ....... παραγγελία της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
     }
@@ -145,35 +147,58 @@ function refreshTimes() {
     const docStart = now;
     const docEnd = addMins(docStart, 15);
 
-    // Σειρά Ναρκωτικά / Σύλληψη (1.Κατάσχεση -> 2.Σύλληψη -> 3.Ζύγιση -> 4.Γνωστοποίηση -> 5.Δικαιώματα -> 6.Απολογία)
-    const seizStart = addMins(docEnd, 1);
-    const seizEnd = addMins(seizStart, 8);
+    // ΕΛΕΓΧΟΣ: Εμπλέκονται Ναρκωτικά;
+    let isDrugCase = document.getElementById("is_drug_case") ? document.getElementById("is_drug_case").checked : false;
     
-    const arrStart = addMins(seizEnd, 1);
-    const arrEnd = addMins(arrStart, 10);
-    
-    const weighStart = addMins(arrEnd, 1);
-    const weighEnd = addMins(weighStart, 6);
-    
-    const notifStart = addMins(weighEnd, 1);
-    const notifEnd = addMins(notifStart, 6);
-    
-    const rigStart = addMins(notifEnd, 1);
-    const rigEnd = addMins(rigStart, 10);
-    
-    const apoStart = addMins(rigEnd, 1);
-    const apoEnd = addMins(apoStart, 15);
+    let arrStart, arrEnd, rigStart, rigEnd, apoStart, apoEnd;
+    let seizStart, seizEnd, weighStart, weighEnd, notifStart, notifEnd;
 
-    // Σειρά Προκαταρκτική (Δικαιώματα -> Ανωμοτί -> Μετά την Προθεσμία -> Υπόμνημα)
-    const prokRightsStart = addMins(apoEnd, 5);
+    if (isDrugCase) {
+        // Σειρά Ναρκωτικών: Κατάσχεση -> Σύλληψη -> Ζύγιση -> Γνωστοποίηση -> Δικαιώματα -> Απολογία
+        seizStart = addMins(docEnd, 1);
+        seizEnd = addMins(seizStart, 8);
+        
+        arrStart = addMins(seizEnd, 1);
+        arrEnd = addMins(arrStart, 10);
+        
+        weighStart = addMins(arrEnd, 1);
+        weighEnd = addMins(weighStart, 6);
+        
+        notifStart = addMins(weighEnd, 1);
+        notifEnd = addMins(notifStart, 6);
+        
+        rigStart = addMins(notifEnd, 1);
+        rigEnd = addMins(rigStart, 10);
+        
+        apoStart = addMins(rigEnd, 1);
+        apoEnd = addMins(apoStart, 15);
+    } else {
+        // Απλή Σύλληψη (Χωρίς Ναρκωτικά): Σύλληψη -> Δικαιώματα -> Απολογία
+        arrStart = addMins(docEnd, 1);
+        arrEnd = addMins(arrStart, 10);
+        
+        rigStart = addMins(arrEnd, 1);
+        rigEnd = addMins(rigStart, 10);
+        
+        apoStart = addMins(rigEnd, 1);
+        apoEnd = addMins(apoStart, 15);
+
+        // Οι ώρες στα tabs ναρκωτικών παίρνουν αυτόνομες τιμές για την περίπτωση που χρησιμοποιηθούν μόνες τους
+        seizStart = addMins(docEnd, 1); seizEnd = addMins(seizStart, 8);
+        weighStart = addMins(seizEnd, 1); weighEnd = addMins(weighStart, 6);
+        notifStart = addMins(weighEnd, 1); notifEnd = addMins(notifStart, 6);
+    }
+
+    // Προκαταρκτική - 1η Μέρα
+    const prokRightsStart = addMins(docEnd, 5);
     const prokRightsEnd = addMins(prokRightsStart, 10);
-    
     const prokMainStart = addMins(prokRightsEnd, 1);
     const prokMainEnd = addMins(prokMainStart, 15);
     
-    const prokAfterStart = addMins(prokMainEnd, 1);
+    // Προκαταρκτική - 2η Μέρα (Δίνουμε λογικές default ώρες σαν να είναι επόμενη μέρα πρωί)
+    let nextDay = new Date(); nextDay.setHours(10, 0, 0); // 10:00 το πρωί
+    const prokAfterStart = nextDay;
     const prokAfterEnd = addMins(prokAfterStart, 10);
-    
     const prokServiceStart = addMins(prokAfterEnd, 1);
     const prokServiceEnd = addMins(prokServiceStart, 8);
 
@@ -197,6 +222,7 @@ function refreshTimes() {
     setInputIfExists('prok_rights_end', timeStr(prokRightsEnd));
     setInputIfExists('prok_main_start', timeStr(prokMainStart));
     setInputIfExists('prok_main_end', timeStr(prokMainEnd));
+    
     setInputIfExists('prok_after_start', timeStr(prokAfterStart));
     setInputIfExists('prok_after_end', timeStr(prokAfterEnd));
     setInputIfExists('prok_service_start', timeStr(prokServiceStart));
