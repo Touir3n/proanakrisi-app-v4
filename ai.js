@@ -87,36 +87,75 @@ async function refineTextAI(elementId, spinnerId, btnId) {
     if (result) { el.value = result.trim(); saveMem(elementId); }
 }
 
+function escapeHtmlForAI(str) {
+    return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+function normalizeGoldenRuleLines(raw) {
+    let lines = String(raw || "").replace(/```/g, "").split(/\n+/).map(x => x.trim()).filter(Boolean);
+    let labels = [
+        ["ΠΟΥ", "ΠΟΥ (Τόπος)"],
+        ["ΠΟΤΕ", "ΠΟΤΕ (Χρόνος)"],
+        ["ΠΟΙΟΣ", "ΠΟΙΟΣ (Δράστης)"],
+        ["ΤΙ", "ΤΙ (Πράξη)"],
+        ["ΓΙΑΤΙ", "ΓΙΑΤΙ (Κίνητρο)"]
+    ];
+    return labels.map(([needle, fallback]) => {
+        let found = lines.find(line => line.toUpperCase().includes(needle));
+        return found || `${fallback}: ❌`;
+    });
+}
+
 async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
     let text = document.getElementById(sourceId).value.trim();
     let resDiv = document.getElementById(resultId);
     if (!text) { resDiv.innerHTML = "Γράψτε πρώτα την κατάθεση."; resDiv.className = "ai-result error"; resDiv.style.display = "block"; return; }
     let prompt = `Αξιολόγησε το παρακάτω κείμενο με βάση τον Χρυσό Κανόνα της αστυνομίας.
-Ανάλυσε και απάντησε ΑΥΣΤΗΡΑ με την εξής μορφή λίστας:
-- ΠΟΥ (Τόπος): ✅ (ή ❌ αν λείπει)
-- ΠΟΤΕ (Χρόνος): ✅ (ή ❌ αν λείπει)
-- ΠΟΙΟΣ (Δράστης): ✅ (ή ❌ αν λείπει)
-- ΤΙ (Πράξη): ✅ (ή ❌ αν λείπει)
-- ΓΙΑΤΙ (Κίνητρο): ✅ (ή ❌ αν λείπει. Σημείωση: Αν λέει "αναίτια", βάλε ✅).
+Απάντησε ΑΥΣΤΗΡΑ μόνο σε 5 γραμμές, χωρίς εισαγωγή και χωρίς σχόλια:
+ΠΟΥ (Τόπος): ✅ ή ❌
+ΠΟΤΕ (Χρόνος): ✅ ή ❌
+ΠΟΙΟΣ (Δράστης): ✅ ή ❌
+ΤΙ (Πράξη): ✅ ή ❌
+ΓΙΑΤΙ (Κίνητρο): ✅ ή ❌
+Αν αναφέρεται ότι η πράξη έγινε αναίτια, τότε στο ΓΙΑΤΙ βάλε ✅.
 Κείμενο: "${sanitizeForAI(text)}"`;
     resDiv.style.display = "none"; resDiv.className = "ai-result";
     let result = await callGeminiAPI(prompt, btnId, spinnerId);
-    if (result) { resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + result.replace(/\n/g, "<br>"); resDiv.style.display = "block"; }
+    if (result) {
+        let lines = normalizeGoldenRuleLines(result);
+        resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + lines.map(escapeHtmlForAI).join("<br>");
+        resDiv.style.display = "block";
+    }
 }
 
 async function generateChargeAI() {
     let text = document.getElementById("ai_rough_notes").value.trim();
     if (!text) { alert("Γράψτε περιγραφή."); return; }
     let prompt = `Είσαι αστυνομικός ανακριτής. Διάβασε το συμβάν: "${sanitizeForAI(text)}"
-Σύνταξε το κατηγορητήριο ΑΥΣΤΗΡΑ με την εξής δομή (χωρίς να μαντεύεις έξτρα γεγονότα):
-[ΒΑΣΙΚΟ] παράβαση του [Άρθρο/Νόμος], πράξη που έλαβε χώρα την [Ημερομηνία] και ώρα [Ώρα] στο/στην [Τόπος].
-[ΠΕΡΙΣΤΑΤΙΚΑ] Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης [Γράψε σε 1-2 γραμμές την πράξη, χωρίς πραγματικά ονόματα].`;
+Σύνταξε κατηγορητήριο ΑΥΣΤΗΡΑ με την εξής δομή και χωρίς να μαντεύεις καθόλου γεγονότα:
+[ΒΑΣΙΚΟ]
+παράβαση του [Άρθρο/Νόμος], πράξη που έλαβε χώρα την [Ημερομηνία] και ώρα [Ώρα] στο/στην [Τόπος]
+[ΠΕΡΙΣΤΑΤΙΚΑ]
+Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης [σύντομη νομική διατύπωση μόνο των πραγματικών περιστατικών που αναφέρονται ήδη στο κείμενο]
+Κανόνες:
+- Μην προσθέσεις νέους τόπους, ώρες, αριθμούς, πρόσωπα ή λεπτομέρειες.
+- Αν λείπει στοιχείο, άφησέ το γενικό ή σε αγκύλες, χωρίς εφεύρεση.
+- Επέστρεψε μόνο τις δύο ενότητες.`;
     let result = await callGeminiAPI(prompt, "btn_generate_charge", "spinner_charge");
     if (result) {
         try {
-            let parts = result.split("[ΠΕΡΙΣΤΑΤΙΚΑ]");
-            document.getElementById("apologia_charge_short").value = parts[0].replace("[ΒΑΣΙΚΟ]", "").trim();
-            document.getElementById("apologia_charge_details").value = parts[1].trim();
+            let clean = result.replace(/```/g, "").trim();
+            let basicMatch = clean.match(/\[ΒΑΣΙΚΟ\]([\s\S]*?)\[ΠΕΡΙΣΤΑΤΙΚΑ\]/i);
+            let detailsMatch = clean.match(/\[ΠΕΡΙΣΤΑΤΙΚΑ\]([\s\S]*)/i);
+            let basic = basicMatch ? basicMatch[1].trim() : "";
+            let details = detailsMatch ? detailsMatch[1].trim() : "";
+            if (!basic) basic = `παράβαση του ${document.getElementById("ai_law").value.trim() || "[Άρθρο/Νόμος]"}, πράξη που έλαβε χώρα την ${document.getElementById("ai_date").value.trim() || "[Ημερομηνία]"} και ώρα ${document.getElementById("ai_time").value.trim() || "[Ώρα]"} στο/στην ${document.getElementById("ai_loc").value.trim() || "[Τόπος]"}`;
+            if (!details) details = "Ειδικότερα, ανωτέρω τόπο και χρόνο, ο δράστης ...";
+            document.getElementById("apologia_charge_short").value = basic;
+            document.getElementById("apologia_charge_details").value = details;
             saveMem("apologia_charge_short"); saveMem("apologia_charge_details");
         } catch (e) { alert("Σφάλμα ανάγνωσης."); }
     }
@@ -125,13 +164,17 @@ async function generateChargeAI() {
 async function explainLawAI() {
     let el = document.getElementById("prok_charge");
     let lawText = el.value.trim();
-    if (!lawText) { alert("Γράψτε πρώτα τη διάταξη (π.χ. αρ. 23 Α.Ν. 1539/38)."); return; }
+    if (!lawText) { alert("Γράψτε πρώτα τη διάταξη (π.χ. Ν. 5092/2024 ή αρ. 23 Α.Ν. 1539/38)."); return; }
     window.originalTexts["prok_charge"] = lawText;
-    let prompt = `Βρες ποιο είναι το αδίκημα που αντιστοιχεί στη διάταξη: "${sanitizeForAI(lawText)}". 
-Επίστρεψε ΜΟΝΟ ένα κείμενο της μορφής: "παράβαση του [Άρθρο/Νόμος] «[Τίτλος Αδικήματος]»".
-Αν ο νόμος 1539 αφορά κατάληψη δημόσιου κτήματος/αιγιαλού, γράψτο έτσι. Μην προσθέσεις τίποτα άλλο.`;
+    let prompt = `Βρες ποιο είναι το αδίκημα ή ποιος είναι ο επίσημος τίτλος που αντιστοιχεί στη διάταξη ή στον νόμο: "${sanitizeForAI(lawText)}".
+Επίστρεψε ΜΟΝΟ ένα κείμενο της μορφής:
+παράβαση του [Άρθρο/Νόμος] «[Τίτλος αδικήματος ή επίσημος τίτλος νόμου]»
+Κανόνες:
+- Αν δοθεί μόνο νόμος, όπως Ν. 5092/2024, δώσε τον επίσημο τίτλο του νόμου.
+- Μην προσθέσεις δεύτερη πρόταση.
+- Μην γράψεις αιτιολογία ή ανάλυση.`;
     let result = await callGeminiAPI(prompt, "btn_ref_charge", "spin_ref_charge");
-    if (result) { el.value = result.trim(); saveMem("prok_charge"); }
+    if (result) { el.value = result.replace(/```/g, "").trim(); saveMem("prok_charge"); }
 }
 
 async function tonismosAI() {
