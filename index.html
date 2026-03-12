@@ -11,7 +11,6 @@
     
     <div class="header-box">
         <h1>⚙️ Προανακριτικη Μηχανη</h1>
-        <p>💻 V 5.5 (Official Templates, Grammar Engine & AI Accents)</p>
     </div>
 
     <div class="ai-settings">
@@ -117,8 +116,8 @@
             <div class="form-group"><label>Ημερομηνία</label><input type="text" id="doc_date"></div>
             <div class="form-group"><label>Μήνας</label><input type="text" id="doc_month"></div>
             <div class="form-group"><label>Έτος</label><input type="text" id="doc_year"></div>
-            <div class="form-group"><label>Ώρα Έναρξης</label><input type="text" id="doc_start" class="accent-warning"></div>
-            <div class="form-group"><label>Ώρα Λήξης</label><input type="text" id="doc_end" class="accent-warning"></div>
+            <div class="form-group"><label>Ώρα Έναρξης (Βασική)</label><input type="text" id="doc_start" class="accent-warning"></div>
+            <div class="form-group"><label>Ώρα Λήξης (Βασική)</label><input type="text" id="doc_end" class="accent-warning"></div>
         </div>
 
         <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0; margin-bottom: 0;">
@@ -344,26 +343,20 @@
                 <textarea id="apologia_charge_details" style="height: 70px; border: 2px solid #c3e6cb;" placeholder="Ειδικότερα,..." oninput="saveMem(this.id)"></textarea>
             </div>
 
-            <div class="info-text" style="background: #e6f7ff; border-left: 4px solid #0056b3;">
-                ⏱️ <strong>Αλληλουχία Χρόνων:</strong> Οι ώρες έχουν υπολογιστεί αυτόματα, ώστε η μία έκθεση να ξεκινά ακριβώς μόλις τελειώνει η προηγούμενη. Ελέγξτε τις.
-            </div>
-            <div class="time-grid-wrapper">
-                <div class="form-group">
-                    <label>Σύλληψη (Έναρξη - Λήξη)</label>
-                    <div class="time-box"><input type="text" id="arr_start"><input type="text" id="arr_end"></div>
-                </div>
-                <div class="form-group">
-                    <label>Δικαιώματα (Έναρξη - Λήξη)</label>
-                    <div class="time-box"><input type="text" id="rig_start"><input type="text" id="rig_end"></div>
-                </div>
-                <div class="form-group">
-                    <label>Απολογία (Έναρξη - Λήξη)</label>
-                    <div class="time-box"><input type="text" id="apo_start"><input type="text" id="apo_end"></div>
-                </div>
-            </div>
 
             <div class="step-box" style="border-color: #f5c6cb; background: #fcf1f1;">
                 <div class="step-title" style="color: #dc3545;">ΒΗΜΑ 1ο: ΣΥΛΛΗΨΗ</div>
+                
+                <div style="background: #e9ecef; padding: 10px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px; display: inline-block;">
+                    <input type="checkbox" id="is_drug_case" onchange="refreshTimes()" style="width: auto; vertical-align: middle;">
+                    <label for="is_drug_case" style="display: inline; cursor: pointer; color: #0056b3; margin-left: 5px;">💊 Πρόκειται για υπόθεση Ναρκωτικών (Αυτόματη σύνδεση ωρών με το tab "Ναρκωτικά")</label>
+                </div>
+
+                <div class="time-box" style="width: 300px; margin-bottom: 15px;">
+                    <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Σύλληψης:</label>
+                    <input type="text" id="arr_start"><input type="text" id="arr_end">
+                </div>
+
                 <div class="arrest-grid">
                     <div class="form-group"><label>Ημερ. Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_date" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Ώρα Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_time" oninput="saveMem(this.id)"></div>
@@ -376,12 +369,24 @@
 
             <div class="step-box" style="border-color: #cbb3f5; background: #f7f1fc;">
                 <div class="step-title" style="color: #6f42c1;">ΒΗΜΑ 2ο: ΔΙΚΑΙΩΜΑΤΑ</div>
+                
+                <div class="time-box" style="width: 300px; margin-bottom: 15px;">
+                    <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Δικαιωμάτων:</label>
+                    <input type="text" id="rig_start"><input type="text" id="rig_end">
+                </div>
+
                 <p style="font-size: 13px; color: #555; margin-top: 0; margin-bottom: 10px;">Δεν απαιτούνται επιπλέον στοιχεία. Τα δικαιώματα παράγονται αυτόματα με βάση το Βασικό Κατηγορητήριο.</p>
                 <button class="btn-word-rights" onclick="exportRights()">📜 2. Λήψη Έκθεσης Δικαιωμάτων (.doc)</button>
             </div>
 
             <div class="step-box" style="border-color: #c3e6cb; background: #f1fcf3;">
                 <div class="step-title" style="color: #28a745;">ΒΗΜΑ 3ο: ΑΠΟΛΟΓΙΑ</div>
+                
+                <div class="time-box" style="width: 300px; margin-bottom: 15px;">
+                    <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Απολογίας:</label>
+                    <input type="text" id="apo_start"><input type="text" id="apo_end">
+                </div>
+
                 <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</label><input type="text" id="apologia_rights" value="Όχι." oninput="saveMem(this.id)"></div>
                 <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Κατηγορήθηκες άλλη φορά και για ποια αιτία;</label><input type="text" id="apologia_past" value="Όχι, δεν έχω κατηγορηθεί ξανά." oninput="saveMem(this.id)"></div>
                 
@@ -399,7 +404,7 @@
 
         <div id="tab_drugs" class="tab-content" style="background-color: #f4f8fb;">
             <div class="info-text" style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; color: #0c5460;">
-                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας και εξάγετε αυτόματα τα σχετικά έγγραφα.
+                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Οι ώρες συγχρονίζονται με το tab της Σύλληψης αν έχετε τσεκάρει το αντίστοιχο κουτάκι.
             </div>
             
             <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
@@ -419,9 +424,29 @@
             </div>
 
             <div style="display: flex; gap: 15px;">
-                <button class="btn-word-arrest" style="flex: 1;" onclick="exportSeizure()">📦 1. Έκθεση Κατάσχεσης</button>
-                <button class="btn-word" style="flex: 1; background-color: #17a2b8;" onclick="exportWeighing()">⚖️ 2. Πρακτικό Ζύγισης/Σφράγισης</button>
-                <button class="btn-word" style="flex: 1; background-color: #6c757d;" onclick="exportNotification()">📢 3. Έκθεση Γνωστοποίησης</button>
+                <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 4px; background: white;">
+                    <div class="time-box" style="margin-bottom: 10px;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Κατάσχεσης:</label>
+                        <input type="text" id="seiz_start" oninput="saveMem(this.id)"><input type="text" id="seiz_end" oninput="saveMem(this.id)">
+                    </div>
+                    <button class="btn-word-arrest" style="width: 100%; margin-top: 0;" onclick="exportSeizure()">📦 1. Έκθεση Κατάσχεσης</button>
+                </div>
+                
+                <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 4px; background: white;">
+                    <div class="time-box" style="margin-bottom: 10px;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ζύγισης:</label>
+                        <input type="text" id="weigh_start" oninput="saveMem(this.id)"><input type="text" id="weigh_end" oninput="saveMem(this.id)">
+                    </div>
+                    <button class="btn-word" style="background-color: #17a2b8; width: 100%; margin-top: 0;" onclick="exportWeighing()">⚖️ 2. Πρακτικό Ζύγισης/Σφράγισης</button>
+                </div>
+
+                <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 4px; background: white;">
+                    <div class="time-box" style="margin-bottom: 10px;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Γνωστοπ.:</label>
+                        <input type="text" id="notif_start" oninput="saveMem(this.id)"><input type="text" id="notif_end" oninput="saveMem(this.id)">
+                    </div>
+                    <button class="btn-word" style="background-color: #6c757d; width: 100%; margin-top: 0;" onclick="exportNotification()">📢 3. Έκθεση Γνωστοποίησης</button>
+                </div>
             </div>
         </div>
 
@@ -452,18 +477,6 @@
                         <label>ΕΡΩΤΗΣΗ: Ποινικό Παρελθόν;</label>
                         <input type="text" id="prok_past" value="Όχι." oninput="saveMem(this.id)">
                     </div>
-                    <div class="form-group">
-                        <label>Χορήγηση Προθεσμίας έως (Ημερομηνία):</label>
-                        <input type="text" id="prok_dead_date" placeholder="π.χ. 12-05-2026" oninput="saveMem(this.id)">
-                    </div>
-                    <div class="form-group">
-                        <label>Χορήγηση Προθεσμίας έως (Ώρα):</label>
-                        <input type="text" id="prok_dead_time" placeholder="π.χ. 10:00" oninput="saveMem(this.id)">
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label>Αριθμός Σελίδων Υπομνήματος (σε περίπτωση εγχείρισης):</label>
-                        <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)">
-                    </div>
                 </div>
                 
                 <div class="form-group" style="margin-top: 15px;">
@@ -476,33 +489,68 @@
                 </div>
             </div>
 
-            <div class="time-grid-wrapper" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
-                <div class="form-group">
-                    <label>Δικαιώματα (Έναρξη - Λήξη)</label>
-                    <div class="time-box"><input type="text" id="prok_rights_start" oninput="saveMem(this.id)"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)"></div>
+            <div class="step-box" style="border-color: #ffcc80; background: #fff;">
+                <div class="step-title" style="color: #e67300;">ΗΜΕΡΑ 1η (Γνωστοποίηση & Ανωμοτί / Προθεσμία)</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Δικαιωμάτων:</label>
+                        <input type="text" id="prok_rights_start" oninput="saveMem(this.id)"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)">
+                    </div>
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_main_start" oninput="saveMem(this.id)"><input type="text" id="prok_main_end" oninput="saveMem(this.id)">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Ανωμοτί / Προθεσμία (Έναρξη - Λήξη)</label>
-                    <div class="time-box"><input type="text" id="prok_main_start" oninput="saveMem(this.id)"><input type="text" id="prok_main_end" oninput="saveMem(this.id)"></div>
-                </div>
-                <div class="form-group">
-                    <label>Μετά το Πέρας Προθεσμίας</label>
-                    <div class="time-box"><input type="text" id="prok_after_start" oninput="saveMem(this.id)"><input type="text" id="prok_after_end" oninput="saveMem(this.id)"></div>
-                </div>
-                <div class="form-group">
-                    <label>Έκθεση Εγχείρισης</label>
-                    <div class="time-box"><input type="text" id="prok_service_start" oninput="saveMem(this.id)"><input type="text" id="prok_service_end" oninput="saveMem(this.id)"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1; margin-top: 0;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
+                    <button class="btn-word" style="background-color: #28a745; margin-top: 0;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί Χωρίς Προθεσμία</button>
+                    
+                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: #fafafa;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Έως (Ημερομηνία):</label>
+                                <input type="text" id="prok_dead_date" placeholder="12-05-2026" oninput="saveMem(this.id)">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Έως (Ώρα):</label>
+                                <input type="text" id="prok_dead_time" placeholder="10:00" oninput="saveMem(this.id)">
+                            </div>
+                        </div>
+                        <button class="btn-word" style="background-color: #ffc107; color: #333; margin-top: 0; width: 100%;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
-                <button class="btn-word" style="background-color: #28a745;" onclick="exportProkNoDeadline()">⚡ 2. Ενιαία Ανωμοτί (Δικαιώματα + Εξηγήσεις)</button>
-                <button class="btn-word" style="background-color: #ffc107; color: #333;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
-                <button class="btn-word" style="background-color: #17a2b8;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
-                <button class="btn-word" style="background-color: #6c757d; grid-column: span 2;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
+            <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 20px;">
+                <div class="step-title" style="color: #117a8b;">ΜΕΤΑ ΤΗΝ ΠΑΡΕΛΕΥΣΗ ΠΡΟΘΕΣΜΙΑΣ</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_after_start" oninput="saveMem(this.id)"><input type="text" id="prok_after_end" oninput="saveMem(this.id)">
+                    </div>
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Εγχείρισης:</label>
+                        <input type="text" id="prok_service_start" oninput="saveMem(this.id)"><input type="text" id="prok_service_end" oninput="saveMem(this.id)">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-word" style="background-color: #17a2b8; margin-top: 0;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label>Αριθμός Σελίδων Υπομνήματος:</label>
+                            <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)">
+                        </div>
+                        <button class="btn-word" style="background-color: #6c757d; margin-top: 0;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
+                    </div>
+                </div>
             </div>
+
         </div>
+
+    </div>
+</div>
 
 <script src="ui.js"></script>
 <script src="ai.js"></script>
