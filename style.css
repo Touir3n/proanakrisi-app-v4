@@ -1,27 +1,59 @@
 body { 
     font-family: Arial, sans-serif; 
-    margin: 15px; 
-    /* Απαλό μπλε (χρώμα αστυνομίας/δικαιοσύνης) */
-    background-color: #e3f2fd; 
+    margin: 0; 
+    padding: 20px 15px;
+    background-color: #b6c5d8; /* Το καθαρό γκρι-μπλε της εικόνας */
 }
 
 .container { 
-    display: flex; flex-direction: column; gap: 12px; max-width: 1100px; margin: auto; 
-    background: #ffffff; /* Καθαρό λευκό πλαίσιο */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+    display: flex; flex-direction: column; gap: 15px; max-width: 1100px; margin: auto; 
+    background: transparent; /* Αφαιρέσαμε το λευκό φόντο */
+    padding: 0;
+    box-shadow: none; /* Αφαιρέσαμε τη σκιά του κεντρικού κουτιού */
 }
 
-.header-box { text-align: center; background: linear-gradient(135deg, #003366 0%, #00509e 100%); color: white; padding: 20px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); margin-bottom: 5px; }
-.header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
-.header-box p { margin: 8px 0 0 0; font-size: 16px; opacity: 0.95; color: #ffeb3b; font-weight: bold; letter-spacing: 0.5px; }
+/* Νέο Στυλ Κεφαλίδας */
+.header-box { 
+    text-align: center; 
+    background: #1a365d; /* Σκούρο μπλε */
+    color: white; 
+    padding: 20px; 
+    border-radius: 8px; 
+    border-bottom: 5px solid #fbc02d; /* Χρυσή/Κίτρινη κάτω γραμμή */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+}
+.header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
+.header-box p { margin: 8px 0 0 0; font-size: 15px; color: #fbc02d; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; }
 
-.ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
-.global-settings { background: #f4faeb; border: 1px solid #81c784; border-left: 5px solid #4caf50; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
+/* Νέο Global Banner Προστασίας Δεδομένων */
+.privacy-banner {
+    background-color: #eef5fa;
+    border: 1px solid #cce0f0;
+    border-left: 4px solid #fbc02d;
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: #0056b3;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-.section { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 5px;}
-.section-title { background: #003366; color: white; padding: 8px 15px; border-radius: 4px; margin: -20px -20px 15px -20px; font-size: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+.ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 8px; margin-bottom: 0px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.global-settings { background: #f4faeb; border: 1px solid #81c784; border-left: 5px solid #4caf50; padding: 12px; border-radius: 8px; margin-bottom: 0px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+.section { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.section-title { 
+    background: #1a365d; /* Σκούρο μπλε όπως το Header */
+    color: white; 
+    padding: 10px 15px; 
+    border-radius: 8px 8px 0 0; 
+    margin: -15px -15px 15px -15px; 
+    font-size: 15px; 
+    font-weight: bold; 
+    display: flex; justify-content: space-between; align-items: center;
+}
 
 .grid-form { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 15px; row-gap: 10px; margin-top: 10px; }
 .form-group { display: flex; flex-direction: column; }
@@ -63,12 +95,10 @@ button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: 
 .flex-row { display: flex; gap: 10px; margin-top: 10px; }
 .info-text { font-size: 12px; color: #555; margin-bottom: 10px; line-height: 1.4; background: #eef; padding: 10px; border-radius: 4px;}
 
-.gdpr-warning { background-color: #f8f9fa; border: 1px solid #ced4da; border-left: 4px solid #6c757d; padding: 12px; margin-top: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 12px; color: #555; display: flex; align-items: center; gap: 10px;}
-
-.tabs { display: flex; border-bottom: 3px solid #003366; margin-top: 15px; gap: 5px; flex-wrap: wrap; }
+.tabs { display: flex; border-bottom: 3px solid #1a365d; margin-top: 15px; gap: 5px; flex-wrap: wrap; }
 .tab-btn { background: #d9e2ec; color: #333; border: 1px solid #b3cce6; border-bottom: none; padding: 10px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 -2px 4px rgba(0,0,0,0.05);}
 .tab-btn:hover { background: #cce0ff; }
-.tab-btn.active { background: #003366; color: white; border-color: #003366; box-shadow: 0 -3px 6px rgba(0,51,102,0.3); }
+.tab-btn.active { background: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 -3px 6px rgba(0,51,102,0.3); }
 
 .tab-btn-pink { background: #fce4ec; color: #c2185b; border-color: #f8bbd0; }
 .tab-btn-pink.active { background: #d81b60; color: white; border-color: #d81b60; }
@@ -79,7 +109,7 @@ button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: 
 .tab-btn-orange { background: #ffe5b4; color: #b35900; border-color: #ffcc80; }
 .tab-btn-orange.active { background: #e67300; color: white; border-color: #e67300; }
 
-.tab-content { display: none; background: #ffffff; border: 1px solid #ddd; padding: 15px; border-radius: 0 0 6px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+.tab-content { display: none; background: #ffffff; border: 1px solid #ddd; padding: 15px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
 .tab-content.active { display: block; }
 .tab-content textarea { width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; box-sizing: border-box; font-family: Arial; font-size: 13px; resize: vertical; transition: border 0.3s;}
 
@@ -88,10 +118,10 @@ button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: 
 .dv-item textarea { height: 40px; }
 .dv-item.large textarea { height: 70px; }
 
-.step-box { border: 2px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 15px; background: #fafafa; }
+.step-box { border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 15px; background: #fafafa; }
 .step-title { font-size: 14px; font-weight: bold; margin-top: -22px; margin-bottom: 10px; display: inline-block; background: white; padding: 0 8px; color: #333; border-radius: 4px; border: 1px solid #ddd;}
 
-.ai-box { background: #f4ecf8; border: 1px solid #cbb3f5; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+.ai-box { background: #f4ecf8; border: 1px solid #cbb3f5; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
 .ai-result { background: #e8f5e9; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 13px; color: #155724; display: none; }
 .ai-result.error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
 
@@ -100,7 +130,7 @@ button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: 
 .time-box { display: flex; gap: 5px; width: 100%; align-items: center; }
 .time-box input { flex: 1; min-width: 0; box-sizing: border-box; text-align: center; font-weight: bold; color: #003366; }
 
-.witness-settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 4px; border: 1px solid #eee;}
+.witness-settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee;}
 
 .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
