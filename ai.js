@@ -114,13 +114,13 @@ async function tonismosAI() {
     let vals = fields.map(id => document.getElementById(id).value.trim());
     if(vals.join('') === '') { alert("Η φόρμα είναι άδεια. Κάντε πρώτα άντληση POL."); return; }
 
-    let prompt = `Act as a data parser. Correct the Greek accents and capitalization for the following fields separated by "|".
-Rules:
-1. 1st field (Surname): ALL CAPS, NO ACCENTS.
-2. All other fields: Title Case (First letter capitalized, rest lowercase), WITH CORRECT ACCENT.
-3. 3rd and 4th fields (Father/Mother name): Convert to Greek Genitive case (e.g., from ΝΙΚΟΛΑΟΣ to Νικολάου, from ΜΑΡΙΑ to Μαρίας).
-Data: ${vals.join('|')}
-You MUST output ONLY the corrected values separated by "|". Do NOT add any markdown, quotes, intro, or formatting. Output exactly ${fields.length} items.`;
+    let prompt = `Διόρθωσε τα παρακάτω 9 πεδία (χωρισμένα με |). 
+ΚΑΝΟΝΕΣ: 
+Πεδίο 1 (Επώνυμο): ΜΟΝΟ ΚΕΦΑΛΑΙΑ, ΧΩΡΙΣ ΤΟΝΟΥΣ. 
+Πεδία 2 έως 9: Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά. ΒΑΛΕ ΤΟΝ ΣΩΣΤΟ ΤΟΝΟ (π.χ. από 'ΔΗΜΗΤΡΙΟΣ' σε 'Δημήτριος'). 
+Πεδία 3 και 4 (Πατρώνυμο/Μητρώνυμο): Βάλε τα σε Γενική Πτώση (π.χ. 'Δημητρίου').
+Επίστρεψε ΜΟΝΟ τα 9 πεδία ενωμένα με | χωρίς καμία άλλη λέξη.
+Δεδομένα: ${vals.join('|')}`;
 
     let result = await callGeminiAPI(prompt, 'btn_tonismos', 'spin_tonismos');
     if(result) {
