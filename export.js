@@ -1,7 +1,7 @@
 // ==========================================
 // ΛΟΓΙΚΗ ΕΞΑΓΩΓΗΣ ΣΕ WORD (ΟΛΑ ΤΑ ΕΓΓΡΑΦΑ)
 // ==========================================
-const pStyle = "text-align: justify; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0cm 0cm 4pt 0cm; padding: 0cm; background: white; color: black;";
+const pStyle = "text-align: justify; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0cm 0cm 0cm 0cm; padding: 0cm; background: white; color: black;";
 
 function formatTextToParagraphs(text) {
     let lines = text.split(/\n/); let html = "";
