@@ -1,19 +1,21 @@
 body { 
     font-family: Arial, sans-serif; 
     margin: 15px; 
-    background: url('https://images.unsplash.com/photo-1589391886645-d51941baf7fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; 
-    background-size: cover; 
+    /* Απαλό μπλε (χρώμα αστυνομίας/δικαιοσύνης) */
+    background-color: #e3f2fd; 
 }
+
 .container { 
     display: flex; flex-direction: column; gap: 12px; max-width: 1100px; margin: auto; 
-    background: rgba(255, 255, 255, 0.96); /* Ημιδιαφανές λευκό για να διαβάζεται τέλεια το κείμενο */
+    background: #ffffff; /* Καθαρό λευκό πλαίσιο */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.10);
 }
 
 .header-box { text-align: center; background: linear-gradient(135deg, #003366 0%, #00509e 100%); color: white; padding: 20px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); margin-bottom: 5px; }
 .header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
+.header-box p { margin: 8px 0 0 0; font-size: 16px; opacity: 0.95; color: #ffeb3b; font-weight: bold; letter-spacing: 0.5px; }
 
 .ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
 .global-settings { background: #f4faeb; border: 1px solid #81c784; border-left: 5px solid #4caf50; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
