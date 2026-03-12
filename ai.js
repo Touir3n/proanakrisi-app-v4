@@ -1,3 +1,6 @@
+// ==========================================
+// AI LOGIC (GEMINI API)
+// ==========================================
 function sanitizeForAI(text) {
     if(!text) return "";
     let sanitized = text;
@@ -109,6 +112,31 @@ async function generateChargeAI() {
     }
 }
 
+async function explainLawAI() {
+    let el = document.getElementById("prok_charge");
+    let lawText = el.value.trim();
+    
+    if (!lawText) { 
+        alert("Γράψτε πρώτα τη διάταξη/νόμο (π.χ. αρ. 23 Α.Ν. 1539/38) και μετά πατήστε το κουμπί."); 
+        return; 
+    }
+    
+    window.originalTexts["prok_charge"] = lawText;
+    
+    let prompt = `Είσαι βοηθός Αξιωματικού Υπηρεσίας της Ελληνικής Αστυνομίας. Ο χρήστης σου δίνει μια νομική διάταξη. 
+Βρες ποιο είναι το αδίκημα και επίστρεψε ΑΥΣΤΗΡΑ ΚΑΙ ΜΟΝΟ ένα ωραία διατυπωμένο κείμενο για το πεδίο "Αποδιδόμενη Πράξη", της μορφής: "παράβαση του [Άρθρο/Νόμος] «[Τίτλος Αδικήματος]»". 
+Αν ο νόμος αναφέρεται σε "κατάληψη δημόσιου κτήματος", γράψτο έτσι.
+Μην βάλεις καμία άλλη λέξη, σχόλιο ή εισαγωγή στην απάντησή σου.
+Διάταξη που έδωσε ο χρήστης: "${sanitizeForAI(lawText)}"`;
+
+    let result = await callGeminiAPI(prompt, "btn_ref_charge", "spin_ref_charge");
+    
+    if (result) { 
+        el.value = result.trim(); 
+        saveMem("prok_charge"); 
+    }
+}
+
 async function tonismosAI() {
     let fields = ['surname', 'name', 'father', 'mother', 'pob', 'area', 'dimos', 'odos', 'auth'];
     let vals = fields.map(id => document.getElementById(id).value.trim());
@@ -117,7 +145,7 @@ async function tonismosAI() {
     let prompt = `Διόρθωσε τα παρακάτω 9 πεδία (χωρισμένα με |). 
 ΚΑΝΟΝΕΣ: 
 Πεδίο 1 (Επώνυμο): ΜΟΝΟ ΚΕΦΑΛΑΙΑ, ΧΩΡΙΣ ΤΟΝΟΥΣ. 
-Πεδία 2 έως 9: Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά. ΒΑΛΕ ΤΟΝ ΣΩΣΤΟ ΤΟΝΟ (π.χ. από 'ΔΗΜΗΤΡΙΟΣ' σε 'Δημήτριος'). 
+Πεδία 2 έως 9: Πρώτο γράμμα κεφαλαίο, τα υπόλοιπα πεζά. ΒΑΛΕ ΤΟΝ ΣΩΣΤΟ ΤΟΝΟ. 
 Πεδία 3 και 4 (Πατρώνυμο/Μητρώνυμο): Βάλε τα σε Γενική Πτώση (π.χ. 'Δημητρίου').
 Επίστρεψε ΜΟΝΟ τα 9 πεδία ενωμένα με | χωρίς καμία άλλη λέξη.
 Δεδομένα: ${vals.join('|')}`;
