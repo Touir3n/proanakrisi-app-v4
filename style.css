@@ -1,9 +1,19 @@
-body { font-family: Arial, sans-serif; margin: 15px; background-color: #e9ecef; }
-.container { display: flex; flex-direction: column; gap: 12px; max-width: 1100px; margin: auto; }
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 15px; 
+    background: url('https://images.unsplash.com/photo-1589391886645-d51941baf7fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; 
+    background-size: cover; 
+}
+.container { 
+    display: flex; flex-direction: column; gap: 12px; max-width: 1100px; margin: auto; 
+    background: rgba(255, 255, 255, 0.96); /* Ημιδιαφανές λευκό για να διαβάζεται τέλεια το κείμενο */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
 
 .header-box { text-align: center; background: linear-gradient(135deg, #003366 0%, #00509e 100%); color: white; padding: 20px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); margin-bottom: 5px; }
 .header-box h1 { margin: 0; font-size: 26px; letter-spacing: 1px; text-transform: uppercase; }
-.header-box p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; color: #ffeb3b; font-weight: bold;}
 
 .ai-settings { background: #fdfcff; border: 1px solid #ffd54f; border-left: 5px solid #ff9800; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
 .global-settings { background: #f4faeb; border: 1px solid #81c784; border-left: 5px solid #4caf50; padding: 12px; border-radius: 6px; margin-bottom: 5px; }
@@ -85,7 +95,7 @@ button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: 
 
 .arrest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 10px; }
 .time-grid-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; width: 100%; }
-.time-box { display: flex; gap: 5px; width: 100%; }
+.time-box { display: flex; gap: 5px; width: 100%; align-items: center; }
 .time-box input { flex: 1; min-width: 0; box-sizing: border-box; text-align: center; font-weight: bold; color: #003366; }
 
 .witness-settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 4px; border: 1px solid #eee;}
