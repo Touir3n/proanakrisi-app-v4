@@ -94,6 +94,11 @@ window.onload = function() {
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
     
+    // Εισαγγελία Default
+    if(!document.getElementById("prok_abm").value) {
+        document.getElementById("prok_abm").value = "την υπ' αριθμ. ....... παραγγελία της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
+    }
+    
     if (localStorage.getItem("gemini_api_key")) {
         document.getElementById("gemini_api_key").value = localStorage.getItem("gemini_api_key");
         if(localStorage.getItem("gemini_model")) {
@@ -155,6 +160,15 @@ function clearFields() {
     }
 }
 
+function toTitleCaseWords(str) {
+    if (!str) return "";
+    return str.split(" ").map(w => {
+        if (w.toUpperCase() === "Α.Τ.") return "Α.Τ.";
+        if (w.toUpperCase() === "Τ.Α.") return "Τ.Α.";
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    }).join(" ");
+}
+
 function parsePOL() {
     var rawTxt = document.getElementById("pol_data").value;
     if (!rawTxt) { alert("Παρακαλώ επικολλήστε τα στοιχεία."); return; }
@@ -188,6 +202,10 @@ function parsePOL() {
     document.getElementById("dimos").value = toTitleCaseWords(dimos);
     document.getElementById("odos").value = toTitleCaseWords(extract(/Οδός(.*?)\s*Αριθμός/));
     document.getElementById("arithmos").value = arithmosMatch ? arithmosMatch[1].trim() : "";
+    document.getElementById("adt").value = adts && adts.length > 0 ? adts[adts.length - 1] : "";
+    document.getElementById("authDate").value = authDateMatch ? authDateMatch[1].replace(/\//g, "-") : "";
+    document.getElementById("auth").value = toTitleCaseWords(authFull);
+    if (phoneMatch) document.getElementById("phone").value = phoneMatch[1];
     
     document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 }
