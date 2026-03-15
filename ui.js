@@ -338,21 +338,78 @@ function parsePOL() {
     document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
 }
 
-function getProfileText() {
+// Αλγόριθμος κλίσης Ελληνικών Ονομάτων (χωρίς χρήση ΑΙ)
+function declineGreek(word, gender, targetCase, isSurname = false) {
+    if (!word) return "";
+    let w = word.trim();
+    
+    if (gender === 'M') {
+        if (targetCase === 'gen') {
+            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'ΟΥ');
+            if (w.endsWith('ος')) return w.replace(/ος$/, 'ου');
+            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ης')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ας')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ες')) return w.replace(/ς$/, '');
+            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
+        } else if (targetCase === 'acc') {
+            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'Ο');
+            if (w.endsWith('ος')) return w.replace(/ος$/, 'ο');
+            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ης')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ας')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ες')) return w.replace(/ς$/, '');
+            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
+        }
+    } else if (gender === 'F') {
+        if (!isSurname) { // Τα γυναικεία επίθετα συνήθως δεν κλίνονται
+            if (targetCase === 'gen') {
+                if (w.endsWith('Α')) return w + 'Σ';
+                if (w.endsWith('α')) return w + 'ς';
+                if (w.endsWith('Η')) return w + 'Σ';
+                if (w.endsWith('η')) return w + 'ς';
+                if (w.endsWith('Ω')) return w + 'Σ';
+                if (w.endsWith('ω')) return w + 'ς';
+            }
+        }
+    }
+    return w;
+}
+
+function getProfileText(caseType = 'nom') {
     let v = id => document.getElementById(id).value.trim(); 
-    let text = `${v("surname")} ${v("name")} του ${v("father")} και της ${v("mother")}, γεν. ${v("dob")} στην ${v("pob")}, κάτοικος ${v("area")}, Δήμου ${v("dimos")}`;
+    let g = document.getElementById("gender").value; // 'M' ή 'F'
+
+    // Κλίση Επιθέτου και Ονόματος
+    let surname = declineGreek(v("surname"), g, caseType, true);
+    let name = declineGreek(v("name"), g, caseType, false);
+    
+    // Το πατρώνυμο/μητρώνυμο τα αφήνουμε όπως έχουν διότι είναι ήδη σε γενική (είτε χειροκίνητα είτε από AI)
+    let father = v("father");
+    let mother = v("mother");
+
+    // Αλλαγή των σταθερών λέξεων
+    let katoikosStr = caseType === 'nom' ? 'κάτοικος' : (caseType === 'gen' ? 'κατοίκου' : 'κάτοικο');
+    let katoxosStr = caseType === 'nom' ? 'κάτοχος' : (caseType === 'gen' ? 'κατόχου' : 'κάτοχο');
+
+    let text = `${surname} ${name} του ${father} και της ${mother}, γεν. ${v("dob")} στην ${v("pob")}, ${katoikosStr} ${v("area")}, Δήμου ${v("dimos")}`;
     if (v("odos")) text += `, οδός ${v("odos")}`;
     if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
     if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
-    text += `, κάτοχος του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
+    text += `, ${katoxosStr} του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
     if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
-    if (v("phone")) text += `, κάτοχος της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
+    if (v("phone")) text += `, ${katoxosStr} της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
     if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
+    
     return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
 }
 
 function copyProfileText() {
-    let text = getProfileText();
+    let text = getProfileText('nom'); // Στην αντιγραφή θέλουμε πάντα Ονομαστική
     if(!text || text.trim().length < 10) { alert("Δεν υπάρχουν επαρκή στοιχεία για αντιγραφή."); return; }
     navigator.clipboard.writeText(text).then(() => { alert("Τα στοιχεία αντιγράφηκαν επιτυχώς στο πρόχειρο!"); })
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
