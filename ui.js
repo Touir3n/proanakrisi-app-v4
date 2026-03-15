@@ -380,32 +380,59 @@ function declineGreek(word, gender, targetCase, isSurname = false) {
     return w;
 }
 
-function getProfileText(caseType = 'nom') {
-    // Ασφαλής συνάρτηση ανάγνωσης πεδίων: Αν ένα πεδίο δεν υπάρχει, απλά επιστρέφει κενό αντί να κρασάρει
-    let v = id => { 
-        let el = document.getElementById(id); 
-        return el ? el.value.trim() : ""; 
-    };
+// Αλγόριθμος κλίσης Ελληνικών Ονομάτων
+function declineGreek(word, gender, targetCase, isSurname = false) {
+    if (!word) return "";
+    let w = word.trim();
     
-    // Ασφαλής εύρεση φύλου (καλύπτει drop-down αλλά και radio buttons)
-    let g = 'M'; // Προεπιλογή σε άντρα
-    let genderDropdown = document.getElementById("gender");
-    let genderRadio = document.querySelector('input[name="gender"]:checked');
-    if (genderDropdown) {
-        g = genderDropdown.value;
-    } else if (genderRadio) {
-        g = genderRadio.value;
+    if (gender === 'M') {
+        if (targetCase === 'gen') {
+            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'ΟΥ');
+            if (w.endsWith('ος')) return w.replace(/ος$/, 'ου');
+            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ης')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ας')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ες')) return w.replace(/ς$/, '');
+            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
+        } else if (targetCase === 'acc') {
+            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'Ο');
+            if (w.endsWith('ος')) return w.replace(/ος$/, 'ο');
+            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ης')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ας')) return w.replace(/ς$/, '');
+            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
+            if (w.endsWith('ες')) return w.replace(/ς$/, '');
+            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
+        }
+    } else if (gender === 'F') {
+        if (!isSurname) { 
+            if (targetCase === 'gen') {
+                if (w.endsWith('Α')) return w + 'Σ';
+                if (w.endsWith('α')) return w + 'ς';
+                if (w.endsWith('Η')) return w + 'Σ';
+                if (w.endsWith('η')) return w + 'ς';
+                if (w.endsWith('Ω')) return w + 'Σ';
+                if (w.endsWith('ω')) return w + 'ς';
+            }
+        }
     }
+    return w;
+}
 
-    // Κλίση Επιθέτου και Ονόματος
+function getProfileText(caseType = 'nom') {
+    let v = id => { let el = document.getElementById(id); return el ? el.value.trim() : ""; };
+    
+    let genderDropdown = document.getElementById("gender");
+    let g = genderDropdown ? genderDropdown.value : 'M'; 
+
     let surname = declineGreek(v("surname"), g, caseType, true);
     let name = declineGreek(v("name"), g, caseType, false);
-    
-    // Το πατρώνυμο/μητρώνυμο τα αφήνουμε όπως έχουν (είναι ήδη σε γενική)
     let father = v("father");
     let mother = v("mother");
 
-    // Αλλαγή των σταθερών λέξεων
     let katoikosStr = caseType === 'nom' ? 'κάτοικος' : (caseType === 'gen' ? 'κατοίκου' : 'κάτοικο');
     let katoxosStr = caseType === 'nom' ? 'κάτοχος' : (caseType === 'gen' ? 'κατόχου' : 'κάτοχο');
 
@@ -422,7 +449,7 @@ function getProfileText(caseType = 'nom') {
 }
 
 function copyProfileText() {
-    let text = getProfileText('nom'); // Στην αντιγραφή θέλουμε πάντα Ονομαστική
+    let text = getProfileText('nom'); 
     if(!text || text.trim().length < 10) { alert("Δεν υπάρχουν επαρκή στοιχεία για αντιγραφή."); return; }
     navigator.clipboard.writeText(text).then(() => { alert("Τα στοιχεία αντιγράφηκαν επιτυχώς στο πρόχειρο!"); })
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
