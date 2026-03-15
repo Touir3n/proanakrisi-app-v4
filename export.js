@@ -1,17 +1,23 @@
 // ==========================================
 // ΛΟΓΙΚΗ ΕΞΑΓΩΓΗΣ ΣΕ WORD (ΟΛΑ ΤΑ ΕΓΓΡΑΦΑ)
 // ==========================================
-const pStyle = "text-align: justify; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0cm 0cm 0cm 0cm; padding: 0cm; background: white; color: black;";
+
+// Το βασικό στυλ (μηδενικά κενά)
+const pStyle = "text-align: justify; text-justify: inter-word; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0pt; margin-bottom: 0pt; padding: 0pt; background: white; color: black; display: block;";
+
+// Το στυλ ΜΟΝΟ για την τελευταία πρόταση (κενό 6 στιγμών κάτω, πριν τις υπογραφές)
+const pStyleLast = "text-align: justify; text-justify: inter-word; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0pt; margin-bottom: 6pt; padding: 0pt; background: white; color: black; display: block;";
 
 function formatTextToParagraphs(text) {
-    let lines = text.split(/\n/); let html = "";
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i].trim();
-        if (line === "") continue; 
-        let formattedLine = line.replace(/(ΕΡΩΤΗΣΗ:)/gi, "<b>$1</b>").replace(/(ΑΠΟΚΡΙΣΗ:)/gi, "<b>$1</b>");
-        html += `<p style="${pStyle}">${formattedLine}</p>`;
-    }
-    return html;
+    if (!text) return "";
+    return text.split(/\r?\n/)
+        .filter(line => line.trim() !== "")
+        .map(line => {
+            let formattedLine = line.replace(/(ΕΡΩΤΗΣΗ:)/gi, "<b>$1</b>")
+                                   .replace(/(ΑΠΟΚΡΙΣΗ:)/gi, "<b>$1</b>");
+            return `<p style="${pStyle}">${formattedLine}</p>`;
+        })
+        .join("");
 }
 
 function addSelectedCrime() {
@@ -44,36 +50,33 @@ function getTimeRange(startId, endId, fallbackStart = "doc_start", fallbackEnd =
 
 function makeDoc(title, headerTitle, bodyContent, filename) {
     let finalHtml = `${headerTitle}${bodyContent}`;
-    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0cm 0cm 0cm 0cm; padding: 0cm; } table { border-collapse: collapse; }</style></head><body style="background-color: white; color: black;">${finalHtml}</body></html>`;
+    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0pt; padding: 0pt; } table { border-collapse: collapse; }</style></head><body style="background-color: white; color: black;">${finalHtml}</body></html>`;
     let blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
     let url = URL.createObjectURL(blob); let link = document.createElement('a'); link.href = url; link.download = filename; 
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
 }
 
-// Υπογραφές 3 στηλών (0 κενά πάνω, 3 κενά κάτω)
 function sigBlock(role1, role2, role3) {
-    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
+    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 12pt; border: none;" border="0">
     <tr>
         <td style="width: 33%; vertical-align: top;">${role1}</td>
         <td style="width: 33%; vertical-align: top;">${role2}</td>
         <td style="width: 33%; vertical-align: top;">${role3}</td>
     </tr>
-    </table><br><br><br>`;
+    </table><br><br>`;
 }
 
-// Υπογραφές 4 στηλών (0 κενά πάνω, 3 κενά κάτω)
 function sigBlock4(role1, role2, role3, role4) {
-    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 0cm; margin-bottom: 0cm; padding: 0cm; background: white; color: black; border: none;" border="0">
+    return `<table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; margin-top: 12pt; border: none;" border="0">
     <tr>
         <td style="width: 25%; vertical-align: top;">${role1}</td>
         <td style="width: 25%; vertical-align: top;">${role2}</td>
         <td style="width: 25%; vertical-align: top;">${role3}</td>
         <td style="width: 25%; vertical-align: top;">${role4}</td>
     </tr>
-    </table><br><br><br>`;
+    </table><br><br>`;
 }
 
-// Ο Γραμματικός Κινητήρας (Grammar Engine)
 function getD() {
     let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
     let g = v("gender");
@@ -123,12 +126,12 @@ function monthsToNum(m) {
 function exportToWord() {
     if (!validateRequiredFields(['surname', 'name', 'doc_testimony_simple'])) return;
     let d = getD(); let rel = d.v("doc_relation_simple"); let copy = d.v("doc_copy_simple"); let parav = d.v("doc_paravolo_simple");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΝΟΡΚΗΣ ΕΞΕΤΑΣΗΣ ΜΑΡΤΥΡΑ (Κ.Π.Δ.)</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΝΟΡΚΗΣ ΕΞΕΤΑΣΗΣ ΜΑΡΤΥΡΑ (Κ.Π.Δ.)</p>`;
     
     let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("doc_start")} ενώπιον εµού του ${d.anakr} του ${d.dept}, παρισταμένου και του ${d.banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${d.a_o} κατωτέρω μάρτυρας, ${d.a_os}, αφού ερωτήθηκε για την ταυτότητά ${d.a_tou} κλπ., απάντησε ότι ονομάζεται ${d.prof} και ότι ${rel}.</p>
     <p style="${pStyle}">Έπειτα ${d.a_o} ${d.a_exet}, αφού έδωσε τον προβλεπόμενο όρκο από τα άρθρα 219 και 220 παρ. 1 του Κ.Π.Δ. εξετάζεται ως ακολούθως:</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας;</p>
-    ${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + d.v("doc_testimony_simple"))}`;
+    ${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + d.v("doc_testimony_simple"))}`;
     
     if (parav === "ΝΑΙ") body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Γνωρίζετε ότι σύμφωνα με τον Νόμο 5090/24 για την υποβολή έγκλησης απαιτείται η προσκόμιση παράβολου ύψους εκατό -#100# ευρώ.;</p><p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Ναι το γνωρίζω και θα σας το καταθέσω εντός τριών -3- ημερών.</p>`;
     if (copy === "YES") body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε αντίγραφο της παρούσας έγκλησης κατ’ εφαρμογή του άρθρου 58 παρ. 1 Ν.4478/2017;</p><p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Ναι, επιθυμώ.</p>`;
@@ -137,7 +140,7 @@ function exportToWord() {
     body += `<p style="${pStyle}">Κάτι άλλο δεν έχω να προσθέσω και υπογράφω.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${d.v("doc_start")} ώρα και περατώθηκε την ${d.v("doc_end")} ώρα.</p>
     <p style="${pStyle}">Ενημερώθηκε ότι μπορεί να λαμβάνει εγκαίρως γνώση των εγγράφων της δίκης, τα οποία επιδίδονται και με ηλεκτρονικά μέσα σύμφωνα με τις παρ. 1 και 4 του άρθρου 155 Κ.Π.Δ.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Ένορκη", header, body, `ΕΚΘΕΣΗ_ΕΝΟΡΚΗ_ΜΑΡΤΥΡΑ_${d.v("surname")}.doc`);
 }
@@ -146,17 +149,17 @@ function exportToWord() {
 function exportToWordNoOath() {
     if (!validateRequiredFields(['surname', 'name', 'dv_q_main'])) return;
     let d = getD(); let rel = d.v("doc_relation_dv"); let copy = d.v("doc_copy_dv"); let parav = d.v("doc_paravolo_dv");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΜΑΡΤΥΡΑ ΧΩΡΙΣ ΟΡΚΟ</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΜΑΡΤΥΡΑ ΧΩΡΙΣ ΟΡΚΟ</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("doc_start")} ενώπιον εμού του ${d.anakr} του ${d.dept}, παρισταμένου και του ${d.banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${d.a_o} κατωτέρω μάρτυρας, ${d.a_os}, αφού ερωτήθηκε για την ταυτότητά ${d.a_tou} κλπ., απάντησε ότι ονομάζεται ${d.prof} και ότι ${rel}.</p>
     <p style="${pStyle}">Έπειτα ${d.a_o} ${d.a_exet}, ως μέλος οικογένειας σε υπόθεση ενδοοικογενειακής βίας, εξετάζεται χωρίς όρκο δυνάμει του άρθρου 19 παρ. 1 Ν.3500/2006 ως ακολούθως:</p>
-    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας;</p>${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + d.v("dv_q_main"))}`;
+    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας;</p>${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + d.v("dv_q_main"))}`;
     
     dvQuestions.forEach((q, i) => {
         let ans = d.v("dv_q_" + i);
-        if (ans) body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> ${q}</p>${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + ans)}`;
+        if (ans) body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> ${q}</p>${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + ans)}`;
     });
-    if (d.v("dv_q_last")) body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε να προσθέσετε κάτι άλλο;</p>${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + d.v("dv_q_last"))}`;
+    if (d.v("dv_q_last")) body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε να προσθέσετε κάτι άλλο;</p>${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + d.v("dv_q_last"))}`;
     
     if (parav === "YES_3DAYS") body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Γνωρίζεις ότι για την άσκηση της ποινικής δίωξης αναφορικά με τα κατ' έγκληση διωκόμενα αδικήματα που περιγράφεις απαιτείται η προσκόμιση παραβόλου;</p><p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Ναι το γνωρίζω και θα το προσκομίσω εντός 3 ημερών.</p>`;
     else if (parav === "ONLY_EX_OFFICIO") body += `<p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Γνωρίζεις ότι για την άσκηση της ποινικής δίωξης αναφορικά με τα κατ' έγκληση διωκόμενα αδικήματα που περιγράφεις απαιτείται η προσκόμιση παραβόλου;</p><p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Επιθυμώ την ποινική δίωξη του δράστη μόνο για τα αυτεπάγγελτα αδικήματα εις βάρος μου.</p>`;
@@ -166,20 +169,17 @@ function exportToWordNoOath() {
     
     body += `<p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${d.v("doc_start")} ώρα και περατώθηκε την ${d.v("doc_end")} ώρα.</p>
     <p style="${pStyle}">Ενημερώθηκε ότι μπορεί να λαμβάνει εγκαίρως γνώση των εγγράφων της δίκης, τα οποία επιδίδονται και με ηλεκτρονικά μέσα σύμφωνα με τις παρ. 1 και 4 του άρθρου 155 Κ.Π.Δ.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε από όλους του παριστάμενους, υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε από όλους του παριστάμενους, υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Χωρίς Όρκο", header, body, `ΕΚΘΕΣΗ_ΧΩΡΙΣ_ΟΡΚΟ_${d.v("surname")}.doc`);
 }
 
-// 3. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΔΙΚΑΙΩΜΑΤΑ ΥΠΟΠΤΟΥ (ΕΠΙΣΗΜΟ ΠΡΟΤΥΠΟ)
+// 3. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΔΙΚΑΙΩΜΑΤΑ ΥΠΟΠΤΟΥ
 function exportProkRights() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge'])) return;
     let d = getD(); let tm = getTimeRange("prok_rights_start", "prok_rights_end", "doc_start", "doc_end"); let charge = d.v("prok_charge");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΓΝΩΣΤΟΠΟΙΗΣΗΣ ΔΙΚΑΙΩΜΑΤΩΝ ΥΠΟΠΤΟΥ ΚΑΤΑ ΤΗΝ ΔΙΑΡΚΕΙΑ ΠΡΟΚΑΤΑΡΚΤΙΚΗΣ ΕΞΕΤΑΣΗΣ (ΑΡ. 244 ΠΑΡ. 1 Κ.Π.Δ.)</p>`;
     
-    // Εδώ προσθέτουμε ξεχωριστό style για την τελευταία πρόταση ώστε να έχει το κενό "6" (margin-bottom: 6pt) πριν τις υπογραφές
-    let pStyleBeforeSign = "text-align: justify; text-justify: inter-word; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0pt; margin-bottom: 6pt; padding: 0pt; background: white; color: black; display: block;";
-
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start}΄, ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ιδίας Υπηρεσίας προσληφθείς ως Β’ Ανακριτικού Υπαλλήλου, προσκλήθηκε ${d.a_o} ${d.a_kato} που ονομάζεται ${d.prof}, ${d.a_ton} οποί${d.a_o} ενημερώσαμε ότι κατηγορείται κατά παράβαση των διατάξεων: ${charge} και εξηγήσαμε σαφώς σ’ ${d.a_auton}, βάσει του άρθρου 95 του Κ.Π. Δικονομίας όλα τα εκ των άρθρων 244, 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α, 2 και 4, 100, 101, 102, 103 και 104 του Κ.Π.Δ. δικαιώματά ${d.a_tou} και αναλυτικότερα:</p>
     <p style="${pStyle}"><b>Άρθρο 89 του Κ.Π.Δ. – Διορισμός και αριθμός συνηγόρων των διαδίκων:</b></p>
     <p style="${pStyle}">1. Κάθε διάδικος δεν μπορεί να αντιπροσωπεύεται ή να συμπαρίσταται στην ποινική διαδικασία με περισσότερους από δύο συνηγόρους στην προδικασία και τρεις στο ακροατήριο.</p>
@@ -218,51 +218,51 @@ function exportProkRights() {
     <p style="${pStyle}"><b>Άρθρο 244 παρ. 1 του Κ.Π.Δ. – Δικαιώματα του υπόπτου κατά την προκαταρκτική εξέταση:</b></p>
     <p style="${pStyle}">Αν η προκαταρκτική εξέταση διενεργείται ύστερα από μήνυση ή έγκληση κατά ορισμένου προσώπου ή αν κατά τη διάρκειά της αποδίδεται σε ορισμένο πρόσωπο η τέλεση αξιόποινης πράξης, το πρόσωπο αυτό καλείται υποχρεωτικώς πριν από πέντε τουλάχιστον ημέρες αν κατοικεί ή διαμένει σε γνωστή διεύθυνση στο εσωτερικό και πριν από «δεκαπέντε» τουλάχιστον ημέρες αν κατοικεί ή διαμένει σε γνωστή διεύθυνση στο εξωτερικό, για την παροχή εξηγήσεων και εξετάζεται χωρίς όρκο. Ο ύποπτος έχει τα δικαιώματα που αναφέρονται στα άρθρα 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α΄, 2 και 4, 100, 101, 102, 103 και 104, καθώς και το δικαίωμα να διορίσει τεχνικό σύμβουλο σε περίπτωση διεξαγωγής πραγματογνωμοσύνης, εφαρμοζόμενης αναλόγως της διάταξης του άρθρου 183. Το δικαίωμα ενημέρωσης του υπόπτου περιλαμβάνει κατ’ ελάχιστο τη γνωστοποίηση των ποινικών διατάξεων, η παραβίαση των οποίων διερευνάται, καθώς και των θεμάτων επί των οποίων θα παράσχει εξηγήσεις. Τα ως άνω δικαιώματά του μπορεί να ασκήσει είτε αυτοπροσώπως είτε εκπροσωπούμενος από συνήγορο που διορίζεται κατά το άρθρο 89 παρ. 2, εκτός αν θεωρείται αναγκαία η αυτοπρόσωπη εμφάνισή του, κατά την κρίση εκείνου που διενεργεί την προκαταρκτική εξέταση. Οι διατάξεις των άρθρων 156 και 273 παρ. 1γ εφαρμόζονται αναλόγως. Εφόσον ο ύποπτος κλητεύθηκε νόμιμα και δεν εμφανίστηκε, η προκαταρκτική εξέταση περατώνεται και χωρίς την εξέτασή του.</p>
     <p style="${pStyle}">Κατόπιν της ανωτέρω γνωστοποίησης, ο ύποπτος αφού άκουσε όλα όσα του θέσαμε υπόψη του και ενημερώθηκε αναφορικά με τις συνέπειες παραίτησης από την άσκηση των δικαιωμάτων του, δήλωσε ότι επιθυμεί να κάνει χρήση των δικαιωμάτων του.</p>
-    <p style="${pStyleBeforeSign}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.v("gender")==='M'?"Ο λαβών γνώση Ύποπτος":"Η λαβούσα γνώση Ύποπτη", "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Δικαιώματα Ύποπτου", header, body, `1_ΔΙΚΑΙΩΜΑΤΑ_ΥΠΟΠΤΟΥ_${d.v("surname")}.doc`);
 }
 
-// 4. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΩΡΙΣ ΠΡΟΘΕΣΜΙΑ (ΕΠΙΣΗΜΟ ΠΡΟΤΥΠΟ)
+// 4. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΩΡΙΣ ΠΡΟΘΕΣΜΙΑ
 function exportProkNoDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge"); let rightsAns = d.v("prok_rights_ans"); let pastAns = d.v("prok_past"); let plea = d.v("prok_plea");
     let midTime = tm.start; let timeParts = midTime.split(":");
     if(timeParts.length === 2) { let dDate = new Date(); dDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]) + 5); midTime = String(dDate.getHours()).padStart(2, '0') + ':' + String(dDate.getMinutes()).padStart(2, '0'); }
 
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} του ${d.deptFull}, παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city}, εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
-    <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν της ${abm}.</p>
+    <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν ${abm}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε σε ${d.a_auton} την πράξη που αφορά η εξέταση, ήτοι: ${charge}.</p>
     <p style="${pStyle}">Στη συνέχεια, εξηγήσαμε ${d.a_ston} ${d.a_exet_acc}, με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται από τα άρθρα 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α’, 2 και 4, 100, 101, 102, 103 και 104, καθώς και το δικαίωμα να διορίσει τεχνικό σύμβουλο σε περίπτωση διεξαγωγής πραγματογνωμοσύνης, εφαρμοζόμενης αναλόγως της διάταξης του άρθρου 183 και ειδικότερα, το δικαίωμα παράστασης με συνήγορο, το δικαίωμα και τις προϋποθέσεις παροχής δωρεάν νομικών συμβουλών, το δικαίωμα ενημέρωσης σχετικά με την κατηγορία, το δικαίωμα διερμηνείας και μετάφρασης, το δικαίωμα σιωπής και μη αυτοενοχοποίησης, το δικαίωμα πρόσβασης στο υλικό της δικογραφίας, το δικαίωμα άρνησης εν όλω ή εν μέρει της παροχής εξηγήσεων, το δικαίωμα προθεσμίας τουλάχιστον σαράντα οκτώ ωρών για την παροχή τους, η οποία μπορεί να παραταθεί από εκείνον που διενεργεί την προκαταρκτική εξέταση και το δικαίωμα πρότασης μαρτύρων προς εξέταση.</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${rightsAns}</p>
     <p style="${pStyle}">Ύστερα από τα ανωτέρω μας δήλωσε ότι επιθυμεί να εξεταστεί αμέσως.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${midTime} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}
     <p style="${pStyle}">Στη συνέχεια, προβήκαμε στην εξέταση ${d.a_autou}, ως ακολούθως:</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε κατηγορηθεί στο παρελθόν και για ποια αιτία;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${pastAns}</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Σας αποδίδονται ήδη οι πράξεις που σας γνωστοποιήθηκαν ανωτέρω. Ποιες είναι οι εξηγήσεις σας;</p>
-    ${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + plea)}
+    ${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + plea)}
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε κάτι άλλο να προσθέσετε;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Όχι και υπογράφω.</p>
     <p style="${pStyle}">Στ${d.a_ton} ${d.a_upop_acc} γνωστοποιήσαμε ότι, σύμφωνα με το άρθρο 273 § 1 του Κ.Π.Δ., υποχρεούται να δηλώσει κάθε μεταβολή της κατοικίας ή της διαμονής ${d.a_tou}, μαζί με την ακριβή νέα ${d.a_tou} διεύθυνση, εγγράφως, στον Εισαγγελέα του δικαστηρίου στο οποίο εκκρεμεί κατά τον χρόνο δήλωσης η δικογραφία, σύμφωνα με το άρθρο 156 του Κ.Π.Δ.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${midTime} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Ανωμοτί Χωρίς Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΧΩΡΙΣ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
 
-// 5. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΟΡΗΓΗΣΗ ΠΡΟΘΕΣΜΙΑΣ (ΕΠΙΣΗΜΟ ΠΡΟΤΥΠΟ)
+// 5. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΟΡΗΓΗΣΗ ΠΡΟΘΕΣΜΙΑΣ
 function exportProkDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_dead_date', 'prok_dead_time'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕ ΧΟΡΗΓΗΣΗ ΤΟΥΛΑΧΙΣΤΟΝ 48ΩΡΗΣ ΠΡΟΘΕΣΜΙΑΣ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕ ΧΟΡΗΓΗΣΗ ΤΟΥΛΑΧΙΣΤΟΝ 48ΩΡΗΣ ΠΡΟΘΕΣΜΙΑΣ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} του ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} ${d.a_kato}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
-    <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν της ${abm}.</p>
+    <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν ${abm}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε σε ${d.a_auton} την πράξη που αφορά η εξέταση, ήτοι: ${charge}.</p>
     <p style="${pStyle}">Στη συνέχεια, εξηγήσαμε ${d.a_ston} ${d.a_exet_acc}, με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται από τα άρθρα 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α’, 2 και 4, 100, 101, 102, 103 και 104, καθώς και το δικαίωμα να διορίσει τεχνικό σύμβουλο σε περίπτωση διεξαγωγής πραγματογνωμοσύνης, εφαρμοζόμενης αναλόγως της διάταξης του άρθρου 183 και ειδικότερα, το δικαίωμα παράστασης με συνήγορο, το δικαίωμα και τις προϋποθέσεις παροχής δωρεάν νομικών συμβουλών, το δικαίωμα ενημέρωσης σχετικά με την κατηγορία, το δικαίωμα διερμηνείας και μετάφρασης, το δικαίωμα σιωπής και μη αυτοενοχοποίησης, το δικαίωμα πρόσβασης στο υλικό της δικογραφίας, το δικαίωμα ενημέρωσης των προξενικών αρχών και ενός επιπλέον προσώπου της επιλογής του, το δικαίωμα σε επείγουσα ιατρική περίθαλψη, τον ανώτατο αριθμό ωρών ή ημερών κατά τις οποίες ${d.a_o} ${d.a_katig} δύναται να στερηθεί της ελευθερίας ${d.a_tou} προτού προσαχθεί ενώπιον δικαστικής αρχής, το δικαίωμα άρνησης εν όλω ή εν μέρει της παροχής εξηγήσεων, το δικαίωμα προθεσμίας τουλάχιστον σαράντα οκτώ ωρών για την παροχή τους, η οποία μπορεί να παραταθεί από εκείνον που διενεργεί την προκαταρκτική εξέταση, το δικαίωμα πρότασης μαρτύρων προς εξέταση και πληροφορίες σχετικά με τις δυνατότητες προσβολής του νόμιμου χαρακτήρα της σύλληψης ή της κράτησης.</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</p>
@@ -270,16 +270,16 @@ function exportProkDeadline() {
     <p style="${pStyle}">Ύστερα από τα ανωτέρω χορηγήσαμε σε ${d.a_auton} προθεσμία έως την ${d.v("prok_dead_date")} και ώρα ${d.v("prok_dead_time")} καθώς και τα σχετικά αντίγραφα. Επιπρόσθετα μας δήλωσε ότι θα απολογηθεί δια υπομνήματος.</p>
     <p style="${pStyle}">Στ${d.a_ton} ${d.a_upop_acc} γνωστοποιήσαμε ότι, σύμφωνα με το άρθρο 273 § 1 του Κ.Π.Δ., υποχρεούται να δηλώσει κάθε μεταβολή της κατοικίας ή της διαμονής ${d.a_tou}, μαζί με την ακριβή νέα ${d.a_tou} διεύθυνση, εγγράφως, στον Εισαγγελέα του δικαστηρίου στο οποίο εκκρεμεί κατά τον χρόνο δήλωσης η δικογραφία, σύμφωνα με το άρθρο 156 του Κ.Π.Δ.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Προθεσμία", header, body, `1a_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${d.v("surname")}.doc`);
 }
 
-// 6. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ (ΕΠΙΣΗΜΟ ΠΡΟΤΥΠΟ)
+// 6. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ
 function exportProkAfterDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
-    let d = getD(); let tm = getTimeRange("prok_after_start", "prok_after_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕΤΑ ΑΠΟ 48ΩΡΗ ΠΡΟΘΕΣΜΙΑ (Κ.Π.Δ.)<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
+    let d = getD(); let tm = getTimeRange("prok_after_start", "prok_after_end", "doc_start", "doc_end"); let charge = d.v("prok_charge");
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕΤΑ ΑΠΟ 48ΩΡΗ ΠΡΟΘΕΣΜΙΑ (Κ.Π.Δ.)<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} του ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται: ${d.prof}.</p>
     <p style="${pStyle}">Στη συνέχεια, ${d.a_tou} ανακοινώσαμε και πάλι το περιεχόμενο των εγγράφων της προκαταρκτικής εξέτασης και ${d.a_tou} εξηγήσαμε με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται στην παρ. 1 του άρθρου 244 του Κώδικα Ποινικής Δικονομίας.</p>
@@ -287,12 +287,12 @@ function exportProkAfterDeadline() {
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε κατηγορηθεί στο παρελθόν και για ποια αιτία;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${d.v("prok_past")}</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Σας αποδίδονται ήδη οι πράξεις που σας γνωστοποιήθηκαν, ήτοι: ${charge}. Τι έχετε να πείτε σχετικά;</p>
-    ${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + d.v("prok_plea"))}
+    ${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + d.v("prok_plea"))}
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε κάτι άλλο να προσθέσετε;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> Όχι και υπογράφω.</p>
     <p style="${pStyle}">Στ${d.a_ton} ${d.a_upop_acc} γνωστοποιήσαμε ότι, σύμφωνα με το άρθρο 273 § 1 του Κ.Π.Δ., υποχρεούται να δηλώσει κάθε μεταβολή της κατοικίας ή της διαμονής ${d.a_tou}, μαζί με την ακριβή νέα ${d.a_tou} διεύθυνση, εγγράφως, στον Εισαγγελέα του δικαστηρίου στο οποίο εκκρεμεί κατά τον χρόνο δήλωσης η δικογραφία, σύμφωνα με το άρθρο 156 του Κ.Π.Δ.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Ανωμοτί Μετά από Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΜΕΤΑ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
@@ -301,12 +301,12 @@ function exportProkAfterDeadline() {
 function exportProkMemo() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_pages'])) return;
     let d = getD(); let tm = getTimeRange("prok_service_start", "prok_service_end", "doc_start", "doc_end"); let abm = d.v("prok_abm");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΓΧΕΙΡΙΣΕΩΣ ΥΠΟΜΝΗΜΑΤΟΣ ΕΞΗΓΗΣΕΩΝ</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΓΧΕΙΡΙΣΕΩΣ ΥΠΟΜΝΗΜΑΤΟΣ ΕΞΗΓΗΣΕΩΝ</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} του ${d.dept}, παρισταμένου και του ${d.banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${d.a_o} κατωτέρω ύποπτος, ${d.a_os}, αφού ερωτήθηκε για την ταυτότητά ${d.a_tou} κλπ., απάντησε ότι ονομάζεται ${d.prof}.</p>
     <p style="${pStyle}">Έπειτα ${d.a_o} ανωτέρω, ενεχείρισε σε εμάς, αντί προφορικών εξηγήσεων, έγγραφο υπόμνημα αποτελούμενο από ${d.v("prok_pages")} σελίδες, προς απάντηση της ${abm}, το οποίο και επισυνάπτεται στην παρούσα δικογραφία.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Υπόμνημα", header, body, `5_ΥΠΟΜΝΗΜΑ_${d.v("surname")}.doc`);
 }
@@ -319,12 +319,12 @@ function exportArrest() {
     let arrDT = (d.v("arr_street_date") ? ` την ${d.v("arr_street_date")}` : ``) + (d.v("arr_street_time") ? ` και περί ώρα ${d.v("arr_street_time")}` : ``);
     let locText = d.v("arr_loc") ? ` ${d.v("arr_loc")}` : ``;
     
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">Ε Κ Θ Ε Σ Η &nbsp;&nbsp;&nbsp; Σ Υ Λ Λ Η Ψ Η Σ</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">Ε Κ Θ Ε Σ Η &nbsp;&nbsp;&nbsp; Σ Υ Λ Λ Η Ψ Η Σ</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${d.v("arr_start")} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, κατοίκων ομοίως, οδηγήθηκε στο Κατάστημα της Υπηρεσίας μας, ${d.deptFull}, ${d.a_o} ${d.prof}, ${d.v("arr_officer") ? `από ${d.a_ton} ${d.v("arr_officer")} που ${d.a_ton} συνέλαβε` : `που συνελήφθη`}${arrDT}${locText}, ${sentence}.</p>
     <p style="${pStyle}">Αφού ενημέρωσα ${d.a_auton} για τα προβλεπόμενα στο άρθρο 95 του Κ.Π.Δ. δικαιώματά ${d.a_tou}, παρείχα το προβλεπόμενο στο άρθρο 96 του ΚΠΔ έγγραφο σε κατάλληλη γλώσσα, εξέτασα ${d.a_auton} και πείσθηκα ότι ουδεμία υπάρχει ως προς την ταυτότητά ${d.a_tou} αμφιβολία, διέταξα την προσαγωγή και παραπομπή ${d.a_tou}, στον κ. ${d.prosecutor} και την παράδοσή ${d.a_tou} με την παρούσα έκθεση.</p>
     <p style="${pStyle}">Η παρούσα άρχισε να συντάσσεται την ${d.v("arr_start")} ώρα και περατώθηκε την ${d.v("arr_end")} ώρα.</p>
-    <p style="${pStyle}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
+    <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
     ${sigBlock4(d.a_sign, "Ο Συλλαβών", "Ο Β΄ Ανακριτ. Υπάλλ.", "Ο Ανακριτ. Υπάλληλος")}`;
     makeDoc("Σύλληψη", header, body, `1_ΕΚΘΕΣΗ_ΣΥΛΛΗΨΗΣ_${d.v("surname")}.doc`);
 }
@@ -332,55 +332,57 @@ function exportArrest() {
 // 9. ΔΙΚΑΙΩΜΑΤΑ ΣΥΛΛΗΨΗΣ
 function exportRights() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short'])) return;
-    let d = getD(); let rp = "text-align: justify; font-family: 'Times New Roman'; font-size: 11pt; line-height: 115%; margin: 0cm 0cm 4pt 0cm; padding: 0cm; background: white; color: black;";
-    
+    let d = getD(); 
+    let rp = "text-align: justify; text-align-last: left; font-family: 'Times New Roman'; font-size: 11pt; line-height: 115%; margin: 0pt; padding: 0pt; background: white; color: black; display: block;";
+    let rpLast = "text-align: justify; text-align-last: left; font-family: 'Times New Roman'; font-size: 11pt; line-height: 115%; margin: 0pt; margin-bottom: 6pt; padding: 0pt; background: white; color: black; display: block;";
+
     let body = `<p style="${rp}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${d.v("rig_start")}΄, ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ιδίας Υπηρεσίας προσληφθείς ως Β’ Ανακριτικού Υπαλλήλου, προσκλήθηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)} ${d.a_katig}, που ονομάζεται ${d.prof}, ${d.a_ton} οποί${d.a_o} ενημερώσαμε ότι κατηγορείται για ${d.v("apologia_charge_short")} και εξηγήσαμε σαφώς σ’ ${d.a_auton}, βάσει του άρθρου 105 του Κ.Π. Δικονομίας όλα τα εκ των άρθρων 91, 95, 96, 97, 98, 100, 101, 103 και 104, 273 & 274 του Κ.Π.Δ. δικαιώματά ${d.a_tou} και αναλυτικότερα:</p>
-    <p style="${rp}"><b>Α. Εκ του άρθρου 99 του Κ.Π.Δ., ήτοι παράσταση του κατηγορουμένου με συνήγορο:</b><br>
-    <b>1.</b> Ο Κατηγορούμενος έχει το δικαίωμα στην απολογία του και σε κάθε εξέτασή του, ακόμη και σ’ αυτήν που γίνεται σε αντιπαράσταση με μάρτυρες ή άλλους κατηγορούμενους, να παρίσταται με συνήγορο. Γι’ αυτό το σκοπό προσκαλείται 24 ώρες πριν από κάθε ανακριτική ενέργεια.<br>
-    <b>2.</b> Επιτρέπεται σύντμηση της προθεσμίας αυτής, αν από την αναβολή δημιουργείται κίνδυνος που η ύπαρξη του βεβαιώνεται ειδικά με έκθεση του ανακριτή ή του ανακριτικού υπαλλήλου.<br>
-    <b>3.</b> Ο ανακριτής έχει την υποχρέωση να διορίζει αυτεπαγγέλτως συνήγορο, αν το ζητήσει ρητά ο κατηγορούμενος.<br>
-    <b>4.</b> Σε καμία περίπτωση δεν μπορεί να απαγορευθεί η επικοινωνία του κατηγορουμένου με τον συνήγορό του.</p>
-    <p style="${rp}"><b>Β. Εκ του άρθρου 100 του Κ.Π.Δ., ήτοι ανακοίνωση των εγγράφων της ανάκρισης:</b><br>
-    <b>1.</b> Ο ανακριτής, μόλις μετά την κλήτευσή του εμφανισθεί η οδηγηθεί σ’ αυτόν ο κατηγορούμενος για να απολογηθεί, του ανακοινώνει το περιεχόμενο του κατηγορητηρίου και των άλλων εγγράφων της ανάκρισης. Επιτρέπεται επίσης στον κατηγορούμενο να μελετήσει ο ίδιος ή ο συνήγορός του το κατηγορητήριο και τα έγγραφα της ανάκρισης. Με γραπτή αίτηση του κατηγορουμένου και με δαπάνη του χορηγούνται σ’ αυτόν αντίγραφα του κατηγορητηρίου & των εγγράφων της ανάκρισης.<br>
-    <b>2.</b> Την ίδια υποχρέωση έχει και ο ανακριτής, και τα ίδια δικαιώματα ο κατηγορούμενος, όταν κληθεί ξανά σε συμπληρωματική απολογία, πάντως μετά το τέλος της ανάκρισης και προτού διαβιβασθεί η δικογραφία στον Εισαγγελέα, καλείται πάντοτε ο κατηγορούμενος να μελετήσει όλη τη δικογραφία.</p>
-    <p style="${rp}"><b>Γ. Εκ του άρθρου 103 του Κ.Π.Δ., ήτοι προθεσμία για την απολογία:</b><br>
-    Ο κατηγορούμενος έχει το δικαίωμα να ζητήσει προθεσμία τουλάχιστον 48 ώρες και δεν έχει υποχρέωση να απολογηθεί πριν περάσει η προθεσμία. Ο ανακριτής μπορεί να παρατείνει την προθεσμία ύστερα από αίτηση του κατηγορουμένου.</p>
-    <p style="${rp}"><b>Δ. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι δικαιώματα του κατηγορουμένου στη προανάκριση:</b><br>
-    Τα δικαιώματα που προβλέπονται από τα άρθρα 91, 95, 96, 97, 98, 100, 101, 103 και 104 τα έχει ο κατηγορούμενος και στην προανάκριση.</p>
-    <p style="${rp}"><b>Ε. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι εξαίρεση στο αυτόφωρο έγκλημα:</b><br>
-    Όταν ενεργείται προανάκριση σύμφωνα με το άρθρο 243 παρ.2 του Κ.Π.Δ., η εξέταση γίνεται όπως ορίζεται στις διατάξεις των άρθρων 273 και 274.</p>
-    <p style="${rp}"><b>ΣΤ. Εκ του άρθρου 273 του Κ.Π.Δ., ήτοι εξέταση κατηγορουμένου:</b><br>
-    Την υποχρέωση αυτού που διενεργεί την προανάκριση, για την εξακρίβωση των στοιχείων ταυτότητας, τόπου κατοικίας - διαμονής του κατηγορουμένου, καθώς και την υποχρέωση του κατηγορούμενου ως προς την δήλωσή των και ακολούθως η καταχώριση αυτών στην σχετική έκθεση της απολογίας.</p>
-    <p style="${rp}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
+    <p style="${rp}"><b>Α. Εκ του άρθρου 99 του Κ.Π.Δ., ήτοι παράσταση του κατηγορουμένου με συνήγορο:</b></p>
+    <p style="${rp}"><b>1.</b> Ο Κατηγορούμενος έχει το δικαίωμα στην απολογία του και σε κάθε εξέτασή του, ακόμη και σ’ αυτήν που γίνεται σε αντιπαράσταση με μάρτυρες ή άλλους κατηγορούμενους, να παρίσταται με συνήγορο. Γι’ αυτό το σκοπό προσκαλείται 24 ώρες πριν από κάθε ανακριτική ενέργεια.</p>
+    <p style="${rp}"><b>2.</b> Επιτρέπεται σύντμηση της προθεσμίας αυτής, αν από την αναβολή δημιουργείται κίνδυνος που η ύπαρξη του βεβαιώνεται ειδικά με έκθεση του ανακριτή ή του ανακριτικού υπαλλήλου.</p>
+    <p style="${rp}"><b>3.</b> Ο ανακριτής έχει την υποχρέωση να διορίζει αυτεπαγγέλτως συνήγορο, αν το ζητήσει ρητά ο κατηγορούμενος.</p>
+    <p style="${rp}"><b>4.</b> Σε καμία περίπτωση δεν μπορεί να απαγορευθεί η επικοινωνία του κατηγορουμένου με τον συνήγορό του.</p>
+    <p style="${rp}"><b>Β. Εκ του άρθρου 100 του Κ.Π.Δ., ήτοι ανακοίνωση των εγγράφων της ανάκρισης:</b></p>
+    <p style="${rp}"><b>1.</b> Ο ανακριτής, μόλις μετά την κλήτευσή του εμφανισθεί η οδηγηθεί σ’ αυτόν ο κατηγορούμενος για να απολογηθεί, του ανακοινώνει το περιεχόμενο του κατηγορητηρίου και των άλλων εγγράφων της ανάκρισης. Επιτρέπεται επίσης στον κατηγορούμενο να μελετήσει ο ίδιος ή ο συνήγορός του το κατηγορητήριο και τα έγγραφα της ανάκρισης. Με γραπτή αίτηση του κατηγορουμένου και με δαπάνη του χορηγούνται σ’ αυτόν αντίγραφα του κατηγορητηρίου & των εγγράφων της ανάκρισης.</p>
+    <p style="${rp}"><b>2.</b> Την ίδια υποχρέωση έχει και ο ανακριτής, και τα ίδια δικαιώματα ο κατηγορούμενος, όταν κληθεί ξανά σε συμπληρωματική απολογία, πάντως μετά το τέλος της ανάκρισης & προτού διαβιβασθεί η δικογραφία στον Εισαγγελέα, καλείται πάντοτε ο κατηγορούμενος να μελετήσει όλη τη δικογραφία.</p>
+    <p style="${rp}"><b>Γ. Εκ του άρθρου 103 του Κ.Π.Δ., ήτοι προθεσμία για την απολογία:</b></p>
+    <p style="${rp}">Ο κατηγορούμενος έχει το δικαίωμα να ζητήσει προθεσμία τουλάχιστον 48 ώρες και δεν έχει υποχρέωση να απολογηθεί πριν περάσει η προθεσμία. Ο ανακριτής μπορεί να παρατείνει την προθεσμία ύστερα από αίτηση του κατηγορουμένου.</p>
+    <p style="${rp}"><b>Δ. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι δικαιώματα του κατηγορουμένου στη προανάκριση:</b></p>
+    <p style="${rp}">Τα δικαιώματα που προβλέπονται από τα άρθρα 91, 95, 96, 97, 98, 100, 101, 103 και 104 τα έχει ο κατηγορούμενος και στην προανάκριση.</p>
+    <p style="${rp}"><b>Ε. Εκ του άρθρου 105 του Κ.Π.Δ., ήτοι εξαίρεση στο αυτόφωρο έγκλημα:</b></p>
+    <p style="${rp}">Όταν ενεργείται προανάκριση σύμφωνα με το άρθρο 243 παρ.2 του Κ.Π.Δ., η εξέταση γίνεται όπως ορίζεται στις διατάξεις των άρθρων 273 και 274.</p>
+    <p style="${rp}"><b>ΣΤ. Εκ του άρθρου 273 του Κ.Π.Δ., ήτοι εξέταση κατηγορουμένου:</b></p>
+    <p style="${rp}">Την υποχρέωση αυτού που διενεργεί την προανάκριση, για την εξακρίβωση των στοιχείων ταυτότητας, τόπου κατοικίας - διαμονής του κατηγορουμένου, καθώς και την υποχρέωση του κατηγορούμενου ως προς την δήλωσή των και ακολούθως η καταχώριση αυτών στην σχετική έκθεση της απολογίας.</p>
+    <p style="${rpLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;"><u>ΕΚΘΕΣΗ ΕΝΗΜΕΡΩΣΗΣ ΔΙΚΑΙΩΜΑΤΩΝ ΣΕ ΥΠΟΠΤΟ Ή ΚΑΤΗΓΟΡΟΥΜΕΝΟ</u></p>`;
-    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Δικαιώματα</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0cm 0cm 0cm 0cm; padding: 0cm; } table { border-collapse: collapse; }</style></head><body style="background-color: white; color: black;">${header}${body}</body></html>`;
-    let blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-    let url = URL.createObjectURL(blob); let link = document.createElement('a'); link.href = url; link.download = `2_ΕΚΘΕΣΗ_ΔΙΚΑΙΩΜΑΤΩΝ_${d.v("surname")}.doc`; 
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;"><u>ΕΚΘΕΣΗ ΕΝΗΜΕΡΩΣΗΣ ΔΙΚΑΙΩΜΑΤΩΝ ΣΕ ΥΠΟΠΤΟ Ή ΚΑΤΗΓΟΡΟΥΜΕΝΟ</u></p>`;
+    makeDoc("Δικαιώματα", header, body, `2_ΕΚΘΕΣΗ_ΔΙΚΑΙΩΜΑΤΩΝ_${d.v("surname")}.doc`);
 }
 
 // 10. ΑΠΟΛΟΓΙΑ
 function exportApologia() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short', 'apologia_plea'])) return;
     let d = getD(); let fullCharge = d.v("apologia_charge_short"); if(d.v("apologia_charge_details")) fullCharge += ". " + d.v("apologia_charge_details");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ (Κ.Π.Δ.)</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ (Κ.Π.Δ.)</p>`;
 
     let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("apo_start")} ενώπιον εμού του ${d.anakr} του ${d.dept}, παριστάμενου και του ${d.banakr} της ιδίας Υπηρεσίας, εξετάζεται ${d.a_o} κατωτέρω ${d.a_katig}.</p>
-    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Πώς ονομάζεσαι κ.λ.π.; <b>ΑΠΟΚΡΙΣΗ:</b> ${d.prof}.</p>
+    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Πώς ονομάζεσαι κ.λ.π.;</p>
+    <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${d.prof}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε ${d.a_ston} εξεταζόμεν${d.a_exet_acc.slice(12)} ότι κατηγορείται για ${fullCharge}</p>
     <p style="${pStyle}">Στη συνέχεια αφού ανακοινώσαμε ${d.a_ston} εξεταζόμεν${d.a_exet_acc.slice(12)} το περιεχόμενο των εγγράφων της ανάκρισης, εξηγήσαμε εκ νέου με σαφήνεια σ’ ${d.a_auton}, σύμφωνα με τα άρθρα 95 και 105 ή 106 του Κώδικα Ποινικής Δικονομίας, όλα τα δικαιώματά ${d.a_tou} που προβλέπονται από τα άρθρα 91, 95, 96, 97, 98, 100, 101, 104 και 273 του Κώδικα Ποινικής Δικονομίας και ειδικότερα ότι δικαιούται: να παρίσταται μετά συνηγόρου, μετά του οποίου δεν μπορεί να απαγορευτεί η απολύτως απόρρητη επικοινωνία ${d.a_tou} σε καμιά περίπτωση, να μελετήσει ${d.a_o} ίδι${d.a_o}ς ή ο συνήγορός ${d.a_tou} τα έγγραφα της ανάκρισης και του κατηγορητηρίου, να ${d.a_tou} χορηγηθούν αντίγραφα αυτών με δική ${d.a_tou} δαπάνη και μετά από γραπτή αίτησή ${d.a_tou} να ζητήσει προθεσμία μέχρι 48 ωρών, προ της παρέλευσης της οποίας δεν υποχρεούται σε απολογία και ότι δύναται να δοθεί παράταση της προθεσμίας αυτής με αίτησή ${d.a_tou}, να αρνηθεί να απαντήσει (δικαίωμα σιωπής και μη αυτοενεχοποίησης) και να παραδώσει την απολογία ${d.a_tou} γραπτή.</p>
-    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν; <b>ΑΠΟΚΡΙΣΗ:</b> ${d.v("apologia_rights").replace(/[\n\r]+/g, " ")}</p>
-    <p style="${pStyle}">Ύστερα από τα ανωτέρω προβήκαμε στην λήψη της απολογίας ${d.a_tou}. Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</p>
+    <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${d.v("apologia_rights").replace(/[\n\r]+/g, " ")}</p>
+    <p style="${pStyleLast}">Ύστερα από τα ανωτέρω προβήκαμε στην λήψη της απολογίας ${d.a_tou}. Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}
     <p style="${pStyle}">Στη συνέχεια, προβήκαμε στην εξέταση ${d.a_tou} ${d.a_katig_gen} ως ακολούθως:</p>
-    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Κατηγορήθηκες άλλη φορά και για ποια αιτία; <b>ΑΠΟΚΡΙΣΗ:</b> ${d.v("apologia_past").replace(/[\n\r]+/g, " ")}</p>
+    <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Κατηγορήθηκες άλλη φορά και για ποια αιτία;</p>
+    <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${d.v("apologia_past").replace(/[\n\r]+/g, " ")}</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Κατηγορείσαι ήδη για τις πράξεις που σου γνωστοποιήθηκαν ανωτέρω. Τι απολογείσαι;</p>
-    ${formatTextToParagraphs("<b>ΑΠΟΚΡΙΣΗ:</b> " + d.v("apologia_plea"))}
+    ${formatTextToParagraphs("ΑΠΟΚΡΙΣΗ: " + d.v("apologia_plea"))}
     <p style="${pStyle}">${d.a_ston} ${d.a_katig_acc} γνωστοποιήσαμε ότι, σύμφωνα με το άρθρο 273 § 1 του Κ.Π.Δ., υποχρεούται να δηλώσει κάθε μεταβολή της κατοικίας ή της διαμονής ${d.a_tou}, μαζί με ακριβή νέα διεύθυνση, εγγράφως, στον Εισαγγελέα του δικαστηρίου στο οποίο εκκρεμεί κατά τον χρόνο δήλωσης η δικογραφία, σύμφωνα με το άρθρο 156 του Κ.Π.Δ.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${d.v("apo_start")} ώρα και περατώθηκε την ${d.v("apo_end")} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ Ανακριτικός Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Απολογία", header, body, `3_ΑΠΟΛΟΓΙΑ_ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ_${d.v("surname")}.doc`);
 }
@@ -392,18 +394,18 @@ function exportSeizure() {
     let header, body;
     let foundLoc = d.v("drug_found_loc") ? `, ${d.v("drug_found_loc")}, ` : ` `;
     
-    if (tType === "ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΤΑΣΧΕΣΗΣ" || tType === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ" || tType === "ΕΡΕΥΝΑΣ ΟΙΚΙΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
-        header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
+    if (tType.includes("ΣΩΜΑΤΙΚΗΣ")) {
+        header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
         body = `<p style="${pStyle}">- Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} εμείς ο ${d.anakr} του ${d.deptFull}, παρισταμένου και του ${d.banakr} της ως άνω Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εκθέτουμε τα εξής:</p>
         <p style="${pStyle}">- Ενεργούντες προανάκριση για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» όπως τροπ. με το άρθρο 10 του Ν. 4322/2015 και έχοντες βάσιμες υπόνοιες ότι ${d.a_o} ${d.prof} έχει στην κατοχή ${d.a_tou} ναρκωτικές ουσίες, καλέσαμε ${d.a_auton} όπως μας τα παραδώσει και ${d.a_autou} ${d.a_dil} ότι δεν φέρει ταύτα, προβήκαμε στη σωματική ${d.a_tou} έρευνα, στην οποία διαπιστώσαμε ότι${foundLoc}υπήρχαν: ${d.v("drug_packaging")} περιέχουσα ποσότητα της ναρκωτικής ουσίας «${d.v("drug_type")}» μικτού βάρους ${d.v("drug_weight")} γραμμαρίων περίπου, τα οποία εμπίπτουν στις διατάξεις του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» και προβήκαμε στην κατάσχεση αυτών προκειμένου αποσταλούν ως πειστήρια στον κ. ${d.prosecutor}.</p>
         <p style="${pStyle}">- Αναφέρεται ότι η έρευνα ${d.a_ston} ανωτέρω έγινε από εμάς.</p>
         <p style="${pStyle}">- Γίνεται μνεία, ότι η παρούσα έρευνα άρχισε την ${tm.start} ώρα της ${d.v("doc_date")} και περατώθηκε την ${tm.end} ώρα της ${d.v("doc_date")} η δε σύνταξη της παρούσας άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.-</p>
-        <p style="${pStyle}">- Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
+        <p style="${pStyleLast}">- Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock4("Ο Καθ' ου η έρευνα", "Ο εν. την έρευνα", "Ο Β' Αν. Υπάλληλος", "Ο Αν. Υπάλληλος")}`;
     } else {
-        header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
+        header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
         body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} εμείς ο ${d.anakr} του ${d.deptFull}, παρουσία και τ${d.banakr_genitive} της ίδιας υπηρεσίας, που προσλήφθηκε ως β’ ανακριτικός υπάλληλος, επειδή ενεργούμε προανάκριση για παράβαση Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε στην κατάσχεση ${d.v("drug_packaging")}, περιέχουσας ποσότητας ναρκωτικής ουσίας, πιθανώς ${d.v("drug_type")}, μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, που μας παρέδωσε ______________________________ και την οποία, όπως δήλωσε, βρήκε / του παρέδωσε οικειοθελώς την ________________ και ώρα ______ στην ______________, στην οδό _____________ αρ. ____, στην κατοχή ${d.a_tou} ${d.a_o} ${d.prof}, κατά τον σωματικό ${d.a_tou} έλεγχο.</p>
-        <p style="${pStyle}">Προς πίστωση συντάχθηκε η παρούσα η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
+        <p style="${pStyleLast}">Προς πίστωση συντάχθηκε η παρούσα η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock("Ο ΠΑΡΑΔΟΥΣ", "Ο Β’ ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ", "Ο ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ")}`;
     }
     
@@ -414,11 +416,11 @@ function exportSeizure() {
 function exportWeighing() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD(); let tm = getTimeRange("weigh_start", "weigh_end", "doc_start", "doc_end");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΖΥΓΙΣΗΣ ΚΑΙ ΣΦΡΑΓΙΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΖΥΓΙΣΗΣ ΚΑΙ ΣΦΡΑΓΙΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
     let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} του ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, κατ. ενταύθα (${d.dept}), επί παρουσία και ${d.a_tou} κατηγορούμενου για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) ${d.prof} προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας, της υπηρεσίας, της ανευρεθείσας, ${d.a_ston} ανωτέρω ${d.a_katig_acc} και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι ${d.v("drug_packaging")} περιέχουσας ποσότητας ναρκωτικής ουσίας, πιθανώς «${d.v("drug_type")}» η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων περίπου.</p>
     <p style="${pStyle}">Κατόπιν τούτου η ανωτέρω ναρκωτική ουσία σφραγίστηκε σε ταυτάριθμο φάκελο.</p>
     <p style="${pStyle}">Η παρούσα άρχισε να συντάσσεται ώρα ${tm.start} και περατώθηκε ώρα ${tm.end}.</p>
-    <p style="${pStyle}">Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ ανακριτικός υπάλληλος", "Ο ανακριτικός υπάλληλος")}`;
     makeDoc("Ζύγιση", header, body, `ΖΥΓΙΣΗ_${d.v("surname")}.doc`);
 }
@@ -427,12 +429,12 @@ function exportWeighing() {
 function exportNotification() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type'])) return;
     let d = getD(); let tm = getTimeRange("notif_start", "notif_end", "doc_start", "doc_end");
-    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; line-height: 115%; margin: 0cm 0cm 6pt 0cm; background: white; color: black;">ΕΚΘΕΣΗ ΓΝΩΣΤΟΠΟΙΗΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
+    let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΓΝΩΣΤΟΠΟΙΗΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} εμείς ο ${d.anakr} του ${d.deptFull}, παρουσία και του ${d.banakr}, της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, εκθέτουμε τα ακόλουθα:</p>
     <p style="${pStyle}">Καθόσον ενεργούμε προανάκριση, σύμφωνα με το άρθρο 243 παρ. 2 του Κ.Π.Δ. για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις), όπως τροποποιήθηκε και ισχύει και έχοντες βάσιμες υπόνοιες ότι οι παραδοθείσες, σύμφωνα με την από ${d.fullDateStr} συνταχθείσα έκθεση παράδοσης και κατάσχεσης, ${d.v("drug_packaging")} η οποία βρέθηκε στην κατοχή ${d.a_tou} ${d.prof}, από τoν ___________________, ενέχει προδήλως τις ιδιότητες των ναρκωτικών ουσιών σύμφωνα με το άρθρο 1 του Ν. 4139/2013, υπαγόμενων στον Πίνακα Β΄, «${d.v("drug_type")}» γνωστοποιήσαμε τούτο στον παραπάνω, ως και τον καλέσαμε να μας δηλώσει αν αμφισβητεί τις ιδιότητες αυτές, σύμφωνα με το άρθρο 41 Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών».</p>
     <p style="${pStyle}">Ο καθ’ ου η γνωστοποίηση δεν αμφισβήτησε την ιδιότητα των κατασχεθέντων ως ναρκωτικών ουσιών «${d.v("drug_type")}».</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
-    <p style="${pStyle}">Για πιστοποίηση συντάχτηκε η παρούσα έκθεση, η οποία αφού αναγνώστηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πιστοποίηση συντάχτηκε η παρούσα έκθεση, η οποία αφού αναγνώστηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
     ${sigBlock("Ο κατά του οποίου η γνωστοποίηση", "Ο Β΄ Ανακρ. Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Γνωστοποίηση", header, body, `ΓΝΩΣΤΟΠΟΙΗΣΗ_${d.v("surname")}.doc`);
 }
