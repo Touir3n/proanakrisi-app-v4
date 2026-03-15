@@ -96,7 +96,7 @@ window.onload = function() {
     
     // Εισαγγελία Default
     if(!document.getElementById("prok_abm").value) {
-        document.getElementById("prok_abm").value = "την υπ' αριθμ. ....... παραγγελία της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
+        document.getElementById("prok_abm").value = "υπ' αριθμ. ....... παραγγελίας της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
     }
     
     if (localStorage.getItem("gemini_api_key")) {
