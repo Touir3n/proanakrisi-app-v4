@@ -5,35 +5,6 @@
 const pStyle = "text-align: justify; text-justify: inter-word; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0pt; margin-bottom: 0pt; padding: 0pt; background: white; color: black; display: block;";
 const pStyleLast = "text-align: justify; text-justify: inter-word; text-align-last: left; font-family: 'Times New Roman'; font-size: 12pt; line-height: 115%; margin: 0pt; margin-bottom: 6pt; padding: 0pt; background: white; color: black; display: block;";
 
-// --- ΚΙΝΗΤΗΡΑΣ ΚΛΙΣΗΣ ΕΛΛΗΝΙΚΩΝ ΟΝΟΜΑΤΩΝ (ΧΩΡΙΣ AI) ---
-function decline(word, targetCase, isFemale) {
-    if (!word) return "";
-    let w = word.trim();
-    if (targetCase === "GEN") {
-        if (isFemale) {
-            if (w.endsWith("Α")) return w + "Σ"; if (w.endsWith("α")) return w + "ς"; if (w.endsWith("ά")) return w + "ς"; if (w.endsWith("Ά")) return w + "Σ";
-            if (w.endsWith("Η")) return w + "Σ"; if (w.endsWith("η")) return w + "ς"; if (w.endsWith("ή")) return w + "ς"; if (w.endsWith("Ή")) return w + "Σ";
-            if (w.endsWith("ΟΥ") || w.endsWith("ου")) return w; // Ήδη σε γενική
-        } else {
-            if (w.endsWith("ΟΣ")) return w.slice(0, -2) + "ΟΥ"; if (w.endsWith("ος")) return w.slice(0, -2) + "ου"; if (w.endsWith("ός")) return w.slice(0, -2) + "ού"; if (w.endsWith("ΌΣ")) return w.slice(0, -2) + "ΟΥ";
-            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς") || w.endsWith("ΕΣ") || w.endsWith("ες")) return w.slice(0, -1);
-            if (w.endsWith("ΟΥ") || w.endsWith("ου") || w.endsWith("Η") || w.endsWith("η")) return w; 
-        }
-    } else if (targetCase === "ACC") {
-        if (!isFemale) {
-            if (w.endsWith("ΟΣ")) return w.slice(0, -1); if (w.endsWith("ος")) return w.slice(0, -1); if (w.endsWith("ός")) return w.slice(0, -1); if (w.endsWith("ΌΣ")) return w.slice(0, -1);
-            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς") || w.endsWith("ΕΣ") || w.endsWith("ες")) return w.slice(0, -1);
-        }
-    }
-    return w;
-}
-
-function declineFullName(fullName, targetCase, isFemale) {
-    if (!fullName) return "";
-    return fullName.split(" ").map(p => decline(p, targetCase, isFemale)).join(" ");
-}
-// ----------------------------------------------------
-
 function formatTextToParagraphs(text) {
     if (!text) return "";
     return text.split(/\r?\n/)
@@ -106,83 +77,40 @@ function sigBlock4(role1, role2, role3, role4) {
 function getD() {
     let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
     let g = v("gender");
-    let isFemale = (g === 'F');
-    
-    let c_city = v("cfg_city") || "Ασπροβάλτα";
-    let c_dept = v("cfg_dept") || "Α.Τ. Βόλβης";
-    let c_deptFull = v("cfg_deptFull") || "Αστυνομικό Τμήμα Βόλβης Θεσσαλονίκης";
-    let c_prosecutor = v("cfg_prosecutor") || "Εισαγγελέα Πλημμελειοδικών Θεσσαλονίκης";
+    let c_city = document.getElementById("cfg_city").value.trim();
+    let c_dept = document.getElementById("cfg_dept").value.trim();
+    let c_deptFull = document.getElementById("cfg_deptFull").value.trim();
+    let c_prosecutor = document.getElementById("cfg_prosecutor").value.trim();
     let banakr_clean = v("doc_banakr");
     let banakr_gen = banakr_clean;
     if(banakr_clean.startsWith("της ")) { banakr_gen = banakr_clean.substring(4); } else if(banakr_clean.startsWith("του ")) { banakr_gen = banakr_clean.substring(4); }
     
-    // Αυτόματη Κλίση Ονομάτων!
-    let s_nom = v("surname"); let n_nom = v("name");
-    let s_gen = declineFullName(s_nom, "GEN", isFemale); let n_gen = declineFullName(n_nom, "GEN", isFemale);
-    let s_acc = declineFullName(s_nom, "ACC", isFemale); let n_acc = declineFullName(n_nom, "ACC", isFemale);
-    
-    // Το πατρώνυμο/μητρώνυμο γίνονται αυτόματα γενική (έστω κι αν τα βάλεις ονομαστική)
-    let father_gen = declineFullName(v("father"), "GEN", false);
-    let mother_gen = declineFullName(v("mother"), "GEN", true);
-    
-    function buildProf(caseType) {
-        let final_s = caseType === "NOM" ? s_nom : (caseType === "GEN" ? s_gen : s_acc);
-        let final_n = caseType === "NOM" ? n_nom : (caseType === "GEN" ? n_gen : n_acc);
-        
-        let text = `${final_s} ${final_n} του ${father_gen} και της ${mother_gen}, γεν. ${v("dob")} στην ${v("pob")}`;
-        
-        if (caseType === "GEN") text += `, κατοίκου ${v("area")}, Δήμου ${v("dimos")}`;
-        else if (caseType === "ACC") text += `, κάτοικο ${v("area")}, Δήμου ${v("dimos")}`;
-        else text += `, κάτοικος ${v("area")}, Δήμου ${v("dimos")}`;
-
-        if (v("odos")) {
-            if (caseType === "ACC") text += `, οδό ${v("odos")}`;
-            else text += `, οδός ${v("odos")}`;
-        }
-        if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
-        
-        if (caseType === "GEN") {
-            if (v("epaggelma")) text += `, επαγγέλματος ${v("epaggelma")}`;
-            text += `, κατόχου του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
-        } else if (caseType === "ACC") {
-            if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
-            text += `, κάτοχο του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
-        } else {
-            if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
-            text += `, κάτοχος του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
-        }
-        
-        if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
-        
-        if (caseType === "GEN") {
-            if (v("phone")) text += `, κατόχου της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
-        } else if (caseType === "ACC") {
-            if (v("phone")) text += `, κάτοχο της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
-        } else {
-            if (v("phone")) text += `, κάτοχος της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
-        }
-        
-        if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
-        return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
-    }
-
     return {
         v: v, anakr: v("doc_anakr"), banakr: v("doc_banakr"), banakr_genitive: banakr_gen,
-        city: c_city, dept: c_dept, deptFull: c_deptFull, prosecutor: c_prosecutor,
+        city: c_city !== "" ? c_city : "Ασπροβάλτα", dept: c_dept !== "" ? c_dept : "Α.Τ. Βόλβης", deptFull: c_deptFull !== "" ? c_deptFull : "Αστυνομικό Τμήμα Βόλβης Θεσσαλονίκης",
+        prosecutor: c_prosecutor !== "" ? c_prosecutor : "Εισαγγελέα Πλημμελειοδικών Θεσσαλονίκης",
         
-        a_o: g === 'M' ? "ο" : "η", a_os: g === 'M' ? "ο οποίος" : "η οποία", a_tou: g === 'M' ? "του" : "της", a_ton: g === 'M' ? "τον" : "την",
-        a_ston: g === 'M' ? "στον" : "στην", a_auton: g === 'M' ? "αυτόν" : "αυτήν", a_autou: g === 'M' ? "αυτού" : "αυτής",
-        a_exet: g === 'M' ? "εξεταζόμενος" : "εξεταζόμενη", a_exet_acc: g === 'M' ? "εξεταζόμενο" : "εξεταζόμενη",
-        a_katig: g === 'M' ? "κατηγορούμενος" : "κατηγορούμενη", a_katig_gen: g === 'M' ? "κατηγορουμένου" : "κατηγορουμένης",
-        a_katig_acc: g === 'M' ? "κατηγορούμενο" : "κατηγορούμενη", a_upop: g === 'M' ? "ύποπτος" : "ύποπτη",
-        a_upop_acc: g === 'M' ? "ύποπτο" : "ύποπτη", a_kato: g === 'M' ? "κατωτέρω σημειούμενος" : "κατωτέρω σημειούμενη",
+        a_o: g === 'M' ? "ο" : "η",
+        a_os: g === 'M' ? "ο οποίος" : "η οποία",
+        a_tou: g === 'M' ? "του" : "της",
+        a_ton: g === 'M' ? "τον" : "την",
+        a_ston: g === 'M' ? "στον" : "στην",
+        a_auton: g === 'M' ? "αυτόν" : "αυτήν",
+        a_autou: g === 'M' ? "αυτού" : "αυτής",
+        a_dil: g === 'M' ? "δηλώσαντος" : "δηλώσασας",
+        a_exet: g === 'M' ? "εξεταζόμενος" : "εξεταζόμενη",
+        a_exet_acc: g === 'M' ? "εξεταζόμενο" : "εξεταζόμενη",
+        a_katig: g === 'M' ? "κατηγορούμενος" : "κατηγορούμενη",
+        a_katig_gen: g === 'M' ? "κατηγορουμένου" : "κατηγορουμένης",
+        a_katig_acc: g === 'M' ? "κατηγορούμενο" : "κατηγορούμενη",
+        a_upop: g === 'M' ? "ύποπτος" : "ύποπτη",
+        a_upop_acc: g === 'M' ? "ύποπτο" : "ύποπτη",
+        a_kato: g === 'M' ? "κατωτέρω σημειούμενος" : "κατωτέρω σημειούμενη",
         a_sign: g === 'M' ? "Ο Εξετασθείς" : "Η Εξετασθείσα",
         
         dateStr: `${v("doc_date")}η του μήνα ${v("doc_month")} του έτους ${v("doc_year")} ημέρα της εβδομάδας ${v("doc_day")}`,
         fullDateStr: `${v("doc_date")}-${String(monthsToNum(v("doc_month"))).padStart(2, '0')}-${v("doc_year")}`,
-        prof: buildProf("NOM"),
-        prof_gen: buildProf("GEN"),
-        prof_acc: buildProf("ACC")
+        prof: getProfileText()
     };
 }
 
@@ -292,6 +220,7 @@ function exportProkRights() {
     makeDoc("Δικαιώματα Ύποπτου", header, body, `1_ΔΙΚΑΙΩΜΑΤΑ_ΥΠΟΠΤΟΥ_${d.v("surname")}.doc`);
 }
 
+// 4. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΩΡΙΣ ΠΡΟΘΕΣΜΙΑ
 function exportProkNoDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge"); let rightsAns = d.v("prok_rights_ans"); let pastAns = d.v("prok_past"); let plea = d.v("prok_plea");
@@ -299,7 +228,7 @@ function exportProkNoDeadline() {
     if(timeParts.length === 2) { let dDate = new Date(); dDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]) + 5); midTime = String(dDate.getHours()).padStart(2, '0') + ':' + String(dDate.getMinutes()).padStart(2, '0'); }
 
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
-    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city}, εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} του ${d.deptFull}, παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city}, εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
     <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν ${abm}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε σε ${d.a_auton} την πράξη που αφορά η εξέταση, ήτοι: ${charge}.</p>
     <p style="${pStyle}">Στη συνέχεια, εξηγήσαμε ${d.a_ston} ${d.a_exet_acc}, με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται από τα άρθρα 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α’, 2 και 4, 100, 101, 102, 103 και 104, καθώς και το δικαίωμα να διορίσει τεχνικό σύμβουλο σε περίπτωση διεξαγωγής πραγματογνωμοσύνης, εφαρμοζόμενης αναλόγως της διάταξης του άρθρου 183 και ειδικότερα, το δικαίωμα παράστασης με συνήγορο, το δικαίωμα και τις προϋποθέσεις παροχής δωρεάν νομικών συμβουλών, το δικαίωμα ενημέρωσης σχετικά με την κατηγορία, το δικαίωμα διερμηνείας και μετάφρασης, το δικαίωμα σιωπής και μη αυτοενοχοποίησης, το δικαίωμα πρόσβασης στο υλικό της δικογραφίας, το δικαίωμα άρνησης εν όλω ή εν μέρει της παροχής εξηγήσεων, το δικαίωμα προθεσμίας τουλάχιστον σαράντα οκτώ ωρών για την παροχή τους, η οποία μπορεί να παραταθεί από εκείνον που διενεργεί την προκαταρκτική εξέταση και το δικαίωμα πρότασης μαρτύρων προς εξέταση.</p>
@@ -323,12 +252,13 @@ function exportProkNoDeadline() {
     makeDoc("Ανωμοτί Χωρίς Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΧΩΡΙΣ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
 
+// 5. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΟΡΗΓΗΣΗ ΠΡΟΘΕΣΜΙΑΣ
 function exportProkDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_dead_date', 'prok_dead_time'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕ ΧΟΡΗΓΗΣΗ ΠΡΟΘΕΣΜΙΑΣ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
 
-    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} ${d.a_kato}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} του ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} ${d.a_kato}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται ${d.prof}.</p>
     <p style="${pStyle}">Εξετάζεται χωρίς όρκο, σύμφωνα με τo άρθρο 244 παρ. 1 Κ.Π.Δ., γιατί ενεργείται προκαταρκτική εξέταση κατόπιν ${abm}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε σε ${d.a_auton} την πράξη που αφορά η εξέταση, ήτοι: ${charge}.</p>
     <p style="${pStyle}">Στη συνέχεια, εξηγήσαμε ${d.a_ston} ${d.a_exet_acc}, με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται από τα άρθρα 89, 90, 91, 92 παρ. 1, 95, 96, 99 παρ. 1 εδ. α’, 2 και 4, 100, 101, 102, 103 και 104, καθώς και το δικαίωμα να διορίσει τεχνικό σύμβουλο σε περίπτωση διεξαγωγής πραγματογνωμοσύνης, εφαρμοζόμενης αναλόγως της διάταξης του άρθρου 183 και ειδικότερα, το δικαίωμα παράστασης με συνήγορο, το δικαίωμα και τις προϋποθέσεις παροχής δωρεάν νομικών συμβουλών, το δικαίωμα ενημέρωσης σχετικά με την κατηγορία, το δικαίωμα διερμηνείας και μετάφρασης, το δικαίωμα σιωπής και μη αυτοενοχοποίησης, το δικαίωμα πρόσβασης στο υλικό της δικογραφίας, το δικαίωμα ενημέρωσης των προξενικών αρχών και ενός επιπλέον προσώπου της επιλογής του, το δικαίωμα σε επείγουσα ιατρική περίθαλψη, τον ανώτατο αριθμό ωρών ή ημερών κατά τις οποίες ${d.a_o} ${d.a_katig} δύναται να στερηθεί της ελευθερίας ${d.a_tou} προτού προσαχθεί ενώπιον δικαστικής αρχής, το δικαίωμα άρνησης εν όλω ή εν μέρει της παροχής εξηγήσεων, το δικαίωμα προθεσμίας τουλάχιστον σαράντα οκτώ ωρών για την παροχή τους, η οποία μπορεί να παραταθεί από εκείνον που διενεργεί την προκαταρκτική εξέταση, το δικαίωμα πρότασης μαρτύρων προς εξέταση και πληροφορίες σχετικά με τις δυνατότητες προσβολής του νόμιμου χαρακτήρα της σύλληψης ή της κράτησης.</p>
@@ -342,12 +272,13 @@ function exportProkDeadline() {
     makeDoc("Προθεσμία", header, body, `1a_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${d.v("surname")}.doc`);
 }
 
+// 6. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ
 function exportProkAfterDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
     let d = getD(); let tm = getTimeRange("prok_after_start", "prok_after_end", "doc_start", "doc_end"); let charge = d.v("prok_charge");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΧΩΡΙΣ ΟΡΚΟ ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ<br>(Άρθρο 244 παρ. 1 Κ.Π.Δ.)</p>`;
 
-    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} υπηρετούντος στο ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται: ${d.prof}.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} του ${d.deptFull} παρουσία και του κάτωθι προσυπογεγραμμένου ${d.banakr} της ίδιας Υπηρεσίας προσληφθέντα ως Β΄ Ανακριτικού Υπαλλήλου, κατοίκων ${d.city} εμφανίστηκε ${d.a_o} κατωτέρω σημειούμεν${d.a_os.slice(1)}, ${d.a_os}, αφού ρωτήθηκε για την ταυτότητά ${d.a_tou} κ.λ.π., απάντησε ότι ονομάζεται: ${d.prof}.</p>
     <p style="${pStyle}">Στη συνέχεια, ${d.a_tou} ανακοινώσαμε και πάλι το περιεχόμενο των εγγράφων της προκαταρκτικής εξέτασης και ${d.a_tou} εξηγήσαμε με σαφήνεια όλα τα δικαιώματα ${d.a_tou}, που προβλέπονται στην παρ. 1 του άρθρου 244 του Κώδικα Ποινικής Δικονομίας.</p>
     <p style="${pStyle}">Μετά από τα παραπάνω προβήκαμε στην απαγγελία της αποδιδόμενης σ’ ${d.a_auton} αξιόποινης πράξης επί της οποίας καλείται να δώσει εξηγήσεις, ως ακολούθως:</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Έχετε κατηγορηθεί στο παρελθόν και για ποια αιτία;</p>
@@ -363,12 +294,13 @@ function exportProkAfterDeadline() {
     makeDoc("Ανωμοτί Μετά από Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΜΕΤΑ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
 
+// 7. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΥΠΟΜΝΗΜΑ
 function exportProkMemo() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_pages'])) return;
     let d = getD(); let tm = getTimeRange("prok_service_start", "prok_service_end", "doc_start", "doc_end"); let abm = d.v("prok_abm");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΓΧΕΙΡΙΣΕΩΣ ΥΠΟΜΝΗΜΑΤΟΣ ΕΞΗΓΗΣΕΩΝ</p>`;
 
-    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${d.a_o} κατωτέρω ύποπτος, ${d.a_os}, αφού ερωτήθηκε για την ταυτότητά ${d.a_tou} κλπ., απάντησε ότι ονομάζεται ${d.prof}.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εµού του ${d.anakr} του ${d.dept}, παρισταμένου και του ${d.banakr} της ίδιας υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εμφανίσθηκε ${d.a_o} κατωτέρω ύποπτος, ${d.a_os}, αφού ερωτήθηκε για την ταυτότητά ${d.a_tou} κλπ., απάντησε ότι ονομάζεται ${d.prof}.</p>
     <p style="${pStyle}">Έπειτα ${d.a_o} ανωτέρω, ενεχείρισε σε εμάς, αντί προφορικών εξηγήσεων, έγγραφο υπόμνημα αποτελούμενο από ${d.v("prok_pages")} σελίδες, προς απάντηση ${abm}, το οποίο και επισυνάπτεται στην παρούσα δικογραφία.</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα and περατώθηκε την ${tm.end} ώρα.</p>
     <p style="${pStyleLast}">Για πιστοποίηση συντάχθηκε η παρούσα έκθεση, η οποία αφού πρώτα αναγνώστηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
@@ -376,6 +308,7 @@ function exportProkMemo() {
     makeDoc("Υπόμνημα", header, body, `5_ΥΠΟΜΝΗΜΑ_${d.v("surname")}.doc`);
 }
 
+// 8. ΣΥΛΛΗΨΗ
 function exportArrest() {
     if (!validateRequiredFields(['surname', 'name', 'arr_loc', 'apologia_charge_short'])) return;
     let d = getD(); let shortC = d.v("apologia_charge_short"); let reason = d.v("arr_reason").replace(/[\n\r]+/g, " ");
@@ -393,6 +326,7 @@ function exportArrest() {
     makeDoc("Σύλληψη", header, body, `1_ΕΚΘΕΣΗ_ΣΥΛΛΗΨΗΣ_${d.v("surname")}.doc`);
 }
 
+// 9. ΔΙΚΑΙΩΜΑΤΑ ΣΥΛΛΗΨΗΣ
 function exportRights() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short'])) return;
     let d = getD(); 
@@ -423,12 +357,13 @@ function exportRights() {
     makeDoc("Δικαιώματα", header, body, `2_ΕΚΘΕΣΗ_ΔΙΚΑΙΩΜΑΤΩΝ_${d.v("surname")}.doc`);
 }
 
+// 10. ΑΠΟΛΟΓΙΑ
 function exportApologia() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short', 'apologia_plea'])) return;
     let d = getD(); let fullCharge = d.v("apologia_charge_short"); if(d.v("apologia_charge_details")) fullCharge += ". " + d.v("apologia_charge_details");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΞΕΤΑΣΗΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ (Κ.Π.Δ.)</p>`;
 
-    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("apo_start")} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παριστάμενου και του ${d.banakr} της ιδίας Υπηρεσίας, εξετάζεται ${d.a_o} κατωτέρω ${d.a_katig}.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${d.v("apo_start")} ενώπιον εμού του ${d.anakr} του ${d.dept}, παριστάμενου και του ${d.banakr} της ιδίας Υπηρεσίας, εξετάζεται ${d.a_o} κατωτέρω ${d.a_katig}.</p>
     <p style="${pStyle}"><b>ΕΡΩΤΗΣΗ:</b> Πώς ονομάζεσαι κ.λ.π.;</p>
     <p style="${pStyle}"><b>ΑΠΟΚΡΙΣΗ:</b> ${d.prof}.</p>
     <p style="${pStyle}">Ενταύθα γνωρίσαμε ${d.a_ston} εξεταζόμεν${d.a_exet_acc.slice(12)} ότι κατηγορείται για ${fullCharge}</p>
@@ -449,28 +384,46 @@ function exportApologia() {
     makeDoc("Απολογία", header, body, `3_ΑΠΟΛΟΓΙΑ_ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ_${d.v("surname")}.doc`);
 }
 
-// 11. ΝΑΡΚΩΤΙΚΑ - ΕΞΥΠΝΗ ΚΑΤΑΣΧΕΣΗ
+// 11. ΝΑΡΚΩΤΙΚΑ - ΕΞΥΠΝΗ ΚΑΤΑΣΧΕΣΗ (ΕΠΙΣΗΜΑ ΠΡΟΤΥΠΑ)
 function exportSeizure() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD(); let tm = getTimeRange("seiz_start", "seiz_end", "doc_start", "doc_end"); let tType = d.v("drug_search_type");
     let header, body;
-    let foundLoc = d.v("drug_found_loc") ? `, ${d.v("drug_found_loc")}, ` : ` `;
     
-    if (!tType || tType.includes("ΣΩΜΑΤΙΚΗΣ") || tType.includes("ΑΥΤΟΚΙΝΗΤΟΥ") || tType.includes("ΟΙΚΙΑΣ")) {
+    if (tType === "ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        if (!validateRequiredFields(['drug_body_loc'])) return;
+        let foundLoc = d.v("drug_body_loc") ? `, στην ${d.v("drug_body_loc")}` : ``;
+        let searchOfficer = d.v("drug_body_officer") ? d.v("drug_body_officer") : "εμάς";
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt; text-transform: uppercase;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
-        body = `<p style="${pStyle}">- Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ως άνω Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εκθέτουμε τα εξής:</p>
-        <p style="${pStyle}">- Ενεργούντες προανάκριση για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις» όπως τροπ. με το άρθρο 10 του Ν. 4322/2015 και έχοντες βάσιμες υπόνοιες ότι ${d.a_o} ${d.prof} έχει στην κατοχή ${d.a_tou} ναρκωτικές ουσίες, καλέσαμε ${d.a_auton} όπως μας τις παραδώσει. Κατόπιν αρνητικής του απάντησης, προβήκαμε στη σωματική έρευνα τ${d.a_tou} ${d.prof_gen}, στην οποία διαπιστώσαμε ότι${foundLoc}υπήρχαν: ${d.v("drug_packaging")} περιέχουσα ποσότητα της ναρκωτικής ουσίας «${d.v("drug_type")}» μικτού βάρους ${d.v("drug_weight")} γραμμαρίων περίπου, τα οποία εμπίπτουν στις διατάξεις του Ν. 4139/2013 και προβήκαμε στην κατάσχεση αυτών προκειμένου να αποσταλούν ως πειστήρια στον κ. ${d.prosecutor}.</p>
-        <p style="${pStyle}">- Αναφέρεται ότι η έρευνα στ${d.a_ton} ανωτέρω έγινε από εμάς.</p>
-        <p style="${pStyle}">- Γίνεται μνεία, ότι η παρούσα έρευνα άρχισε την ${tm.start} ώρα της ${d.v("doc_date")} και περατώθηκε την ${tm.end} ώρα της ${d.v("doc_date")}, η δε σύνταξη της παρούσας άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.-</p>
-        <p style="${pStyleLast}">- Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
+        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», και έχοντας βάσιμες υπόνοιες ότι ο ${d.prof} έχει στην κατοχή του ναρκωτικές ουσίες, καλέσαμε αυτόν όπως μας τις παραδώσει. Κατόπιν αρνητικής του απάντησης, προβήκαμε στη σωματική του έρευνα, κατά την οποία διαπιστώσαμε ότι${foundLoc} υπήρχε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία και κατασχέσαμε προκειμένου να αποσταλεί ως πειστήριο στην ${d.prosecutor}.</p>
+        <p style="${pStyle}">Αναφέρεται ότι η έρευνα στον ανωτέρω έγινε από ${searchOfficer}.</p>
+        <p style="${pStyle}">Γίνεται μνεία, ότι η παρούσα έρευνα άρχισε την ${d.v("drug_body_start")} ώρα της ${d.v("drug_body_date")} και περατώθηκε την ${d.v("drug_body_end")} ώρα της ιδίας. Η δε σύνταξη της παρούσας άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
+        <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock4("Ο Καθ' ου η έρευνα", "Ο εν. την έρευνα", "Ο Β' Αν. Υπάλληλος", "Ο Αν. Υπάλληλος")}`;
-    } else {
+        
+    } else if (tType === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        if (!validateRequiredFields(['drug_car_plate', 'drug_car_brand', 'drug_car_color', 'drug_car_start', 'drug_car_end'])) return;
+        let foundLoc = d.v("drug_car_loc") ? ` ${d.v("drug_car_loc")}` : ``;
+        header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
+        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε παρουσία του ${d.prof} σε έρευνα του υπ' αριθμ. ${d.v("drug_car_plate")} ΙΧΕ αυτ/του, μάρκας ${d.v("drug_car_brand")}, χρώματος ${d.v("drug_car_color")}, καθόσον υπήρχε σοβαρό ενδεχόμενο να ανευρεθούν αντικείμενα που έχουν σχέση με την υπό έρευνα υπόθεση. Ερευνήσαμε όλους τους εσωτερικούς χώρους αυτού και εν συνεχεία${foundLoc} βρέθηκε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία πιθανώς «${d.v("drug_type")}» συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία κατασχέσαμε.</p>
+        <p style="${pStyle}">Κατόπιν των ανωτέρω προβήκαμε στην κατάσχεση της ναρκωτικής ουσίας και του αυτ/του μαζί με τις κρατικές πινακίδες και την άδεια κυκλοφορίας, για να αποσταλεί, η μεν ναρκωτική ουσία στο Χημείο για εξέταση και το αποτέλεσμα αυτής στην ${d.prosecutor}, το δε αυτ/το θα παραμείνει στην Υπηρεσία μας προς φύλαξη μαζί με τις κρατικές πινακίδες και την άδεια κυκλοφορίας, μέχρις ότου αποφανθεί για την τύχη του το αρμόδιο δικαστήριο.</p>
+        <p style="${pStyle}">Γίνεται μνεία ότι η έρευνα του αυτ/του άρχισε την ${d.v("drug_car_start")} ώρα της ${d.v("drug_car_date")} και τελείωσε την ${d.v("drug_car_end")} ώρα της ιδίας. Η δε σύνταξη της παρούσας έκθεσης άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα της ιδίας.</p>
+        <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
+        ${sigBlock("Ο καθ' ου η έρευνα και κατάσχεση", "Ο Β’ Ανακρ. Υπάλληλος", "Ο Ανακρ. Υπάλληλος")}`;
+        
+    } else { // ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ
+        if (!validateRequiredFields(['drug_surrender_officer'])) return;
+        let s_officer = d.v("drug_surrender_officer");
+        let s_date = d.v("drug_surrender_date");
+        let s_time = d.v("drug_surrender_time");
+        let s_city = d.v("drug_surrender_city") ? ` στην ${d.v("drug_surrender_city")},` : "";
+        let s_street = d.v("drug_surrender_street") ? ` στην οδό ${d.v("drug_surrender_street")},` : "";
+        
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
-        body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και τ${d.banakr_genitive} της ίδιας υπηρεσίας, που προσλήφθηκε ως β’ ανακριτικός υπάλληλος, επειδή ενεργούμε προανάκριση για παράβαση Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε στην κατάσχεση της κατωτέρω ποσότητας, ήτοι: ${d.v("drug_packaging")}, περιέχουσας ναρκωτική ουσία, πιθανώς ${d.v("drug_type")}, μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία μας παρέδωσε ______________ και η οποία, όπως δήλωσε, του παραδόθηκε οικειοθελώς την ________________ και ώρα ______ στην ______________, στην οδό _____________ αρ. ____, από τ${d.a_ton} ${d.prof_acc}, κατά τον σωματικό του έλεγχο.</p>
-        <p style="${pStyleLast}">Προς πίστωση συντάχθηκε η παρούσα η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
+        body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε στην κατάσχεση της κατωτέρω ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία μας παρέδωσε ${s_officer} και η οποία, όπως δήλωσε, του παραδόθηκε οικειοθελώς την ${s_date} και ώρα ${s_time}${s_city}${s_street} από τον ${d.prof}, κατά τον σωματικό του έλεγχο.</p>
+        <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock("Ο ΠΑΡΑΔΟΥΣ", "Ο Β’ ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ", "Ο ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ")}`;
     }
-    
     makeDoc("Κατάσχεση", header, body, `ΚΑΤΑΣΧΕΣΗ_${d.v("surname")}.doc`);
 }
 
@@ -478,10 +431,10 @@ function exportWeighing() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD(); let tm = getTimeRange("weigh_start", "weigh_end", "doc_start", "doc_end");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΖΥΓΙΣΗΣ ΚΑΙ ΣΦΡΑΓΙΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
-    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, κατ. ενταύθα (${d.dept}), επί παρουσία και τ${d.a_tou} κατηγορούμενου για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) ${d.prof_gen}, προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας, της υπηρεσίας, της ανευρεθείσας και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι ${d.v("drug_packaging")} περιέχουσας ποσότητας ναρκωτικής ουσίας, πιθανώς «${d.v("drug_type")}» η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων περίπου.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επί παρουσία και του ${d.prof}, ο οποίος κατηγορείται για παράβαση του Ν. 4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις), προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας της Υπηρεσίας μας, της ανευρεθείσας και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων.</p>
     <p style="${pStyle}">Κατόπιν τούτου η ανωτέρω ναρκωτική ουσία σφραγίστηκε σε ταυτάριθμο φάκελο.</p>
     <p style="${pStyle}">Η παρούσα άρχισε να συντάσσεται ώρα ${tm.start} και περατώθηκε ώρα ${tm.end}.</p>
-    <p style="${pStyleLast}">Προς πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε υπογράφεται ως ακολούθως:</p>
+    <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
     ${sigBlock(d.a_sign, "Ο Β’ ανακριτικός υπάλληλος", "Ο ανακριτικός υπάλληλος")}`;
     makeDoc("Ζύγιση", header, body, `ΖΥΓΙΣΗ_${d.v("surname")}.doc`);
 }
@@ -490,9 +443,9 @@ function exportNotification() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type'])) return;
     let d = getD(); let tm = getTimeRange("notif_start", "notif_end", "doc_start", "doc_end");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΓΝΩΣΤΟΠΟΙΗΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
-    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr}, της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, εκθέτουμε τα ακόλουθα:</p>
-    <p style="${pStyle}">Καθόσον ενεργούμε προανάκριση, σύμφωνα με το άρθρο 243 παρ. 2 του Κ.Π.Δ. για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις), όπως τροποποιήθηκε και ισχύει και έχοντες βάσιμες υπόνοιες ότι οι παραδοθείσες, σύμφωνα με την από ${d.fullDateStr} συνταχθείσα έκθεση παράδοσης και κατάσχεσης, ${d.v("drug_packaging")} η οποία βρέθηκε στην κατοχή τ${d.a_tou} ${d.prof_gen}, ενέχει προδήλως τις ιδιότητες των ναρκωτικών ουσιών σύμφωνα με το άρθρο 1 του Ν. 4139/2013, υπαγόμενων στον Πίνακα Β΄, «${d.v("drug_type")}» γνωστοποιήσαμε τούτο στον παραπάνω, ως και τον καλέσαμε να μας δηλώσει αν αμφισβητεί τις ιδιότητες αυτές, σύμφωνα με το άρθρο 41 Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών».</p>
-    <p style="${pStyle}">Ο καθ’ ου η γνωστοποίηση δεν αμφισβήτησε την ιδιότητα των κατασχεθέντων ως ναρκωτικών ουσιών «${d.v("drug_type")}».</p>
+    let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, εκθέτουμε τα ακόλουθα:</p>
+    <p style="${pStyle}">Επειδή ενεργείται προανάκριση από την Υπηρεσία μας σύμφωνα με το άρθρο 243 παρ. 2 του Κ.Π.Δ. για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) και έχοντας βάσιμες υπόνοιες ότι η παραδοθείσα (σύμφωνα με τη συνταχθείσα έκθεση κατάσχεσης) ${d.v("drug_packaging")}, η οποία βρέθηκε στην κατοχή του ${d.prof}, ενέχει προδήλως τις ιδιότητες των ναρκωτικών ουσιών, υπαγόμενων στον Πίνακα Β΄ («${d.v("drug_type")}»), γνωστοποιήσαμε τούτο στον παραπάνω, και τον καλέσαμε να μας δηλώσει αν αμφισβητεί τις ιδιότητες αυτές, σύμφωνα με το άρθρο 41 του Ν. 4139/2013.</p>
+    <p style="${pStyle}">Ο καθ’ ου η γνωστοποίηση δεν αμφισβήτησε την ιδιότητα των κατασχεθέντων ως ναρκωτικών ουσιών («${d.v("drug_type")}»).</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
     <p style="${pStyleLast}">Για πιστοποίηση συντάχτηκε η παρούσα έκθεση, η οποία αφού αναγνώστηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
     ${sigBlock("Ο κατά του οποίου η γνωστοποίηση", "Ο Β΄ Ανακρ. Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;

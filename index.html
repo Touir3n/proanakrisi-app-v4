@@ -79,21 +79,21 @@
     <div class="section">
         <div class="section-title">ΒΗΜΑ 2: Έλεγχος & Συμπλήρωση Στοιχείων</div>
         <div class="info-text">
-            <strong>💡 ΣΗΜΕΙΩΣΗ:</strong> Πατήστε το "AI Τονισμός" για να διορθωθούν αυτόματα τα κεφαλαία-πεζά και οι τόνοι. Το σύστημα θα κλίνει τα ονόματα μόνο του στα έγγραφα!
+            <strong>💡 ΝΕΟ:</strong> Πατήστε το "AI Τονισμός" για να διορθωθούν αυτόματα τα κεφαλαία-πεζά και οι τόνοι!
         </div>
         <div class="grid-form">
             <div class="form-group"><label>Φύλο (Αυτόματο)</label><select id="gender"><option value="M">Άνδρας</option><option value="F">Γυναίκα</option></select></div>
             <div class="form-group"><label>Επώνυμο *</label><input type="text" id="surname"></div>
             <div class="form-group"><label>Όνομα *</label><input type="text" id="name" class="accent-warning"></div>
-            <div class="form-group"><label>Πατρώνυμο (Ονομαστική, πχ. ΓΕΩΡΓΙΟΣ)</label><input type="text" id="father" class="accent-warning"></div>
-            <div class="form-group"><label>Μητρώνυμο (Ονομαστική, πχ. ΜΑΡΙΑ)</label><input type="text" id="mother" class="accent-warning"></div>
+            <div class="form-group"><label>Πατρώνυμο</label><input type="text" id="father" class="accent-warning"></div>
+            <div class="form-group"><label>Μητρώνυμο</label><input type="text" id="mother" class="accent-warning"></div>
             <div class="form-group"><label>Ημ. Γέννησης</label><input type="text" id="dob" placeholder="π.χ. 12-12-1990"></div>
-            <div class="form-group"><label>Τόπος Γέννησης (σε Αιτιατική)</label><input type="text" id="pob" class="accent-warning"></div>
-            <div class="form-group"><label>Περιοχή Κατοικίας (σε Ονομαστική)</label><input type="text" id="area" class="accent-warning"></div>
+            <div class="form-group"><label>Τόπος Γέννησης</label><input type="text" id="pob" class="accent-warning"></div>
+            <div class="form-group"><label>Περιοχή Κατοικίας</label><input type="text" id="area" class="accent-warning"></div>
             <div class="form-group"><label>Δήμος</label><input type="text" id="dimos" class="accent-warning"></div>
             <div class="form-group"><label>Οδός</label><input type="text" id="odos"></div>
             <div class="form-group"><label>Αριθμός</label><input type="text" id="arithmos"></div>
-            <div class="form-group"><label>Επάγγελμα (σε Γενική)</label><input type="text" id="epaggelma" class="manual-input"></div>
+            <div class="form-group"><label>Επάγγελμα</label><input type="text" id="epaggelma" class="manual-input"></div>
             <div class="form-group"><label>Α.Δ.Τ.</label><input type="text" id="adt"></div>
             <div class="form-group"><label>Ημ. Έκδοσης ΔΑΤ</label><input type="text" id="authDate"></div>
             <div class="form-group"><label>Εκδούσα Αρχή</label><input type="text" id="auth" class="accent-warning"></div>
@@ -145,13 +145,255 @@
             <div class="tab-btn tab-btn-orange" onclick="switchTab('prok', this)">📁 Προκαταρκτική</div>
         </div>
 
-        <div id="tab_simple" class="tab-content active">... (Ο ΚΩΔΙΚΑΣ ΣΟΥ) ...</div>
-        <div id="tab_dv" class="tab-content">... (Ο ΚΩΔΙΚΑΣ ΣΟΥ) ...</div>
-        <div id="tab_apologia" class="tab-content">... (Ο ΚΩΔΙΚΑΣ ΣΟΥ) ...</div>
-        
+        <div id="tab_simple" class="tab-content active">
+            <div class="witness-settings-grid">
+                <div class="form-group">
+                    <label>Σχέση με Κατηγορούμενο:</label>
+                    <select id="doc_relation_simple">
+                        <option value="τον κατηγορούμενο δε γνωρίζει">Δεν γνωρίζει</option>
+                        <option value="τον κατηγορούμενο γνωρίζει (απλά)">Γνωρίζει απλά</option>
+                        <option value="τον κατηγορούμενο γνωρίζει ως γείτονα">Γείτονας</option>
+                        <option value="τον κατηγορούμενο γνωρίζει φιλικά">Φίλος / Γνωστός</option>
+                        <option value="τυγχάνει συγγενής του κατηγορουμένου">Συγγενής</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Τύπος (Αντίγραφο άρθ. 58):</label>
+                    <select id="doc_copy_simple">
+                        <option value="NONE">Απλός Μάρτυρας (Καμία ερώτηση)</option>
+                        <option value="YES">Έγκληση (Επιθυμεί αντίγραφο)</option>
+                        <option value="NO">Έγκληση (ΔΕΝ επιθυμεί αντίγραφο)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Κατ' έγκληση, χωρίς παράβολο:</label>
+                    <select id="doc_paravolo_simple">
+                        <option value="ΟΧΙ">Όχι (Αυτεπάγγελτο / Έχει ήδη παράβολο)</option>
+                        <option value="ΝΑΙ">Ναι (Προσθήκη ερώτησης για τα 100€)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                    <label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; flex: 1;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας; *</label>
+                    <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_simple" onclick="refineTextAI('doc_testimony_simple', 'spin_ref_simple', 'btn_ref_simple')"><span id="spin_ref_simple" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button>
+                    <button class="btn-undo" onclick="undoText('doc_testimony_simple')">↩️ Αναίρεση</button>
+                </div>
+                <textarea id="doc_testimony_simple" style="height: 150px;" placeholder="Περιγράψτε την υπόθεση..." oninput="saveMem(this.id)"></textarea>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button class="btn-ai" id="btn_check_rule" onclick="checkGoldenRule('doc_testimony_simple', 'ai_golden_rule_result', 'spinner_rule', 'btn_check_rule')">
+                    <span id="spinner_rule" class="spinner" style="display: none;"></span>
+                    ✨ AI Έλεγχος "Χρυσού Κανόνα"
+                </button>
+                <div id="ai_golden_rule_result" class="ai-result"></div>
+            </div>
+
+            <button class="btn-word" onclick="exportToWord()">💾 Λήψη Έκθεσης σε Word (.doc) - ΕΝΟΡΚΗ</button>
+        </div>
+
+        <div id="tab_dv" class="tab-content">
+            <div class="witness-settings-grid">
+                <div class="form-group">
+                    <label>Σχέση με Κατηγορούμενο (Ν. 3500/06):</label>
+                    <select id="doc_relation_dv">
+                        <option value="τυγχάνει σύζυγος του κατηγορουμένου" selected>Σύζυγος</option>
+                        <option value="συνδέεται με σύμφωνο συμβίωσης με τον κατηγορούμενο">Σύμφωνο συμβίωσης</option>
+                        <option value="τυγχάνει μόνιμος σύντροφος του κατηγορουμένου">Μόνιμος σύντροφος</option>
+                        <option value="τυγχάνει τέκνο του κατηγορουμένου">Τέκνο</option>
+                        <option value="τυγχάνει πατέρας του κατηγορουμένου">Πατέρας</option>
+                        <option value="τυγχάνει μητέρα του κατηγορουμένου">Μητέρα</option>
+                        <option value="τυγχάνει αδερφός του κατηγορουμένου">Αδερφός</option>
+                        <option value="τυγχάνει αδερφή του κατηγορουμένου">Αδερφή</option>
+                        <option value="τυγχάνει παππούς του κατηγορουμένου">Παππούς</option>
+                        <option value="τυγχάνει γιαγιά του κατηγορουμένου">Γιαγιά</option>
+                        <option value="τυγχάνει εγγόνι του κατηγορουμένου">Εγγόνι</option>
+                        <option value="τυγχάνει πεθερός του κατηγορουμένου">Πεθερός</option>
+                        <option value="τυγχάνει πεθερά του κατηγορουμένου">Πεθερά</option>
+                        <option value="τυγχάνει γαμπρός του κατηγορουμένου">Γαμπρός</option>
+                        <option value="τυγχάνει νύφη του κατηγορουμένου">Νύφη</option>
+                        <option value="τυγχάνει κουνιάδος του κατηγορουμένου">Κουνιάδος</option>
+                        <option value="τυγχάνει κουνιάδα του κατηγορουμένου">Κουνιάδα</option>
+                        <option value="τυγχάνει τέως σύζυγος του κατηγορουμένου">Τέως σύζυγος</option>
+                        <option value="τυγχάνει τέως μόνιμος σύντροφος του κατηγορουμένου">Τέως μόνιμος σύντροφος</option>
+                        <option value="τυγχάνει θείος του κατηγορουμένου (σύνοικος)">Θείος (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει θεία του κατηγορουμένου (σύνοικος)">Θεία (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει ξάδερφος του κατηγορουμένου (σύνοικος)">Ξάδερφος (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει ξαδέρφη του κατηγορουμένου (σύνοικος)">Ξαδέρφη (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει ανιψιός του κατηγορουμένου (σύνοικος)">Ανιψιός (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει ανιψιά του κατηγορουμένου (σύνοικος)">Ανιψιά (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει επίτροπος / ανάδοχος γονέας του κατηγορουμένου (σύνοικος)">Επίτροπος/Ανάδοχος (Εφόσον συνοικούν)</option>
+                        <option value="τυγχάνει πρόσωπο που διαμένει στον ίδιο φορέα κοινωνικής μέριμνας με τον κατηγορούμενο">Πρόσωπο σε φορέα κοινωνικής μέριμνας</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Τύπος (Αντίγραφο άρθ. 58):</label>
+                    <select id="doc_copy_dv">
+                        <option value="YES">Έγκληση (Επιθυμεί αντίγραφο)</option>
+                        <option value="NO">Έγκληση (ΔΕΝ επιθυμεί αντίγραφο)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Παράβολο (Κατ' έγκληση):</label>
+                    <select id="doc_paravolo_dv">
+                        <option value="NONE">Δεν απαιτείται ερώτηση</option>
+                        <option value="YES_3DAYS">Ναι (Θα το προσκομίσει σε 3 μέρες)</option>
+                        <option value="ONLY_EX_OFFICIO">Δίωξη ΜΟΝΟ για τα αυτεπάγγελτα</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="info-text" style="background-color: #e8f4f8; border-left: 4px solid #17a2b8;">
+                <strong>💡 ΣΗΜΕΙΩΣΗ:</strong> Όσα ερωτήματα αφήσετε <u>κενά</u>, θα αγνοηθούν αυτόματα και δεν θα μπουν στο τελικό έγγραφο.
+            </div>
+            
+            <div id="dv_mode_container"></div>
+            
+            <button class="btn-word-no-oath" onclick="exportToWordNoOath()">⚠️ Λήψη Έκθεσης σε Word (.doc) - ΧΩΡΙΣ ΟΡΚΟ</button>
+        </div>
+
+        <div id="tab_apologia" class="tab-content">
+            
+            <div class="ai-box">
+                <span style="font-size: 14px; color: #8e44ad; font-weight: bold;">🤖 AI Βοηθός Κατηγορητηρίου:</span>
+                <p style="font-size: 12px; color: #555; margin-bottom: 5px; margin-top: 5px;">
+                    Περιγράψτε με απλά λόγια τι συνέβη. Η AI θα γράψει αυτόματα το "Βασικό Κατηγορητήριο" και τα "Πραγματικά Περιστατικά" σε νομική γλώσσα.
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <textarea id="ai_rough_notes" style="flex: 2; height: 50px; border: 2px dashed #8e44ad; padding: 8px;" placeholder="π.χ. Σήμερα το πρωί ο Α.Β. μπήκε στο περίπτερο του Γ.Δ. και..." oninput="saveMem(this.id)"></textarea>
+                    <button class="btn-ai" id="btn_generate_charge" style="flex: 1;" onclick="generateChargeAI()">
+                        <span id="spinner_charge" class="spinner" style="display: none;"></span>
+                        ✨ Σύνθεση με AI
+                    </button>
+                </div>
+            </div>
+
+            <div style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <span style="font-size: 13px; color: #333; font-weight: bold;">Χειροκίνητη Σύνθεση Βασικού Κατηγορητηρίου:</span>
+                <div style="display: flex; gap: 10px; margin-top: 10px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Λίστα Αδικημάτων:</label>
+                        <select id="ai_crime_dropdown">
+                            <option value="">-- Επιλέξτε αδίκημα από τη λίστα --</option>
+                            <optgroup label="Ποινικός Κώδικας">
+                                <option value="Αρ. 386 Π.Κ. «Απάτη»">Απάτη (386 Π.Κ.)</option>
+                                <option value="Αρ. 372 Π.Κ. «Κλοπή»">Κλοπή (372 Π.Κ.)</option>
+                                <option value="Αρ. 374 Π.Κ. «Διακεκριμένη Κλοπή»">Διακεκριμένη Κλοπή (374 Π.Κ.)</option>
+                                <option value="Αρ. 380 Π.Κ. «Ληστεία»">Ληστεία (380 Π.Κ.)</option>
+                                <option value="Αρ. 308 Π.Κ. «Απλή Σωματική Βλάβη»">Απλή Σωματική Βλάβη (308 Π.Κ.)</option>
+                                <option value="Αρ. 309 Π.Κ. «Επικίνδυνη Σωματική Βλάβη»">Επικίνδυνη Σωματική Βλάβη (309 Π.Κ.)</option>
+                                <option value="Αρ. 333 Π.Κ. «Απειλή»">Απειλή (333 Π.Κ.)</option>
+                                <option value="Αρ. 361 Π.Κ. «Εξύβριση»">Εξύβριση (361 Π.Κ.)</option>
+                                <option value="Αρ. 378 Π.Κ. «Φθορά ξένης ιδιοκτησίας»">Φθορά ξένης ιδιοκτησίας (378 Π.Κ.)</option>
+                                <option value="Αρ. 216 Π.Κ. «Πλαστογραφία»">Πλαστογραφία (216 Π.Κ.)</option>
+                                <option value="Αρ. 167 Π.Κ. «Βία κατά υπαλλήλων»">Αντίσταση (167 Π.Κ.)</option>
+                                <option value="Αρ. 169 Π.Κ. «Απείθεια»">Απείθεια (169 Π.Κ.)</option>
+                            </optgroup>
+                            <optgroup label="Ειδικοί Ποινικοί Νόμοι">
+                                <option value="Ν. 4139/2013 «Περί Εξαρτησιογόνων Ουσιών»">Ναρκωτικά (Ν. 4139/2013)</option>
+                                <option value="Ν. 3500/2006 «Περί Ενδοοικογενειακής Βίας»">Ενδοοικογενειακή Βία (Ν. 3500/2006)</option>
+                                <option value="Ν. 4830/2021 «Περί Ευζωίας Ζώων Συντροφιάς»">Κακοποίηση Ζώων (Ν. 4830/2021)</option>
+                                <option value="Ν. 2168/1993 «Περί Όπλων»">Όπλα / Πυρομαχικά (Ν. 2168/1993)</option>
+                                <option value="Ν. 2696/1999 «Κώδικας Οδικής Κυκλοφορίας»">Κ.Ο.Κ. (Ν. 2696/1999)</option>
+                                <option value="Ν. 4251/2014 «Κώδικας Μετανάστευσης»">Αλλοδαποί / Παράνομη Διαμονή (Ν. 4251/2014)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <button type="button" class="btn-add" onclick="addSelectedCrime()">➕ Προσθήκη</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="ai_law" placeholder="Τα επιλεγμένα αδικήματα θα μπουν εδώ..." style="flex: 1;" oninput="saveMem(this.id)">
+                        <button type="button" class="btn-clear" onclick="clearCrimes()" title="Εκκαθάριση Λίστας" style="padding: 0 10px;">🗑️</button>
+                    </div>
+                </div>
+
+                <div class="grid-form" style="margin-top: 0;">
+                    <div class="form-group"><label>Ημερομηνία Τέλεσης:</label><input type="text" id="ai_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Τέλεσης:</label><input type="text" id="ai_time" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Τόπος Τέλεσης:</label><input type="text" id="ai_loc" placeholder="π.χ. Σταυρό Θεσ/νίκης" oninput="saveMem(this.id)"></div>
+                </div>
+                
+                <button type="button" class="btn-add" style="width: 100%; margin-top: 10px;" onclick="generateAutoCharge()">Σύνθεση Κειμένου</button>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="color:#0056b3; font-size: 13px;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία) *</label>
+                <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση των άρθρων..." oninput="saveMem(this.id)"></textarea>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="color:#28a745; font-size: 13px;">Πραγματικά Περιστατικά (Μπαίνει ΜΟΝΟ στην Απολογία)</label>
+                <textarea id="apologia_charge_details" style="height: 70px; border: 2px solid #c3e6cb;" placeholder="Ειδικότερα,..." oninput="saveMem(this.id)"></textarea>
+            </div>
+
+            <div class="info-text" style="background: #e6f7ff; border-left: 4px solid #0056b3;">
+                ⏱️ <strong>Αλληλουχία Χρόνων:</strong> Οι ώρες έχουν υπολογιστεί αυτόματα, ώστε η μία έκθεση να ξεκινά ακριβώς μόλις τελειώνει η προηγούμενη. Ελέγξτε τις.
+            </div>
+            <div class="time-grid-wrapper">
+                <div class="form-group">
+                    <label>Σύλληψη (Έναρξη - Λήξη)</label>
+                    <div class="time-box"><input type="text" id="arr_start"><input type="text" id="arr_end"></div>
+                </div>
+                <div class="form-group">
+                    <label>Δικαιώματα (Έναρξη - Λήξη)</label>
+                    <div class="time-box"><input type="text" id="rig_start"><input type="text" id="rig_end"></div>
+                </div>
+                <div class="form-group">
+                    <label>Απολογία (Έναρξη - Λήξη)</label>
+                    <div class="time-box"><input type="text" id="apo_start"><input type="text" id="apo_end"></div>
+                </div>
+            </div>
+
+            <div class="step-box" style="border-color: #f5c6cb; background: #fcf1f1;">
+                <div class="step-title" style="color: #dc3545;">ΒΗΜΑ 1ο: ΣΥΛΛΗΨΗ</div>
+                
+                <div style="background: #e9ecef; padding: 10px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px; display: inline-block;">
+                    <input type="checkbox" id="is_drug_case" onchange="refreshTimes()" style="width: auto; vertical-align: middle;">
+                    <label for="is_drug_case" style="display: inline; cursor: pointer; color: #0056b3; margin-left: 5px;">💊 Πρόκειται για υπόθεση Ναρκωτικών (Αυτόματη σύνδεση ωρών με το tab "Ναρκωτικά")</label>
+                </div>
+
+                <div class="arrest-grid">
+                    <div class="form-group"><label>Ημερ. Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Σύλληψης (Στο δρόμο):</label><input type="text" id="arr_street_time" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Σύλληψης: *</label><input type="text" id="arr_loc" placeholder="π.χ. επί της Εγνατίας Οδού" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Συλλαβών Αστυνομικός (σε Αιτιατική):</label><input type="text" id="arr_officer" placeholder="π.χ. Αστυφύλακα ΓΕΩΡΓΙΟΥ Γεώργιο της Ο.Π.Κ.Ε." oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Πρόσθετη Αιτιολογία (προαιρετικό):</label><input type="text" id="arr_reason" placeholder="π.χ. κατελήφθη σε γενόμενο αστυνομικό έλεγχο να έχει..." oninput="saveMem(this.id)"></div>
+                </div>
+                <button class="btn-word-arrest" onclick="exportArrest()">🚨 1. Λήψη Έκθεσης Σύλληψης (.doc)</button>
+            </div>
+
+            <div class="step-box" style="border-color: #cbb3f5; background: #f7f1fc;">
+                <div class="step-title" style="color: #6f42c1;">ΒΗΜΑ 2ο: ΔΙΚΑΙΩΜΑΤΑ</div>
+                <p style="font-size: 13px; color: #555; margin-top: 0; margin-bottom: 10px;">Δεν απαιτούνται επιπλέον στοιχεία. Τα δικαιώματα παράγονται αυτόματα με βάση το Βασικό Κατηγορητήριο.</p>
+                <button class="btn-word-rights" onclick="exportRights()">📜 2. Λήψη Έκθεσης Δικαιωμάτων (.doc)</button>
+            </div>
+
+            <div class="step-box" style="border-color: #c3e6cb; background: #f1fcf3;">
+                <div class="step-title" style="color: #28a745;">ΒΗΜΑ 3ο: ΑΠΟΛΟΓΙΑ</div>
+                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Επιθυμείτε να κάνετε χρήση των δικαιωμάτων που σας γνωστοποιήθηκαν;</label><input type="text" id="apologia_rights" value="Όχι." oninput="saveMem(this.id)"></div>
+                <div class="form-group" style="margin-bottom:10px;"><label>ΕΡΩΤΗΣΗ: Κατηγορήθηκες άλλη φορά και για ποια αιτία;</label><input type="text" id="apologia_past" value="Όχι, δεν έχω κατηγορηθεί ξανά." oninput="saveMem(this.id)"></div>
+                
+                <div class="form-group" style="margin-bottom:15px;">
+                    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                        <label style="flex: 1;">ΕΡΩΤΗΣΗ: Κατηγορείσαι ήδη για τις πράξεις που σου γνωστοποιήθηκαν ανωτέρω. Τι απολογείσαι; *</label>
+                        <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_apo" onclick="refineTextAI('apologia_plea', 'spin_ref_apo', 'btn_ref_apo')"><span id="spin_ref_apo" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button>
+                        <button class="btn-undo" onclick="undoText('apologia_plea')">↩️ Αναίρεση</button>
+                    </div>
+                    <textarea id="apologia_plea" style="height: 100px;" placeholder="Τα αρνούμαι όλα..." oninput="saveMem(this.id)"></textarea>
+                </div>
+                <button class="btn-word-apologia" onclick="exportApologia()">⚖️ 3. Λήψη Απολογίας (.doc)</button>
+            </div>
+        </div>
+
         <div id="tab_drugs" class="tab-content" style="background-color: #f4f8fb;">
             <div class="info-text" style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; color: #0c5460;">
-                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Επιλέξτε τον τύπο έρευνας για να εμφανιστούν τα κατάλληλα πεδία.
+                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Επιλέξτε τον τύπο έρευνας για να εμφανιστούν τα κατάλληλα πεδία (π.χ. στοιχεία οχήματος).
             </div>
             
             <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
@@ -163,16 +405,16 @@
                         <option value="ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Έρευνα Αυτοκινήτου και Κατάσχεση</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε Γενική/Αιτιατική - π.χ. ινδική κάνναβη): *</label><input type="text" id="drug_type" placeholder="π.χ. ινδική κάνναβη" oninput="saveMem(this.id)"></div>
+                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε αιτιατική): *</label><input type="text" id="drug_type" placeholder="π.χ. ινδική κάνναβη / ηρωίνη" oninput="saveMem(this.id)"></div>
                 <div class="form-group"><label>Μικτό Βάρος (σε αριθμό): *</label><input type="text" id="drug_weight" placeholder="π.χ. 262" oninput="saveMem(this.id)"></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Συσκευασία / Αντικείμενο (σε Αιτιατική - πχ. μία νάιλον συσκευασία): *</label><input type="text" id="drug_packaging" placeholder="π.χ. μία νάιλον συσκευασία" oninput="saveMem(this.id)"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Συσκευασία / Περιγραφή Αντικειμένου: *</label><input type="text" id="drug_packaging" placeholder="π.χ. μία νάιλον συσκευασία / ένα χάρτινο περιτύλιγμα" oninput="saveMem(this.id)"></div>
             </div>
 
             <div id="panel_body_search" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
                 <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Σωματικής Έρευνας</h4>
                 <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
-                    <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης (σε Αιτιατική): *</label><input type="text" id="drug_body_loc" placeholder="π.χ. στην αριστερή τσέπη του παντελονιού του" oninput="saveMem(this.id)"></div>
-                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που έκανε την έρευνα (σε Αιτιατική):</label><input type="text" id="drug_body_officer" placeholder="π.χ. τον Αρχιφύλακα ΝΙΚΗΤΑΚΗ Γεώργιο (Αν μείνει κενό, μπαίνει 'εμάς')" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης: *</label><input type="text" id="drug_body_loc" placeholder="π.χ. στην αριστερή τσέπη του παντελονιού του" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που έκανε την έρευνα (Αιτιατική):</label><input type="text" id="drug_body_officer" placeholder="π.χ. τον Αρχιφύλακα ΝΙΚΗΤΑΚΗ Γεώργιο (Αν μείνει κενό, μπαίνει 'εμάς')" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Ημερομηνία Έρευνας:</label><input type="text" id="drug_body_date" oninput="saveMem(this.id)"></div>
                     <div class="form-group" style="display: flex; flex-direction: row; gap: 5px;">
                         <div style="flex:1"><label>Ώρα Έναρξης:</label><input type="text" id="drug_body_start" oninput="saveMem(this.id)"></div>
@@ -199,11 +441,11 @@
             <div id="panel_surrender" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
                 <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Παράδοσης</h4>
                 <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
-                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που τα παρέδωσε (σε Ονομαστική): *</label><input type="text" id="drug_surrender_officer" placeholder="π.χ. ο Αστυφύλακας ΓΕΩΡΓΙΟΥ Γεώργιος" oninput="saveMem(this.id)"></div>
-                    <div class="form-group"><label>Ημερομηνία Ανεύρεσης:</label><input type="text" id="drug_surrender_date" oninput="saveMem(this.id)"></div>
-                    <div class="form-group"><label>Ώρα Ανεύρεσης:</label><input type="text" id="drug_surrender_time" oninput="saveMem(this.id)"></div>
-                    <div class="form-group"><label>Πόλη / Περιοχή (σε Αιτιατική):</label><input type="text" id="drug_surrender_city" placeholder="π.χ. Καβάλα" oninput="saveMem(this.id)"></div>
-                    <div class="form-group"><label>Οδός & Αριθμός:</label><input type="text" id="drug_surrender_street" placeholder="π.χ. Ξάνθης 10" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που σας τα παρέδωσε (Ονομαστική): *</label><input type="text" id="drug_surrender_officer" placeholder="π.χ. ο Αστυφύλακας ΓΕΩΡΓΙΟΥ Γεώργιος" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ημερομηνία Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_time" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Πόλη / Περιοχή:</label><input type="text" id="drug_surrender_city" placeholder="π.χ. Καβάλα" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Οδός & Αριθμός:</label><input type="text" id="drug_surrender_street" placeholder="π.χ. Ξάνθης αρ. 10" oninput="saveMem(this.id)"></div>
                 </div>
             </div>
 
@@ -230,7 +472,102 @@
         </div>
 
         <div id="tab_prok" class="tab-content" style="background-color: #fff9f2;">
-            ... (Ο ΚΩΔΙΚΑΣ ΣΟΥ) ...
+            <div class="info-text" style="background-color: #ffe5b4; border-left: 4px solid #ff9900; color: #804d00;">
+                <strong>📁 ΠΡΟΚΑΤΑΡΚΤΙΚΗ ΕΞΕΤΑΣΗ (Άρθρο 244 Κ.Π.Δ.):</strong> Εξαγωγή εγγράφων για ενημέρωση δικαιωμάτων υπόπτου, χορήγηση προθεσμίας και ανωμοτί κατάθεση.
+            </div>
+            
+            <div style="border: 1px solid #ffcc80; background: #fffcf8; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 10px;">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας: *</label>
+                        <input type="text" id="prok_abm" value="υπ' αριθμ. ....... παραγγελίας της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης" oninput="saveMem(this.id)">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center;">
+                            <label style="color: #e67300; flex: 1; margin: 0;">Αποδιδόμενη Πράξη / Κατηγορία: *</label>
+                            <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_charge" onclick="explainLawAI()"><span id="spin_ref_charge" class="spinner" style="display:none;"></span>✨ AI Νόμος</button>
+                            <button class="btn-undo" type="button" onclick="undoText('prok_charge')">↩️ Αναίρεση</button>
+                        </div>
+                        <textarea id="prok_charge" style="height: 50px; border: 1px solid #ccc; padding: 8px; font-family: Arial; font-size: 13px;" placeholder="π.χ. Ν. 5092/2024 ή αρ. 23 Α.Ν. 1539/38" oninput="saveMem(this.id)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>ΕΡΩΤΗΣΗ: Χρήση Δικαιωμάτων;</label>
+                        <input type="text" id="prok_rights_ans" value="Επιθυμώ να λάβω γνώση του υλικού της δικογραφίας." oninput="saveMem(this.id)">
+                    </div>
+                    <div class="form-group">
+                        <label>ΕΡΩΤΗΣΗ: Ποινικό Παρελθόν;</label>
+                        <input type="text" id="prok_past" value="Όχι." oninput="saveMem(this.id)">
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                        <label style="color: #e67300; font-size: 13px; flex: 1;">Κείμενο Εξηγήσεων (Για Ανωμοτί Εξέταση): *</label>
+                        <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_prok" onclick="refineTextAI('prok_plea', 'spin_ref_prok', 'btn_ref_prok')"><span id="spin_ref_prok" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button>
+                        <button class="btn-undo" onclick="undoText('prok_plea')">↩️ Αναίρεση</button>
+                    </div>
+                    <textarea id="prok_plea" style="height: 100px; border: 1px solid #ccc;" placeholder="Γράψτε εδώ τις εξηγήσεις του υπόπτου (ΑΠΟΚΡΙΣΗ)..." oninput="saveMem(this.id)"></textarea>
+                </div>
+            </div>
+
+            <div class="step-box" style="border-color: #ffcc80; background: #fff;">
+                <div class="step-title" style="color: #e67300;">ΗΜΕΡΑ 1η (Γνωστοποίηση & Ανωμοτί / Προθεσμία)</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Δικαιωμάτων:</label>
+                        <input type="text" id="prok_rights_start" oninput="saveMem(this.id)"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)">
+                    </div>
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_main_start" oninput="saveMem(this.id)"><input type="text" id="prok_main_end" oninput="saveMem(this.id)">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-word-rights" style="grid-column: span 2; background-color: #6f42c1; margin-top: 0;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
+                    <button class="btn-word" style="background-color: #28a745; margin-top: 0;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί Χωρίς Προθεσμία</button>
+                    
+                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fafafa;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Έως (Ημερομηνία):</label>
+                                <input type="text" id="prok_dead_date" placeholder="12-05-2026" oninput="saveMem(this.id)">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Έως (Ώρα):</label>
+                                <input type="text" id="prok_dead_time" placeholder="10:00" oninput="saveMem(this.id)">
+                            </div>
+                        </div>
+                        <button class="btn-word" style="background-color: #ffc107; color: #333; margin-top: 0; width: 100%;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 20px;">
+                <div class="step-title" style="color: #117a8b;">ΜΕΤΑ ΤΗΝ ΠΑΡΕΛΕΥΣΗ ΠΡΟΘΕΣΜΙΑΣ</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_after_start" oninput="saveMem(this.id)"><input type="text" id="prok_after_end" oninput="saveMem(this.id)">
+                    </div>
+                    <div class="time-box" style="flex: 1;">
+                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Εγχείρισης:</label>
+                        <input type="text" id="prok_service_start" oninput="saveMem(this.id)"><input type="text" id="prok_service_end" oninput="saveMem(this.id)">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-word" style="background-color: #17a2b8; margin-top: 0;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label>Αριθμός Σελίδων Υπομνήματος:</label>
+                            <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)">
+                        </div>
+                        <button class="btn-word" style="background-color: #6c757d; margin-top: 0;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
