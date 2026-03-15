@@ -16,13 +16,13 @@ function decline(word, targetCase, isFemale) {
             if (w.endsWith("ΟΥ") || w.endsWith("ου")) return w; // Ήδη σε γενική
         } else {
             if (w.endsWith("ΟΣ")) return w.slice(0, -2) + "ΟΥ"; if (w.endsWith("ος")) return w.slice(0, -2) + "ου"; if (w.endsWith("ός")) return w.slice(0, -2) + "ού"; if (w.endsWith("ΌΣ")) return w.slice(0, -2) + "ΟΥ";
-            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς")) return w.slice(0, -1);
-            if (w.endsWith("ΟΥ") || w.endsWith("ου")) return w; // Ήδη σε γενική
+            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς") || w.endsWith("ΕΣ") || w.endsWith("ες")) return w.slice(0, -1);
+            if (w.endsWith("ΟΥ") || w.endsWith("ου") || w.endsWith("Η") || w.endsWith("η")) return w; 
         }
     } else if (targetCase === "ACC") {
         if (!isFemale) {
             if (w.endsWith("ΟΣ")) return w.slice(0, -1); if (w.endsWith("ος")) return w.slice(0, -1); if (w.endsWith("ός")) return w.slice(0, -1); if (w.endsWith("ΌΣ")) return w.slice(0, -1);
-            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς")) return w.slice(0, -1);
+            if (w.endsWith("ΗΣ") || w.endsWith("ης") || w.endsWith("ής") || w.endsWith("ΑΣ") || w.endsWith("ας") || w.endsWith("άς") || w.endsWith("ΕΣ") || w.endsWith("ες")) return w.slice(0, -1);
         }
     }
     return w;
@@ -104,7 +104,6 @@ function sigBlock4(role1, role2, role3, role4) {
 }
 
 function getD() {
-    // Χρησιμοποιούμε ΑΣΦΑΛΗ μέθοδο v() για να μην κρασάρει αν λείπει κάποιο πεδίο από το παλιό HTML
     let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
     let g = v("gender");
     let isFemale = (g === 'F');
@@ -117,13 +116,18 @@ function getD() {
     let banakr_gen = banakr_clean;
     if(banakr_clean.startsWith("της ")) { banakr_gen = banakr_clean.substring(4); } else if(banakr_clean.startsWith("του ")) { banakr_gen = banakr_clean.substring(4); }
     
-    // Αυτόματη Κλίση Πατρώνυμου/Μητρώνυμου σε Γενική!
+    // Αυτόματη Κλίση Ονομάτων!
+    let s_nom = v("surname"); let n_nom = v("name");
+    let s_gen = declineFullName(s_nom, "GEN", isFemale); let n_gen = declineFullName(n_nom, "GEN", isFemale);
+    let s_acc = declineFullName(s_nom, "ACC", isFemale); let n_acc = declineFullName(n_nom, "ACC", isFemale);
+    
+    // Το πατρώνυμο/μητρώνυμο γίνονται αυτόματα γενική (έστω κι αν τα βάλεις ονομαστική)
     let father_gen = declineFullName(v("father"), "GEN", false);
     let mother_gen = declineFullName(v("mother"), "GEN", true);
     
     function buildProf(caseType) {
-        let final_s = caseType === "NOM" ? v("surname") : declineFullName(v("surname"), caseType, isFemale);
-        let final_n = caseType === "NOM" ? v("name") : declineFullName(v("name"), caseType, isFemale);
+        let final_s = caseType === "NOM" ? s_nom : (caseType === "GEN" ? s_gen : s_acc);
+        let final_n = caseType === "NOM" ? n_nom : (caseType === "GEN" ? n_gen : n_acc);
         
         let text = `${final_s} ${final_n} του ${father_gen} και της ${mother_gen}, γεν. ${v("dob")} στην ${v("pob")}`;
         
@@ -180,6 +184,11 @@ function getD() {
         prof_gen: buildProf("GEN"),
         prof_acc: buildProf("ACC")
     };
+}
+
+function monthsToNum(m) {
+    const months = ['Ιανουαρίου', 'Φεβρουαρίου', 'Μαρτίου', 'Απριλίου', 'Μαΐου', 'Ιουνίου', 'Ιουλίου', 'Αυγούστου', 'Σεπτεμβρίου', 'Οκτωβρίου', 'Νοεμβρίου', 'Δεκεμβρίου'];
+    return months.indexOf(m) + 1;
 }
 
 // 1. ΑΠΛΗ ΕΝΟΡΚΗ
@@ -447,7 +456,6 @@ function exportSeizure() {
     let header, body;
     let foundLoc = d.v("drug_found_loc") ? `, ${d.v("drug_found_loc")}, ` : ` `;
     
-    // Ασφαλής έλεγχος τύπου (αν λείπει από το HTML, θεωρούμε ότι είναι Σωματική Έρευνα ως fallback)
     if (!tType || tType.includes("ΣΩΜΑΤΙΚΗΣ") || tType.includes("ΑΥΤΟΚΙΝΗΤΟΥ") || tType.includes("ΟΙΚΙΑΣ")) {
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt; text-transform: uppercase;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
         body = `<p style="${pStyle}">- Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρισταμένου και του ${d.banakr} της ως άνω Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, εκθέτουμε τα εξής:</p>
