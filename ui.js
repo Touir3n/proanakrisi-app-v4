@@ -85,6 +85,16 @@ function undoText(elementId) {
     else { alert("Δεν υπάρχει προηγούμενο κείμενο για αναίρεση."); }
 }
 
+function toggleCarFields() {
+    let type = document.getElementById("drug_search_type").value;
+    let panel = document.getElementById("car_fields_panel");
+    if(type === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        panel.style.display = "block";
+    } else {
+        panel.style.display = "none";
+    }
+}
+
 window.onload = function() {
     refreshTimes(); buildDVForm(); loadGlobalSettings();
     loadMem("doc_testimony_simple");
@@ -92,9 +102,17 @@ window.onload = function() {
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
+    loadMem("drug_search_type");
+    loadMem("drug_car_plate"); loadMem("drug_car_brand"); loadMem("drug_car_color"); 
+    loadMem("drug_car_search_start"); loadMem("drug_car_search_end");
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
     
-    // Εισαγγελία Default
+    loadMem("seiz_start"); loadMem("seiz_end"); loadMem("weigh_start"); loadMem("weigh_end"); loadMem("notif_start"); loadMem("notif_end");
+    loadMem("arr_start"); loadMem("arr_end"); loadMem("rig_start"); loadMem("rig_end"); loadMem("apo_start"); loadMem("apo_end");
+    loadMem("prok_rights_start"); loadMem("prok_rights_end"); loadMem("prok_main_start"); loadMem("prok_main_end"); loadMem("prok_after_start"); loadMem("prok_after_end"); loadMem("prok_service_start"); loadMem("prok_service_end");
+    
+    toggleCarFields();
+
     if(!document.getElementById("prok_abm").value) {
         document.getElementById("prok_abm").value = "υπ' αριθμ. ....... παραγγελίας της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
     }
@@ -139,47 +157,34 @@ function refreshTimes() {
     const addMins = (date, mins) => new Date(date.getTime() + mins * 60000);
     const timeStr = (date) => String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
 
-    // ΚΑΡΤΕΛΑ 1 & 2: Απλή Έκθεση / Ενδοοικογενειακή -> Αρχίζουν τώρα
     const docStart = now;
     const docEnd = addMins(docStart, 15);
 
-    // ΕΛΕΓΧΟΣ: Εμπλέκονται Ναρκωτικά;
     let isDrugCase = document.getElementById("is_drug_case") ? document.getElementById("is_drug_case").checked : false;
-    
     let arrStart, arrEnd, rigStart, rigEnd, apoStart, apoEnd;
     let seizStart, seizEnd, weighStart, weighEnd, notifStart, notifEnd;
 
     if (isDrugCase) {
-        // Σειρά Ναρκωτικών: Ξεκινάει ΑΠΟ ΤΩΡΑ
         seizStart = now;
         seizEnd = addMins(seizStart, 8);
-        
         arrStart = addMins(seizEnd, 1);
         arrEnd = addMins(arrStart, 10);
-        
         weighStart = addMins(arrEnd, 1);
         weighEnd = addMins(weighStart, 6);
-        
         notifStart = addMins(weighEnd, 1);
         notifEnd = addMins(notifStart, 6);
-        
         rigStart = addMins(notifEnd, 1);
         rigEnd = addMins(rigStart, 10);
-        
         apoStart = addMins(rigEnd, 1);
         apoEnd = addMins(apoStart, 15);
     } else {
-        // Απλή Σύλληψη (Χωρίς Ναρκωτικά): Ξεκινάει ΑΠΟ ΤΩΡΑ
         arrStart = now;
         arrEnd = addMins(arrStart, 10);
-        
         rigStart = addMins(arrEnd, 1);
         rigEnd = addMins(rigStart, 10);
-        
         apoStart = addMins(rigEnd, 1);
         apoEnd = addMins(apoStart, 15);
 
-        // Τα ναρκωτικά αυτόνομα (ως ξεχωριστή καρτέλα) να παίρνουν επίσης το ΤΩΡΑ
         seizStart = now; 
         seizEnd = addMins(seizStart, 8);
         weighStart = addMins(seizEnd, 1); 
@@ -188,13 +193,17 @@ function refreshTimes() {
         notifEnd = addMins(notifStart, 6);
     }
 
-    // ΠΡΟΚΑΤΑΡΚΤΙΚΗ - 1η Μέρα (Δικαιώματα -> Ανωμοτί) Ξεκινάει ΑΠΟ ΤΩΡΑ
+    // Ώρες για την Έρευνα Αυτοκινήτου (λογικά συνέβη πριν φτάσουν στο τμήμα να γράψουν την έκθεση)
+    const carSearchStart = addMins(seizStart, -45);
+    const carSearchEnd = addMins(seizStart, -15);
+    setInputIfExists('drug_car_search_start', timeStr(carSearchStart));
+    setInputIfExists('drug_car_search_end', timeStr(carSearchEnd));
+
     const prokRightsStart = now;
     const prokRightsEnd = addMins(prokRightsStart, 10);
     const prokMainStart = addMins(prokRightsEnd, 1);
     const prokMainEnd = addMins(prokMainStart, 15);
     
-    // ΠΡΟΚΑΤΑΡΚΤΙΚΗ - 2η Μέρα (Ανωμοτί/Υπόμνημα) Ξεκινάει ΑΠΟ ΤΩΡΑ (αν την ανοίξει άλλη μέρα)
     const prokAfterStart = now;
     const prokAfterEnd = addMins(prokAfterStart, 10);
     const prokServiceStart = addMins(prokAfterEnd, 1);
