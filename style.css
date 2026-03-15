@@ -67,30 +67,71 @@ input[type="text"], input[type="password"], select { padding: 8px; border: 1px s
 
 textarea.pol-input { width: 100%; height: 70px; border: 2px dashed #003366; padding: 8px; box-sizing: border-box; font-size: 12px; }
 
-button { padding: 10px; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s;}
+/* ================= ΚΟΥΜΠΙΑ (ΝΕΟ ΚΟΜΨΟ ΣΤΥΛ) ================= */
+button { 
+    padding: 12px 16px; 
+    color: white; 
+    border: 1px solid rgba(0,0,0,0.08); /* Πολύ απαλό περίγραμμα */
+    border-radius: 8px; /* Στρογγυλεμένες άκρες */
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 14.5px; 
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Ελαφριά εξωτερική σκιά */
+    /* Εφέ γυαλάδας/βάθους πάνω από οποιοδήποτε χρώμα: */
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%); 
+}
 
-.btn-parse { background-color: #17a2b8; flex: 2; }
-.btn-clear { background-color: #6c757d; flex: 1; }
-.btn-add { background-color: #17a2b8; padding: 6px; border-radius: 4px; color: white; cursor: pointer; height: 100%;}
-.btn-copy { background-color: #28a745; width: 100%; margin-top: 15px; box-shadow: 0 2px 4px rgba(40,167,69,0.3);}
-.btn-copy:hover { background-color: #218838; }
+/* Κίνηση όταν περνάει το ποντίκι */
+button:hover {
+    transform: translateY(-2px); /* Ανασηκώνεται ελαφρώς */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* Η σκιά μεγαλώνει */
+    filter: brightness(1.05); /* Γίνεται ένα κλικ πιο φωτεινό */
+}
 
-.btn-ai { background: linear-gradient(135deg, #8e44ad 0%, #6f42c1 100%); color: white; padding: 10px; font-size: 14px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(142, 68, 173, 0.3);}
-.btn-ai:hover { background: linear-gradient(135deg, #732d91 0%, #5a32a3 100%); box-shadow: 0 4px 6px rgba(142, 68, 173, 0.4); }
-.btn-ai:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
-.btn-undo { background: #6c757d; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
-.btn-undo:hover { background: #5a6268; }
+/* Κίνηση στο κλικ */
+button:active {
+    transform: translateY(1px); /* Πατιέται μέσα */
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    filter: brightness(0.95);
+}
 
-.btn-word { background-color: #0056b3; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; border-radius: 6px;}
-.btn-word:hover { background-color: #004494; }
-.btn-word-no-oath { background-color: #d81b60; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; border-radius: 6px;}
-.btn-word-no-oath:hover { background-color: #ad144d; }
-.btn-word-arrest { background-color: #dc3545; width: 100%; font-size: 14px; padding: 12px; border-radius: 6px;}
-.btn-word-arrest:hover { background-color: #c82333; }
-.btn-word-rights { background-color: #6f42c1; width: 100%; font-size: 14px; padding: 12px; border-radius: 6px;}
-.btn-word-rights:hover { background-color: #5a32a3; }
-.btn-word-apologia { background-color: #28a745; width: 100%; font-size: 14px; padding: 12px; border-radius: 6px;}
-.btn-word-apologia:hover { background-color: #218838; }
+/* --- Βοηθητικά Κουμπιά (Πάνω μέρος) --- */
+.btn-parse { background-color: #0288d1; flex: 2; }
+.btn-clear { background-color: #78909c; flex: 1; }
+.btn-add { background-color: #0288d1; padding: 10px; height: 100%; border-radius: 6px; }
+.btn-copy { background-color: #388e3c; width: 100%; margin-top: 15px; }
+
+/* --- Κουμπιά AI (Διατηρούν το μωβ τους) --- */
+.btn-ai { background-color: #6f42c1; background-image: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.1) 100%); color: white; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.btn-ai:hover { background-color: #5a32a3; }
+.btn-ai:disabled { background-color: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; background-image: none; }
+.btn-undo { background-color: #78909c; padding: 6px 10px; font-size: 11px; }
+
+/* --- ΚΟΥΜΠΙΑ ΕΞΑΓΩΓΗΣ (ΤΑ ΜΕΓΑΛΑ ΣΤΟ ΚΑΤΩ ΜΕΡΟΣ) --- */
+[class^="btn-word"] {
+    width: 100%; 
+    margin-top: 15px; 
+    font-size: 15px; 
+    padding: 14px; 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Κάνει τα γράμματα να ξεχωρίζουν, σαν χαραγμένα */
+}
+
+/* Απαλότερα και πιο επαγγελματικά χρώματα για τις κατηγορίες */
+.btn-word { background-color: #1976D2; }             /* Μπλε (Γενικό Word) */
+.btn-word-no-oath { background-color: #D81B60; }     /* Ροζ/Κόκκινο (Ενδοοικογενειακή) */
+.btn-word-arrest { background-color: #D32F2F; }      /* Έντονο Κόκκινο (Σύλληψη) */
+.btn-word-rights { background-color: #7B1FA2; }      /* Σκούρο Μωβ (Δικαιώματα) */
+.btn-word-apologia { background-color: #2E7D32; }    /* Πράσινο (Απολογία) */
+
+/* Ειδική διόρθωση για το κίτρινο κουμπί (Χορήγηση Προθεσμίας) ώστε να έχει σκούρα γράμματα και να διαβάζεται τέλεια */
+button[style*="ffc107"] {
+    color: #422000 !important;
+    text-shadow: none !important;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%) !important;
+}
+/* ============================================================ */
 
 .flex-row { display: flex; gap: 10px; margin-top: 10px; }
 .info-text { font-size: 12px; color: #555; margin-bottom: 10px; line-height: 1.4; background: #eef; padding: 10px; border-radius: 4px;}
