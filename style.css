@@ -136,23 +136,76 @@ button[style*="ffc107"] {
 .flex-row { display: flex; gap: 10px; margin-top: 10px; }
 .info-text { font-size: 12px; color: #555; margin-bottom: 10px; line-height: 1.4; background: #eef; padding: 10px; border-radius: 4px;}
 
-.tabs { display: flex; border-bottom: 3px solid #1a365d; margin-top: 15px; gap: 5px; flex-wrap: wrap; }
-.tab-btn { background: #d9e2ec; color: #333; border: 1px solid #b3cce6; border-bottom: none; padding: 10px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 -2px 4px rgba(0,0,0,0.05);}
-.tab-btn:hover { background: #cce0ff; }
-.tab-btn.active { background: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 -3px 6px rgba(0,51,102,0.3); }
+/* ================= ΚΑΡΤΕΛΕΣ (TABS) - ΝΕΟ ΚΟΜΨΟ ΣΤΥΛ ================= */
+.tabs { 
+    display: flex; 
+    border-bottom: 4px solid #1a365d; /* Παχιά γραμμή βάσης που ενώνει τις καρτέλες */
+    margin-top: 25px; 
+    gap: 8px; 
+    flex-wrap: wrap; 
+    padding-left: 10px;
+}
 
-.tab-btn-pink { background: #fce4ec; color: #c2185b; border-color: #f8bbd0; }
-.tab-btn-pink.active { background: #d81b60; color: white; border-color: #d81b60; }
+.tab-btn { 
+    background: #e2e8f0 !important; /* Ενιαίο διακριτικό γκρι για όλες τις ανενεργές */
+    color: #64748b !important; /* Απαλό γκριζο-μπλε κείμενο */
+    border: 1px solid #cbd5e1 !important; 
+    border-bottom: none !important; 
+    padding: 12px 20px; 
+    border-radius: 10px 10px 0 0; /* Στρογγυλεμένες άνω γωνίες */
+    cursor: pointer; 
+    font-size: 14.5px; 
+    font-weight: bold; 
+    transition: all 0.3s ease;
+    box-shadow: inset 0 -4px 6px rgba(0,0,0,0.06); /* Εσωτερική σκιά (φαίνονται στο φόντο) */
+    opacity: 0.8;
+    position: relative;
+}
 
-.tab-btn-red { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
-.tab-btn-red.active { background: #b71c1c; color: white; border-color: #b71c1c; }
+/* Όταν το ποντίκι περνάει από πάνω (Hover) */
+.tab-btn:hover { 
+    background: #f1f5f9 !important; 
+    color: #1e293b !important;
+    opacity: 1;
+    transform: translateY(-2px); /* Ανασηκώνεται ελαφρώς */
+}
 
-.tab-btn-orange { background: #ffe5b4; color: #b35900; border-color: #ffcc80; }
-.tab-btn-orange.active { background: #e67300; color: white; border-color: #e67300; }
+/* --- ΕΝΕΡΓΗ ΚΑΡΤΕΛΑ (Πετάγεται μπροστά) --- */
+.tab-btn.active { 
+    background: #1a365d !important; 
+    color: white !important; 
+    border-color: #1a365d !important; 
+    opacity: 1;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.2); /* Έντονη εξωτερική σκιά */
+    padding-bottom: 16px; /* Μακραίνει προς τα κάτω... */
+    margin-bottom: -4px; /* ...και πατάει ακριβώς πάνω στην παχιά γραμμή του .tabs! */
+    transform: translateY(0); 
+    z-index: 2;
+}
 
-.tab-content { display: none; background: #ffffff; border: 1px solid #ddd; padding: 15px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+/* Χρώματα για τις ενεργές καρτέλες ανάλογα με την κατηγορία */
+.tab-btn-pink.active { background: #d81b60 !important; border-color: #d81b60 !important; }
+.tab-btn-red.active { background: #b71c1c !important; border-color: #b71c1c !important; }
+.tab-btn-orange.active { background: #e67300 !important; border-color: #e67300 !important; }
+
+/* Χρώμα για την ενεργή καρτέλα Ναρκωτικών */
+.tab-btn[onclick*="'drugs'"].active { background: #0c5460 !important; border-color: #0c5460 !important; }
+
+/* Περιεχόμενο (Το λευκό κουτί κάτω από τις καρτέλες) */
+.tab-content { 
+    display: none; 
+    background: #ffffff; 
+    border: 1px solid #ddd; 
+    border-top: none; /* Το πάνω μέρος το καλύπτει η μπλε γραμμή του .tabs */
+    padding: 20px 15px; 
+    border-radius: 0 0 8px 8px; 
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08); /* Σκιά σε όλο το λευκό πλαίσιο */
+    position: relative;
+    z-index: 1;
+}
 .tab-content.active { display: block; }
 .tab-content textarea { width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 8px; box-sizing: border-box; font-family: Arial; font-size: 13px; resize: vertical; transition: border 0.3s;}
+/* ==================================================================== */
 
 .dv-item { margin-bottom: 10px; }
 .dv-item label { display: block; color: #0056b3; font-size: 12px; margin-bottom: 4px; font-weight: bold;}
