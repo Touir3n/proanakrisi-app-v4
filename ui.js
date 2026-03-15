@@ -107,8 +107,6 @@ window.onload = function() {
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
     
-    loadMem("surname_gen"); loadMem("name_gen"); loadMem("surname_acc"); loadMem("name_acc");
-    
     // Ναρκωτικά - Νέα Πεδία
     loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); 
     loadMem("drug_search_type");
@@ -207,6 +205,7 @@ function refreshTimes() {
         notifEnd = addMins(notifStart, 6);
     }
 
+    // Ώρες για τις ενέργειες στο δρόμο πριν τη σύνταξη της έκθεσης κατασχεσης
     const priorActionStart = addMins(seizStart, -45);
     const priorActionEnd = addMins(seizStart, -15);
     
@@ -348,36 +347,6 @@ function getProfileText() {
     text += `, κάτοχος του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
     if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
     if (v("phone")) text += `, κάτοχος της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
-    if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
-    return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
-}
-
-function getProfileTextGen() {
-    let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
-    let s_gen = v("surname_gen") || v("surname");
-    let n_gen = v("name_gen") || v("name");
-    let text = `${s_gen} ${n_gen} του ${v("father")} και της ${v("mother")}, γεν. ${v("dob")} στην ${v("pob")}, κατοίκου ${v("area")}, Δήμου ${v("dimos")}`;
-    if (v("odos")) text += `, οδός ${v("odos")}`;
-    if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
-    if (v("epaggelma")) text += `, επαγγέλματος ${v("epaggelma")}`;
-    text += `, κατόχου του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
-    if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
-    if (v("phone")) text += `, κατόχου της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
-    if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
-    return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
-}
-
-function getProfileTextAcc() {
-    let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
-    let s_acc = v("surname_acc") || v("surname");
-    let n_acc = v("name_acc") || v("name");
-    let text = `${s_acc} ${n_acc} του ${v("father")} και της ${v("mother")}, γεν. ${v("dob")} στην ${v("pob")}, κάτοικο ${v("area")}, Δήμου ${v("dimos")}`;
-    if (v("odos")) text += `, οδό ${v("odos")}`;
-    if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
-    if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
-    text += `, κάτοχο του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
-    if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
-    if (v("phone")) text += `, κάτοχο της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
     if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
     return text.replace(/\s+/g, ' ').replace(/ ,/g, ',');
 }
