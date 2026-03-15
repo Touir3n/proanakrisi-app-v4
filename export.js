@@ -110,16 +110,12 @@ function getD() {
         
         dateStr: `${v("doc_date")}η του μήνα ${v("doc_month")} του έτους ${v("doc_year")} ημέρα της εβδομάδας ${v("doc_day")}`,
         fullDateStr: `${v("doc_date")}-${String(monthsToNum(v("doc_month"))).padStart(2, '0')}-${v("doc_year")}`,
-        prof: getProfileText()
+        prof: getProfileText(),
+        prof_gen: typeof getProfileTextGen === "function" ? getProfileTextGen() : getProfileText(),
+        prof_acc: typeof getProfileTextAcc === "function" ? getProfileTextAcc() : getProfileText()
     };
 }
 
-function monthsToNum(m) {
-    const months = ['Ιανουαρίου', 'Φεβρουαρίου', 'Μαρτίου', 'Απριλίου', 'Μαΐου', 'Ιουνίου', 'Ιουλίου', 'Αυγούστου', 'Σεπτεμβρίου', 'Οκτωβρίου', 'Νοεμβρίου', 'Δεκεμβρίου'];
-    return months.indexOf(m) + 1;
-}
-
-// 1. ΑΠΛΗ ΕΝΟΡΚΗ
 function exportToWord() {
     if (!validateRequiredFields(['surname', 'name', 'doc_testimony_simple'])) return;
     let d = getD(); let rel = d.v("doc_relation_simple"); let copy = d.v("doc_copy_simple"); let parav = d.v("doc_paravolo_simple");
@@ -142,7 +138,6 @@ function exportToWord() {
     makeDoc("Ένορκη", header, body, `ΕΚΘΕΣΗ_ΕΝΟΡΚΗ_ΜΑΡΤΥΡΑ_${d.v("surname")}.doc`);
 }
 
-// 2. ΕΝΔΟΟΙΚΟΓΕΝΕΙΑΚΗ
 function exportToWordNoOath() {
     if (!validateRequiredFields(['surname', 'name', 'dv_q_main'])) return;
     let d = getD(); let rel = d.v("doc_relation_dv"); let copy = d.v("doc_copy_dv"); let parav = d.v("doc_paravolo_dv");
@@ -171,7 +166,6 @@ function exportToWordNoOath() {
     makeDoc("Χωρίς Όρκο", header, body, `ΕΚΘΕΣΗ_ΧΩΡΙΣ_ΟΡΚΟ_${d.v("surname")}.doc`);
 }
 
-// 3. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΔΙΚΑΙΩΜΑΤΑ ΥΠΟΠΤΟΥ
 function exportProkRights() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge'])) return;
     let d = getD(); let tm = getTimeRange("prok_rights_start", "prok_rights_end", "doc_start", "doc_end"); let charge = d.v("prok_charge");
@@ -220,7 +214,6 @@ function exportProkRights() {
     makeDoc("Δικαιώματα Ύποπτου", header, body, `1_ΔΙΚΑΙΩΜΑΤΑ_ΥΠΟΠΤΟΥ_${d.v("surname")}.doc`);
 }
 
-// 4. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΩΡΙΣ ΠΡΟΘΕΣΜΙΑ
 function exportProkNoDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge"); let rightsAns = d.v("prok_rights_ans"); let pastAns = d.v("prok_past"); let plea = d.v("prok_plea");
@@ -252,7 +245,6 @@ function exportProkNoDeadline() {
     makeDoc("Ανωμοτί Χωρίς Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΧΩΡΙΣ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
 
-// 5. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΧΟΡΗΓΗΣΗ ΠΡΟΘΕΣΜΙΑΣ
 function exportProkDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_dead_date', 'prok_dead_time'])) return;
     let d = getD(); let tm = getTimeRange("prok_main_start", "prok_main_end", "doc_start", "doc_end"); let abm = d.v("prok_abm"); let charge = d.v("prok_charge");
@@ -272,7 +264,6 @@ function exportProkDeadline() {
     makeDoc("Προθεσμία", header, body, `1a_ΧΟΡΗΓΗΣΗ_ΠΡΟΘΕΣΜΙΑΣ_${d.v("surname")}.doc`);
 }
 
-// 6. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΜΕΤΑ ΑΠΟ ΠΡΟΘΕΣΜΙΑ
 function exportProkAfterDeadline() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_charge', 'prok_plea'])) return;
     let d = getD(); let tm = getTimeRange("prok_after_start", "prok_after_end", "doc_start", "doc_end"); let charge = d.v("prok_charge");
@@ -294,7 +285,6 @@ function exportProkAfterDeadline() {
     makeDoc("Ανωμοτί Μετά από Προθεσμία", header, body, `2_ΑΝΩΜΟΤΙ_ΜΕΤΑ_ΠΡΟΘΕΣΜΙΑ_${d.v("surname")}.doc`);
 }
 
-// 7. ΠΡΟΚΑΤΑΡΚΤΙΚΗ - ΥΠΟΜΝΗΜΑ
 function exportProkMemo() {
     if (!validateRequiredFields(['surname', 'name', 'prok_abm', 'prok_pages'])) return;
     let d = getD(); let tm = getTimeRange("prok_service_start", "prok_service_end", "doc_start", "doc_end"); let abm = d.v("prok_abm");
@@ -308,7 +298,6 @@ function exportProkMemo() {
     makeDoc("Υπόμνημα", header, body, `5_ΥΠΟΜΝΗΜΑ_${d.v("surname")}.doc`);
 }
 
-// 8. ΣΥΛΛΗΨΗ
 function exportArrest() {
     if (!validateRequiredFields(['surname', 'name', 'arr_loc', 'apologia_charge_short'])) return;
     let d = getD(); let shortC = d.v("apologia_charge_short"); let reason = d.v("arr_reason").replace(/[\n\r]+/g, " ");
@@ -326,7 +315,6 @@ function exportArrest() {
     makeDoc("Σύλληψη", header, body, `1_ΕΚΘΕΣΗ_ΣΥΛΛΗΨΗΣ_${d.v("surname")}.doc`);
 }
 
-// 9. ΔΙΚΑΙΩΜΑΤΑ ΣΥΛΛΗΨΗΣ
 function exportRights() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short'])) return;
     let d = getD(); 
@@ -357,7 +345,6 @@ function exportRights() {
     makeDoc("Δικαιώματα", header, body, `2_ΕΚΘΕΣΗ_ΔΙΚΑΙΩΜΑΤΩΝ_${d.v("surname")}.doc`);
 }
 
-// 10. ΑΠΟΛΟΓΙΑ
 function exportApologia() {
     if (!validateRequiredFields(['surname', 'name', 'apologia_charge_short', 'apologia_plea'])) return;
     let d = getD(); let fullCharge = d.v("apologia_charge_short"); if(d.v("apologia_charge_details")) fullCharge += ". " + d.v("apologia_charge_details");
@@ -384,7 +371,6 @@ function exportApologia() {
     makeDoc("Απολογία", header, body, `3_ΑΠΟΛΟΓΙΑ_ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ_${d.v("surname")}.doc`);
 }
 
-// 11. ΝΑΡΚΩΤΙΚΑ - ΕΞΥΠΝΗ ΚΑΤΑΣΧΕΣΗ (ΕΠΙΣΗΜΑ ΠΡΟΤΥΠΑ)
 function exportSeizure() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD(); let tm = getTimeRange("seiz_start", "seiz_end", "doc_start", "doc_end"); let tType = d.v("drug_search_type");
@@ -395,7 +381,7 @@ function exportSeizure() {
         let foundLoc = d.v("drug_body_loc") ? `, στην ${d.v("drug_body_loc")}` : ``;
         let searchOfficer = d.v("drug_body_officer") ? d.v("drug_body_officer") : "εμάς";
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt; text-transform: uppercase;">ΕΚΘΕΣΗ ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΕΩΣ</p>`;
-        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», και έχοντας βάσιμες υπόνοιες ότι ο ${d.prof} έχει στην κατοχή του ναρκωτικές ουσίες, καλέσαμε αυτόν όπως μας τις παραδώσει. Κατόπιν αρνητικής του απάντησης, προβήκαμε στη σωματική του έρευνα, κατά την οποία διαπιστώσαμε ότι${foundLoc} υπήρχε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία και κατασχέσαμε προκειμένου να αποσταλεί ως πειστήριο στην ${d.prosecutor}.</p>
+        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β' Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/2013 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», και έχοντας βάσιμες υπόνοιες ότι ο ${d.prof} έχει στην κατοχή του ναρκωτικές ουσίες, καλέσαμε αυτόν όπως μας τις παραδώσει. Κατόπιν αρνητικής του απάντησης, προβήκαμε στη σωματική έρευνα του ${d.prof_gen}, κατά την οποία διαπιστώσαμε ότι${foundLoc} υπήρχε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία και κατασχέσαμε προκειμένου να αποσταλεί ως πειστήριο στην ${d.prosecutor}.</p>
         <p style="${pStyle}">Αναφέρεται ότι η έρευνα στον ανωτέρω έγινε από ${searchOfficer}.</p>
         <p style="${pStyle}">Γίνεται μνεία, ότι η παρούσα έρευνα άρχισε την ${d.v("drug_body_start")} ώρα της ${d.v("drug_body_date")} και περατώθηκε την ${d.v("drug_body_end")} ώρα της ιδίας. Η δε σύνταξη της παρούσας άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
         <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
@@ -405,7 +391,7 @@ function exportSeizure() {
         if (!validateRequiredFields(['drug_car_plate', 'drug_car_brand', 'drug_car_color', 'drug_car_start', 'drug_car_end'])) return;
         let foundLoc = d.v("drug_car_loc") ? ` ${d.v("drug_car_loc")}` : ``;
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
-        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε παρουσία του ${d.prof} σε έρευνα του υπ' αριθμ. ${d.v("drug_car_plate")} ΙΧΕ αυτ/του, μάρκας ${d.v("drug_car_brand")}, χρώματος ${d.v("drug_car_color")}, καθόσον υπήρχε σοβαρό ενδεχόμενο να ανευρεθούν αντικείμενα που έχουν σχέση με την υπό έρευνα υπόθεση. Ερευνήσαμε όλους τους εσωτερικούς χώρους αυτού και εν συνεχεία${foundLoc} βρέθηκε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία πιθανώς «${d.v("drug_type")}» συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία κατασχέσαμε.</p>
+        body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε παρουσία του ${d.prof_gen} σε έρευνα του υπ' αριθμ. ${d.v("drug_car_plate")} ΙΧΕ αυτ/του, μάρκας ${d.v("drug_car_brand")}, χρώματος ${d.v("drug_car_color")}, καθόσον υπήρχε σοβαρό ενδεχόμενο να ανευρεθούν αντικείμενα που έχουν σχέση με την υπό έρευνα υπόθεση. Ερευνήσαμε όλους τους εσωτερικούς χώρους αυτού και εν συνεχεία${foundLoc} βρέθηκε: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία πιθανώς «${d.v("drug_type")}» συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία κατασχέσαμε.</p>
         <p style="${pStyle}">Κατόπιν των ανωτέρω προβήκαμε στην κατάσχεση της ναρκωτικής ουσίας και του αυτ/του μαζί με τις κρατικές πινακίδες και την άδεια κυκλοφορίας, για να αποσταλεί, η μεν ναρκωτική ουσία στο Χημείο για εξέταση και το αποτέλεσμα αυτής στην ${d.prosecutor}, το δε αυτ/το θα παραμείνει στην Υπηρεσία μας προς φύλαξη μαζί με τις κρατικές πινακίδες και την άδεια κυκλοφορίας, μέχρις ότου αποφανθεί για την τύχη του το αρμόδιο δικαστήριο.</p>
         <p style="${pStyle}">Γίνεται μνεία ότι η έρευνα του αυτ/του άρχισε την ${d.v("drug_car_start")} ώρα της ${d.v("drug_car_date")} και τελείωσε την ${d.v("drug_car_end")} ώρα της ιδίας. Η δε σύνταξη της παρούσας έκθεσης άρχισε την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα της ιδίας.</p>
         <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως :</p>
@@ -420,7 +406,7 @@ function exportSeizure() {
         let s_street = d.v("drug_surrender_street") ? ` στην οδό ${d.v("drug_surrender_street")},` : "";
         
         header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ</p>`;
-        body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε στην κατάσχεση της κατωτέρω ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία μας παρέδωσε ${s_officer} και η οποία, όπως δήλωσε, του παραδόθηκε οικειοθελώς την ${s_date} και ώρα ${s_time}${s_city}${s_street} από τον ${d.prof}, κατά τον σωματικό του έλεγχο.</p>
+        body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επειδή ενεργείται προανάκριση από την Υπηρεσία μας για παράβαση του Ν. 4139/13 «Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις», προβήκαμε στην κατάσχεση της κατωτέρω ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», συνολικού μικτού βάρους ${d.v("drug_weight")} γραμμαρίων, την οποία μας παρέδωσε ${s_officer} και η οποία, όπως δήλωσε, του παραδόθηκε οικειοθελώς την ${s_date} και ώρα ${s_time}${s_city}${s_street} από τον ${d.prof_acc}, κατά τον σωματικό του έλεγχο.</p>
         <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αναγνωσθείσα και βεβαιωθείσα υπογράφεται ως έπεται:</p>
         ${sigBlock("Ο ΠΑΡΑΔΟΥΣ", "Ο Β’ ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ", "Ο ΑΝΑΚΡΙΤΙΚΟΣ ΥΠΑΛΛΗΛΟΣ")}`;
     }
@@ -431,7 +417,7 @@ function exportWeighing() {
     if (!validateRequiredFields(['surname', 'name', 'drug_type', 'drug_weight', 'drug_packaging'])) return;
     let d = getD(); let tm = getTimeRange("weigh_start", "weigh_end", "doc_start", "doc_end");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΖΥΓΙΣΗΣ ΚΑΙ ΣΦΡΑΓΙΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
-    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επί παρουσία και του ${d.prof}, ο οποίος κατηγορείται για παράβαση του Ν. 4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις), προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας της Υπηρεσίας μας, της ανευρεθείσας και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων.</p>
+    let body = `<p style="${pStyle}">Στην ${d.city}, σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β’ Ανακριτικός Υπάλληλος, επί παρουσία και του ${d.prof_gen}, ο οποίος κατηγορείται για παράβαση του Ν. 4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις), προβήκαμε στη ζύγιση σε ηλεκτρονική ζυγαριά ακριβείας της Υπηρεσίας μας, της ανευρεθείσας και κατασχεθείσας ποσότητας ναρκωτικής ουσίας, ήτοι: ${d.v("drug_packaging")} περιέχουσα ναρκωτική ουσία, πιθανώς «${d.v("drug_type")}», η οποία βρέθηκε να έχει μικτό βάρος ${d.v("drug_weight")} γραμμαρίων.</p>
     <p style="${pStyle}">Κατόπιν τούτου η ανωτέρω ναρκωτική ουσία σφραγίστηκε σε ταυτάριθμο φάκελο.</p>
     <p style="${pStyle}">Η παρούσα άρχισε να συντάσσεται ώρα ${tm.start} και περατώθηκε ώρα ${tm.end}.</p>
     <p style="${pStyleLast}">Για πίστωση συντάχθηκε η παρούσα έκθεση, η οποία αφού αναγνώσθηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
@@ -444,7 +430,7 @@ function exportNotification() {
     let d = getD(); let tm = getTimeRange("notif_start", "notif_end", "doc_start", "doc_end");
     let header = `<p style="text-align: center; font-weight: bold; text-decoration: underline; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 6pt;">ΕΚΘΕΣΗ ΓΝΩΣΤΟΠΟΙΗΣΗΣ ΝΑΡΚΩΤΙΚΩΝ ΟΥΣΙΩΝ</p>`;
     let body = `<p style="${pStyle}">Στην ${d.city} σήμερα την ${d.dateStr} και ώρα ${tm.start} ενώπιον εμού του ${d.anakr} υπηρετούντος στο ${d.deptFull}, παρουσία και του ${d.banakr} της ιδίας Υπηρεσίας, που προσλήφθηκε ως Β΄ Ανακριτικός Υπάλληλος, εκθέτουμε τα ακόλουθα:</p>
-    <p style="${pStyle}">Επειδή ενεργείται προανάκριση από την Υπηρεσία μας σύμφωνα με το άρθρο 243 παρ. 2 του Κ.Π.Δ. για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) και έχοντας βάσιμες υπόνοιες ότι η παραδοθείσα (σύμφωνα με τη συνταχθείσα έκθεση κατάσχεσης) ${d.v("drug_packaging")}, η οποία βρέθηκε στην κατοχή του ${d.prof}, ενέχει προδήλως τις ιδιότητες των ναρκωτικών ουσιών, υπαγόμενων στον Πίνακα Β΄ («${d.v("drug_type")}»), γνωστοποιήσαμε τούτο στον παραπάνω, και τον καλέσαμε να μας δηλώσει αν αμφισβητεί τις ιδιότητες αυτές, σύμφωνα με το άρθρο 41 του Ν. 4139/2013.</p>
+    <p style="${pStyle}">Επειδή ενεργείται προανάκριση από την Υπηρεσία μας σύμφωνα με το άρθρο 243 παρ. 2 του Κ.Π.Δ. για παράβαση του Ν.4139/13 (Νόμος περί εξαρτησιογόνων ουσιών και άλλες διατάξεις) και έχοντας βάσιμες υπόνοιες ότι η παραδοθείσα (σύμφωνα με τη συνταχθείσα έκθεση κατάσχεσης) ${d.v("drug_packaging")}, η οποία βρέθηκε στην κατοχή του ${d.prof_gen}, ενέχει προδήλως τις ιδιότητες των ναρκωτικών ουσιών, υπαγόμενων στον Πίνακα Β΄ («${d.v("drug_type")}»), γνωστοποιήσαμε τούτο στον παραπάνω, και τον καλέσαμε να μας δηλώσει αν αμφισβητεί τις ιδιότητες αυτές, σύμφωνα με το άρθρο 41 του Ν. 4139/2013.</p>
     <p style="${pStyle}">Ο καθ’ ου η γνωστοποίηση δεν αμφισβήτησε την ιδιότητα των κατασχεθέντων ως ναρκωτικών ουσιών («${d.v("drug_type")}»).</p>
     <p style="${pStyle}">Η παρούσα έκθεση άρχισε να συντάσσεται την ${tm.start} ώρα και περατώθηκε την ${tm.end} ώρα.</p>
     <p style="${pStyleLast}">Για πιστοποίηση συντάχτηκε η παρούσα έκθεση, η οποία αφού αναγνώστηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
