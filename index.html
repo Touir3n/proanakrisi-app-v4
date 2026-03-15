@@ -512,84 +512,72 @@
 
 <div class="step-box" style="border-color: #ffcc80; background: #fff;">
                 <div class="step-title" style="color: #e67300;">ΗΜΕΡΑ 1η (Γνωστοποίηση & Ανωμοτί / Προθεσμία)</div>
-                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; background: #fafafa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee;">
                     <div class="time-box" style="flex: 1;">
-                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Δικαιωμάτων:</label>
-                        <input type="text" id="prok_rights_start" oninput="saveMem(this.id)"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)">
+                        <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Δικαιωμάτων:</label>
+                        <input type="text" id="prok_rights_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)" style="padding: 5px;">
                     </div>
                     <div class="time-box" style="flex: 1;">
-                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
-                        <input type="text" id="prok_main_start" oninput="saveMem(this.id)"><input type="text" id="prok_main_end" oninput="saveMem(this.id)">
+                        <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_main_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_main_end" oninput="saveMem(this.id)" style="padding: 5px;">
                     </div>
                 </div>
                 
                 <button class="btn-word-rights" style="width: 100%; background-color: #6f42c1; margin-top: 0; margin-bottom: 15px;" onclick="exportProkRights()">📜 1. Γνωστοποίηση Δικαιωμάτων Υπόπτου</button>
                 
-                <div style="display: flex; gap: 15px; align-items: stretch;">
+                <div style="display: flex; gap: 15px; align-items: flex-end;">
                     
-                    <div style="flex: 1; border: 1px solid #c3e6cb; background: #f8fff9; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                        <div>
-                            <p style="text-align: center; margin: 0 0 10px 0; font-size: 13px; color: #28a745; font-weight: bold;">ΕΝΑΛΛΑΚΤΙΚΗ Α'</p>
-                            <p style="text-align: center; margin: 0 0 15px 0; font-size: 11px; color: #555;">Άμεση Εξέταση (Χωρίς προθεσμία)</p>
-                        </div>
-                        <button class="btn-word" style="background-color: #28a745; margin-top: 0; width: 100%; height: auto;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί Χωρίς Προθεσμία</button>
+                    <div style="flex: 1;">
+                        <button class="btn-word" style="background-color: #28a745; margin-top: 0; width: 100%;" onclick="exportProkNoDeadline()">⚡ 2. Ανωμοτί Χωρίς Προθεσμία</button>
                     </div>
                     
-                    <div style="flex: 1; border: 1px solid #ffeeba; background: #fffdf5; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                        <div>
-                            <p style="text-align: center; margin: 0 0 10px 0; font-size: 13px; color: #d39e00; font-weight: bold;">ΕΝΑΛΛΑΚΤΙΚΗ Β'</p>
-                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                                <div class="form-group" style="flex: 1;">
-                                    <label>Έως (Ημερομηνία):</label>
-                                    <input type="text" id="prok_dead_date" placeholder="12-05-2026" oninput="saveMem(this.id)">
-                                </div>
-                                <div class="form-group" style="flex: 1;">
-                                    <label>Έως (Ώρα):</label>
-                                    <input type="text" id="prok_dead_time" placeholder="10:00" oninput="saveMem(this.id)">
-                                </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; gap: 10px; background: #fffdf5; border: 1px solid #ffeeba; padding: 6px 10px; border-radius: 6px;">
+                            <div style="flex: 1; display: flex; align-items: center; gap: 5px;">
+                                <label style="margin: 0; font-size: 11px; color: #856404; white-space: nowrap;">Έως (Ημ/νία):</label>
+                                <input type="text" id="prok_dead_date" placeholder="12-05-2026" oninput="saveMem(this.id)" style="padding: 4px 6px; font-size: 12px; border-color: #ffeeba; height: 26px;">
+                            </div>
+                            <div style="flex: 1; display: flex; align-items: center; gap: 5px;">
+                                <label style="margin: 0; font-size: 11px; color: #856404; white-space: nowrap;">Ώρα:</label>
+                                <input type="text" id="prok_dead_time" placeholder="10:00" oninput="saveMem(this.id)" style="padding: 4px 6px; font-size: 12px; border-color: #ffeeba; height: 26px;">
                             </div>
                         </div>
-                        <button class="btn-word" style="background-color: #ffc107; color: #422000; margin-top: 0; width: 100%; height: auto;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
+                        <button class="btn-word" style="background-color: #ffc107; color: #422000; margin-top: 0; width: 100%;" onclick="exportProkDeadline()">⏳ 3. Χορήγηση Προθεσμίας</button>
                     </div>
                 </div>
             </div>
 
-            <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 20px;">
+            <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 15px;">
                 <div class="step-title" style="color: #117a8b;">ΜΕΤΑ ΤΗΝ ΠΑΡΕΛΕΥΣΗ ΠΡΟΘΕΣΜΙΑΣ</div>
-                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 12px; background: #f0fbff; padding: 8px 12px; border-radius: 6px; border: 1px solid #bee5eb;">
                     <div class="time-box" style="flex: 1;">
-                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Ανωμοτί:</label>
-                        <input type="text" id="prok_after_start" oninput="saveMem(this.id)"><input type="text" id="prok_after_end" oninput="saveMem(this.id)">
+                        <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Ανωμοτί:</label>
+                        <input type="text" id="prok_after_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_after_end" oninput="saveMem(this.id)" style="padding: 5px;">
                     </div>
                     <div class="time-box" style="flex: 1;">
-                        <label style="align-self: center; margin-right: 10px; font-weight: bold; font-size: 12px;">Ώρες Εγχείρισης:</label>
-                        <input type="text" id="prok_service_start" oninput="saveMem(this.id)"><input type="text" id="prok_service_end" oninput="saveMem(this.id)">
+                        <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Εγχείρισης:</label>
+                        <input type="text" id="prok_service_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_service_end" oninput="saveMem(this.id)" style="padding: 5px;">
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 15px; align-items: stretch;">
+                <div style="display: flex; gap: 15px; align-items: flex-end;">
                     
-                    <div style="flex: 1; border: 1px solid #bee5eb; background: #f0fbff; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                        <div>
-                            <p style="text-align: center; margin: 0 0 10px 0; font-size: 13px; color: #17a2b8; font-weight: bold;">ΠΕΡΙΠΤΩΣΗ Α'</p>
-                            <p style="text-align: center; margin: 0 0 15px 0; font-size: 11px; color: #555;">Προσέλευση Αυτοπροσώπως</p>
-                        </div>
-                        <button class="btn-word" style="background-color: #17a2b8; margin-top: 0; width: 100%; height: auto;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
+                    <div style="flex: 1;">
+                        <button class="btn-word" style="background-color: #17a2b8; margin-top: 0; width: 100%;" onclick="exportProkAfterDeadline()">⚖️ 4. Ανωμοτί (Μετά από Προθεσμία)</button>
                     </div>
                     
-                    <div style="flex: 1; border: 1px solid #d6d8db; background: #f8f9fa; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                        <div>
-                            <p style="text-align: center; margin: 0 0 10px 0; font-size: 13px; color: #6c757d; font-weight: bold;">ΠΕΡΙΠΤΩΣΗ Β'</p>
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <label>Αριθμός Σελίδων Υπομνήματος:</label>
-                                <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)">
-                            </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; align-items: center; gap: 10px; background: #f8f9fa; border: 1px solid #d6d8db; padding: 6px 10px; border-radius: 6px;">
+                            <label style="margin: 0; font-size: 11px; color: #6c757d; white-space: nowrap;">Αρ. Σελίδων Υπομνήματος:</label>
+                            <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)" style="padding: 4px 6px; font-size: 12px; flex: 1; border-color: #d6d8db; height: 26px;">
                         </div>
-                        <button class="btn-word" style="background-color: #6c757d; margin-top: 0; width: 100%; height: auto;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
+                        <button class="btn-word" style="background-color: #6c757d; margin-top: 0; width: 100%;" onclick="exportProkMemo()">📄 5. Έκθεση Εγχείρισης Υπομνήματος</button>
                     </div>
                 </div>
             </div>
-            
+
 <script src="ui.js"></script>
 <script src="ai.js"></script>
 <script src="export.js"></script>
