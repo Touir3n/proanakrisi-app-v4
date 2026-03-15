@@ -381,14 +381,27 @@ function declineGreek(word, gender, targetCase, isSurname = false) {
 }
 
 function getProfileText(caseType = 'nom') {
-    let v = id => document.getElementById(id).value.trim(); 
-    let g = document.getElementById("gender").value; // 'M' ή 'F'
+    // Ασφαλής συνάρτηση ανάγνωσης πεδίων: Αν ένα πεδίο δεν υπάρχει, απλά επιστρέφει κενό αντί να κρασάρει
+    let v = id => { 
+        let el = document.getElementById(id); 
+        return el ? el.value.trim() : ""; 
+    };
+    
+    // Ασφαλής εύρεση φύλου (καλύπτει drop-down αλλά και radio buttons)
+    let g = 'M'; // Προεπιλογή σε άντρα
+    let genderDropdown = document.getElementById("gender");
+    let genderRadio = document.querySelector('input[name="gender"]:checked');
+    if (genderDropdown) {
+        g = genderDropdown.value;
+    } else if (genderRadio) {
+        g = genderRadio.value;
+    }
 
     // Κλίση Επιθέτου και Ονόματος
     let surname = declineGreek(v("surname"), g, caseType, true);
     let name = declineGreek(v("name"), g, caseType, false);
     
-    // Το πατρώνυμο/μητρώνυμο τα αφήνουμε όπως έχουν διότι είναι ήδη σε γενική (είτε χειροκίνητα είτε από AI)
+    // Το πατρώνυμο/μητρώνυμο τα αφήνουμε όπως έχουν (είναι ήδη σε γενική)
     let father = v("father");
     let mother = v("mother");
 
