@@ -85,13 +85,18 @@ function undoText(elementId) {
     else { alert("Δεν υπάρχει προηγούμενο κείμενο για αναίρεση."); }
 }
 
-function toggleCarFields() {
+function toggleDrugPanels() {
     let type = document.getElementById("drug_search_type").value;
-    let panel = document.getElementById("car_fields_panel");
-    if(type === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
-        panel.style.display = "block";
-    } else {
-        panel.style.display = "none";
+    document.getElementById("panel_body_search").style.display = "none";
+    document.getElementById("panel_car_search").style.display = "none";
+    document.getElementById("panel_surrender").style.display = "none";
+
+    if(type === "ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        document.getElementById("panel_body_search").style.display = "block";
+    } else if(type === "ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        document.getElementById("panel_car_search").style.display = "block";
+    } else if(type === "ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ") {
+        document.getElementById("panel_surrender").style.display = "block";
     }
 }
 
@@ -101,17 +106,24 @@ window.onload = function() {
     loadMem("prok_abm"); loadMem("prok_charge"); loadMem("prok_rights_ans"); loadMem("prok_past"); loadMem("prok_plea"); loadMem("prok_dead_date"); loadMem("prok_dead_time"); loadMem("prok_pages");
     loadMem("ai_rough_notes"); loadMem("apologia_charge_short"); loadMem("apologia_charge_details"); loadMem("apologia_plea");
     loadMem("arr_loc"); loadMem("arr_officer"); loadMem("arr_reason");
-    loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); loadMem("drug_found_loc");
+    
+    // Ναρκωτικά - Νέα Πεδία
+    loadMem("drug_type"); loadMem("drug_weight"); loadMem("drug_packaging"); 
     loadMem("drug_search_type");
-    loadMem("drug_car_plate"); loadMem("drug_car_brand"); loadMem("drug_car_color"); 
-    loadMem("drug_car_search_start"); loadMem("drug_car_search_end");
+    // Σωματική
+    loadMem("drug_body_loc"); loadMem("drug_body_officer"); loadMem("drug_body_date"); loadMem("drug_body_start"); loadMem("drug_body_end");
+    // Όχημα
+    loadMem("drug_car_plate"); loadMem("drug_car_brand"); loadMem("drug_car_color"); loadMem("drug_car_loc"); loadMem("drug_car_date"); loadMem("drug_car_start"); loadMem("drug_car_end");
+    // Παράδοση
+    loadMem("drug_surrender_officer"); loadMem("drug_surrender_date"); loadMem("drug_surrender_time"); loadMem("drug_surrender_city"); loadMem("drug_surrender_street");
+    
     loadMem("ai_law"); loadMem("ai_date"); loadMem("ai_time"); loadMem("ai_loc");
     
     loadMem("seiz_start"); loadMem("seiz_end"); loadMem("weigh_start"); loadMem("weigh_end"); loadMem("notif_start"); loadMem("notif_end");
     loadMem("arr_start"); loadMem("arr_end"); loadMem("rig_start"); loadMem("rig_end"); loadMem("apo_start"); loadMem("apo_end");
     loadMem("prok_rights_start"); loadMem("prok_rights_end"); loadMem("prok_main_start"); loadMem("prok_main_end"); loadMem("prok_after_start"); loadMem("prok_after_end"); loadMem("prok_service_start"); loadMem("prok_service_end");
     
-    toggleCarFields();
+    toggleDrugPanels();
 
     if(!document.getElementById("prok_abm").value) {
         document.getElementById("prok_abm").value = "υπ' αριθμ. ....... παραγγελίας της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης";
@@ -193,11 +205,20 @@ function refreshTimes() {
         notifEnd = addMins(notifStart, 6);
     }
 
-    // Ώρες για την Έρευνα Αυτοκινήτου (λογικά συνέβη πριν φτάσουν στο τμήμα να γράψουν την έκθεση)
-    const carSearchStart = addMins(seizStart, -45);
-    const carSearchEnd = addMins(seizStart, -15);
-    setInputIfExists('drug_car_search_start', timeStr(carSearchStart));
-    setInputIfExists('drug_car_search_end', timeStr(carSearchEnd));
+    // Ώρες για τις ενέργειες στο δρόμο πριν τη σύνταξη της έκθεσης κατασχεσης
+    const priorActionStart = addMins(seizStart, -45);
+    const priorActionEnd = addMins(seizStart, -15);
+    
+    setInputIfExists('drug_body_date', dateStr);
+    setInputIfExists('drug_body_start', timeStr(priorActionStart));
+    setInputIfExists('drug_body_end', timeStr(priorActionEnd));
+    
+    setInputIfExists('drug_car_date', dateStr);
+    setInputIfExists('drug_car_start', timeStr(priorActionStart));
+    setInputIfExists('drug_car_end', timeStr(priorActionEnd));
+    
+    setInputIfExists('drug_surrender_date', dateStr);
+    setInputIfExists('drug_surrender_time', timeStr(priorActionStart));
 
     const prokRightsStart = now;
     const prokRightsEnd = addMins(prokRightsStart, 10);
@@ -229,7 +250,6 @@ function refreshTimes() {
     setInputIfExists('prok_rights_end', timeStr(prokRightsEnd));
     setInputIfExists('prok_main_start', timeStr(prokMainStart));
     setInputIfExists('prok_main_end', timeStr(prokMainEnd));
-    
     setInputIfExists('prok_after_start', timeStr(prokAfterStart));
     setInputIfExists('prok_after_end', timeStr(prokAfterEnd));
     setInputIfExists('prok_service_start', timeStr(prokServiceStart));
