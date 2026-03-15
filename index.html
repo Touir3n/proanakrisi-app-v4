@@ -393,40 +393,65 @@
 
         <div id="tab_drugs" class="tab-content" style="background-color: #f4f8fb;">
             <div class="info-text" style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; color: #0c5460;">
-                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας και εξάγετε αυτόματα τα σχετικά έγγραφα.
+                <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Επιλέξτε τον τύπο έρευνας για να εμφανιστούν τα κατάλληλα πεδία (π.χ. στοιχεία οχήματος).
             </div>
             
             <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Τύπος Έρευνας / Κατάσχεσης:</label>
-                    <select id="drug_search_type" onchange="toggleCarFields(); saveMem(this.id)">
+                    <select id="drug_search_type" onchange="toggleDrugPanels(); saveMem(this.id)">
                         <option value="ΣΩΜΑΤΙΚΗΣ ΕΡΕΥΝΑΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Σωματική Έρευνα και Κατάσχεση</option>
                         <option value="ΠΑΡΑΔΟΣΗΣ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Παράδοση και Κατάσχεση</option>
                         <option value="ΕΡΕΥΝΑΣ ΑΥΤΟΚΙΝΗΤΟΥ ΚΑΙ ΚΑΤΑΣΧΕΣΗΣ">Έρευνα Αυτοκινήτου και Κατάσχεση</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε αιτιατική): *</label><input type="text" id="drug_type" placeholder="π.χ. ινδική κάνναβη" oninput="saveMem(this.id)"></div>
+                <div class="form-group"><label>Είδος Ναρκωτικής Ουσίας (σε αιτιατική): *</label><input type="text" id="drug_type" placeholder="π.χ. ινδική κάνναβη / ηρωίνη" oninput="saveMem(this.id)"></div>
                 <div class="form-group"><label>Μικτό Βάρος (σε αριθμό): *</label><input type="text" id="drug_weight" placeholder="π.χ. 262" oninput="saveMem(this.id)"></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Συσκευασία / Περιγραφή Αντικειμένου: *</label><input type="text" id="drug_packaging" placeholder="π.χ. Μία νάιλον συσκευασία" oninput="saveMem(this.id)"></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης (Για Έρευνα):</label><input type="text" id="drug_found_loc" placeholder="π.χ. στην αριστερή τσέπη / δίπλα από το φίλτρο αέρα" oninput="saveMem(this.id)"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Συσκευασία / Περιγραφή Αντικειμένου: *</label><input type="text" id="drug_packaging" placeholder="π.χ. μία νάιλον συσκευασία / ένα χάρτινο περιτύλιγμα" oninput="saveMem(this.id)"></div>
             </div>
 
-            <div id="car_fields_panel" style="display: none; background: #e9ecef; padding: 15px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 20px;">
-                <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Οχήματος (Για Έρευνα Αυτοκινήτου)</h4>
+            <div id="panel_body_search" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Σωματικής Έρευνας</h4>
+                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
+                    <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης: *</label><input type="text" id="drug_body_loc" placeholder="π.χ. στην αριστερή τσέπη του παντελονιού του" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που έκανε την έρευνα (Αιτιατική):</label><input type="text" id="drug_body_officer" placeholder="π.χ. τον Αρχιφύλακα ΝΙΚΗΤΑΚΗ Γεώργιο (Αν μείνει κενό, μπαίνει 'εμάς')" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ημερομηνία Έρευνας:</label><input type="text" id="drug_body_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="display: flex; flex-direction: row; gap: 5px;">
+                        <div style="flex:1"><label>Ώρα Έναρξης:</label><input type="text" id="drug_body_start" oninput="saveMem(this.id)"></div>
+                        <div style="flex:1"><label>Ώρα Λήξης:</label><input type="text" id="drug_body_end" oninput="saveMem(this.id)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel_car_search" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Έρευνας Αυτοκινήτου</h4>
                 <div class="grid-form" style="grid-template-columns: repeat(3, 1fr); margin-top: 0;">
                     <div class="form-group"><label>Αριθμός Πινακίδας: *</label><input type="text" id="drug_car_plate" placeholder="π.χ. ΙΙΙ-9999" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Μάρκα: *</label><input type="text" id="drug_car_brand" placeholder="π.χ. TOYOTA" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Χρώμα: *</label><input type="text" id="drug_car_color" placeholder="π.χ. μαύρο" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="grid-column: span 3;"><label>Σημείο Ανεύρεσης στο Όχημα:</label><input type="text" id="drug_car_loc" placeholder="π.χ. δίπλα από το φίλτρο αέρα" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ημερομηνία Έρευνας:</label><input type="text" id="drug_car_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group" style="display: flex; flex-direction: row; gap: 5px; grid-column: span 2;">
+                        <div style="flex:1"><label>Ώρα Έναρξης:</label><input type="text" id="drug_car_start" oninput="saveMem(this.id)"></div>
+                        <div style="flex:1"><label>Ώρα Λήξης:</label><input type="text" id="drug_car_end" oninput="saveMem(this.id)"></div>
+                    </div>
                 </div>
-                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 10px;">
-                    <div class="form-group"><label>Ώρα Έναρξης Έρευνας Οχήματος: *</label><input type="text" id="drug_car_search_start" placeholder="π.χ. 19:00" oninput="saveMem(this.id)"></div>
-                    <div class="form-group"><label>Ώρα Λήξης Έρευνας Οχήματος: *</label><input type="text" id="drug_car_search_end" placeholder="π.χ. 19:30" oninput="saveMem(this.id)"></div>
+            </div>
+
+            <div id="panel_surrender" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Παράδοσης</h4>
+                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
+                    <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που σας τα παρέδωσε (Ονομαστική): *</label><input type="text" id="drug_surrender_officer" placeholder="π.χ. ο Αστυφύλακας ΓΕΩΡΓΙΟΥ Γεώργιος" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ημερομηνία Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_date" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Ώρα Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_time" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Πόλη / Περιοχή:</label><input type="text" id="drug_surrender_city" placeholder="π.χ. Καβάλα" oninput="saveMem(this.id)"></div>
+                    <div class="form-group"><label>Οδός & Αριθμός:</label><input type="text" id="drug_surrender_street" placeholder="π.χ. Ξάνθης αρ. 10" oninput="saveMem(this.id)"></div>
                 </div>
             </div>
 
             <div class="time-grid-wrapper" style="margin-bottom: 15px;">
                 <div class="form-group">
-                    <label>Κατάσχεση (Έναρξη - Λήξη)</label>
+                    <label>Σύνταξη Έκθ. Κατάσχεσης</label>
                     <div class="time-box"><input type="text" id="seiz_start" oninput="saveMem(this.id)"><input type="text" id="seiz_end" oninput="saveMem(this.id)"></div>
                 </div>
                 <div class="form-group">
