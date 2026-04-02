@@ -231,15 +231,22 @@ button[style*="ffc107"] {
 .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-//* ==========================================
-   ΣΥΣΤΗΜΑ DARK MODE (ΠΛΗΡΕΣ & ΔΙΟΡΘΩΜΕΝΟ)
+/* ==========================================
+   ΣΥΣΤΗΜΑ DARK MODE (ΟΛΙΚΗ ΔΙΟΡΘΩΣΗ ΦΟΝΤΟΥ)
    ========================================== */
-body.dark-mode {
-    background-color: #0b1121 !important; /* Ή όποιο από τα 3 σκούρα χρώματα διάλεξες πριν */
+html, body.dark-mode {
+    background-color: #0b1121 !important; /* Το βαθύ σκούρο μπλε */
+    background-image: none !important;    /* Καταργεί τυχόν εικόνες φόντου */
     color: #e0e0e0 !important;
-    min-height: 100vh; /* ΝΕΟ: Αναγκάζει το σκοτεινό φόντο να πιάσει το 100% της οθόνης! */
+    min-height: 100vh !important;         /* Τέντωμα σε όλο το ύψος */
+    margin: 0;
 }
 
+/* Εξασφαλίζουμε ότι ο container δεν έχει λευκό φόντο που περισσεύει */
+body.dark-mode .container {
+    background-color: transparent !important;
+    min-height: 100vh;
+}
 body.dark-mode .container {
     background-color: transparent !important;
 }
