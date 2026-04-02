@@ -235,8 +235,9 @@ button[style*="ffc107"] {
    ΣΥΣΤΗΜΑ DARK MODE (ΠΛΗΡΕΣ & ΔΙΟΡΘΩΜΕΝΟ)
    ========================================== */
 body.dark-mode {
-    background-color: #0f172a !important; /* Σκούρο Slate */
+    background-color: #0b1121 !important; /* Ή όποιο από τα 3 σκούρα χρώματα διάλεξες πριν */
     color: #e0e0e0 !important;
+    min-height: 100vh; /* ΝΕΟ: Αναγκάζει το σκοτεινό φόντο να πιάσει το 100% της οθόνης! */
 }
 
 body.dark-mode .container {
