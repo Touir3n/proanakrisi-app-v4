@@ -260,12 +260,26 @@ body.dark-mode [id^="panel_"] {
     color: #e2e8f0 !important;
 }
 
-/* 3. ΚΑΤΑΡΓΗΣΗ ΟΛΩΝ ΤΩΝ ΕΣΩΤΕΡΙΚΩΝ ΧΡΩΜΑΤΩΝ */
-/* Κάνει όλα τα "πεισματάρικα" εσωτερικά κουτάκια διάφανα για να πάρουν το σκούρο χρώμα */
-body.dark-mode .tab-content div,
-body.dark-mode .step-box div {
+/* 3. "ΣΚΟΥΠΙΣΜΑ" ΟΛΩΝ ΤΩΝ ΕΣΩΤΕΡΙΚΩΝ INLINE ΧΡΩΜΑΤΩΝ */
+body.dark-mode .tab-content div[style*="background"],
+body.dark-mode .step-box div[style*="background"] {
+    background: transparent !important;
     background-color: transparent !important;
     border-color: #334155 !important;
+}
+
+/* Ειδικά Panel Ναρκωτικών (τα αναγκάζουμε να πάρουν σκούρο χρώμα) */
+body.dark-mode #panel_body_search,
+body.dark-mode #panel_car_search,
+body.dark-mode #panel_surrender {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+/* Διόρθωση των τίτλων (h4) μέσα στα Panel Ναρκωτικών που είχαν δικό τους σκούρο μπλε χρώμα */
+body.dark-mode h4 {
+    color: #90caf9 !important;
 }
 
 /* 4. TABS (ΚΟΥΜΠΙΑ ΚΑΡΤΕΛΩΝ) */
