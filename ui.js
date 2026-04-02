@@ -454,3 +454,53 @@ function copyProfileText() {
     navigator.clipboard.writeText(text).then(() => { alert("Τα στοιχεία αντιγράφηκαν επιτυχώς στο πρόχειρο!"); })
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
 }
+// ==========================================
+// ΣΥΣΤΗΜΑ ΑΠΟΘΗΚΕΥΣΗΣ & ΦΟΡΤΩΣΗΣ ΥΠΟΘΕΣΕΩΝ
+// ==========================================
+function exportWorkspace() {
+    let data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+    }
+    let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    let d = new Date();
+    let dateStr = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
+    let surname = document.getElementById("surname") ? document.getElementById("surname").value.trim() : "ΚΕΝΟ";
+    if (!surname) surname = "ΚΕΝΟ";
+    a.href = url;
+    a.download = `Υπόθεση_${surname}_${dateStr}.json`;
+    a.click();
+}
+
+function importWorkspace(event) {
+    let file = event.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            let data = JSON.parse(e.target.result);
+            // Κρατάμε το AI Key ασφαλές!
+            let apiKey = localStorage.getItem("gemini_api_key");
+            let model = localStorage.getItem("gemini_model");
+            
+            localStorage.clear();
+            
+            if (apiKey) localStorage.setItem("gemini_api_key", apiKey);
+            if (model) localStorage.setItem("gemini_model", model);
+
+            for (let key in data) {
+                if (key !== "gemini_api_key" && key !== "gemini_model") {
+                    localStorage.setItem(key, data[key]);
+                }
+            }
+            alert("Η υπόθεση φορτώθηκε επιτυχώς! Η σελίδα θα ανανεωθεί.");
+            location.reload();
+        } catch(err) {
+            alert("Σφάλμα κατά την ανάγνωση του αρχείου.");
+        }
+    };
+    reader.readAsText(file);
+}
