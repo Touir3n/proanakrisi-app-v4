@@ -531,3 +531,39 @@ function importWorkspace(event) {
     };
     reader.readAsText(file);
 }
+
+// ==========================================
+// ΣΥΣΤΗΜΑ DARK MODE
+// ==========================================
+function toggleDarkMode() {
+    const body = document.body;
+    // Ενεργοποιεί ή απενεργοποιεί την κλάση dark-mode
+    body.classList.toggle('dark-mode');
+    
+    // Ελέγχει αν είναι ενεργό το σκοτεινό θέμα
+    const isDark = body.classList.contains('dark-mode');
+    
+    // Αποθήκευση της προτίμησης στη μνήμη
+    localStorage.setItem('theme_preference', isDark ? 'dark' : 'light');
+    
+    // Αλλαγή του κειμένου και του εικονιδίου στο κουμπί
+    const btn = document.getElementById('darkModeBtn');
+    if (btn) {
+        btn.innerHTML = isDark ? '☀️ Φωτεινό' : '🌙 Σκοτεινό';
+    }
+}
+
+// Όταν φορτώνει η σελίδα, έλεγξε τι είχε επιλέξει ο χρήστης την τελευταία φορά
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme_preference');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        const btn = document.getElementById('darkModeBtn');
+        // Βάζουμε ένα μικρό delay για να προλάβει να φορτώσει το κουμπί στο DOM
+        setTimeout(() => {
+            if (document.getElementById('darkModeBtn')) {
+                document.getElementById('darkModeBtn').innerHTML = '☀️ Φωτεινό';
+            }
+        }, 100);
+    }
+});
