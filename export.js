@@ -467,7 +467,7 @@ function exportDeltioTautotitas() {
     let katoikia = `${d.v("area")}, ΔΗΜΟΣ ${d.v("dimos")}`;
     if (d.v("odos")) katoikia += `, ΟΔΟΣ ${d.v("odos")} ${d.v("arithmos")}`;
     
-    // Διαχωρισμός Βαθμού και Ονοματεπώνυμου για την Υπογραφή του Α' Ανακριτικού
+    // Διαχωρισμός Βαθμού και Ονοματεπώνυμου
     let anakrRaw = d.v("doc_anakr");
     let parts = anakrRaw.split(" ");
     let rank = [];
@@ -480,13 +480,42 @@ function exportDeltioTautotitas() {
             fullName.push(p);
         }
     });
-    // Αν για κάποιο λόγο δεν βρεθεί βαθμός, θεωρούμε την 1η λέξη βαθμό
     if (rank.length === 0) { rank = [parts[0]]; fullName = parts.slice(1); }
     
-    // Μετατροπή της κατάληξης του Βαθμού από Γενική σε Ονομαστική (π.χ. Ανθυπαστυνόμου -> Ανθυπαστυνόμος)
-    let rankStr = rank.join(" ").replace(/ου$/i, "ος").replace(/α$/i, "ας");
-    let nameStr = fullName.join(" ");
+    // Έξυπνη μετατροπή Βαθμού σε Ονομαστική
+    let rankNom = rank.join(" ")
+        .replace(/Υπαστυνόμου/g, "Υπαστυνόμος")
+        .replace(/Ανθυπαστυνόμου/g, "Ανθυπαστυνόμος")
+        .replace(/Αστυνόμου/g, "Αστυνόμος")
+        .replace(/Αρχιφύλακα/g, "Αρχιφύλακας")
+        .replace(/Αστυφύλακα/g, "Αστυφύλακας")
+        .replace(/Υπαρχιφύλακα/g, "Υπαρχιφύλακας");
+        
+    // Έξυπνη μετατροπή Ονόματος σε Ονομαστική (Υποστηρίζει τα συνηθέστερα μικρά ονόματα της Υπηρεσίας)
+    let nameNom = fullName.join(" ")
+        .replace(/Νικολάου/g, "Νικόλαος")
+        .replace(/Παύλου/g, "Παύλος")
+        .replace(/Γεωργίου/g, "Γεώργιος")
+        .replace(/Κωνσταντίνου/g, "Κωνσταντίνος")
+        .replace(/Δημητρίου/g, "Δημήτριος")
+        .replace(/Θεοδώρου/g, "Θεόδωρος")
+        .replace(/Ιωάννη/g, "Ιωάννης")
+        .replace(/Παναγιώτη/g, "Παναγιώτης")
+        .replace(/Θεοχάρη/g, "Θεοχάρης")
+        .replace(/Σαλονικιού/g, "Σαλονικιός")
+        .replace(/Δήμου/g, "Δήμος");
+        
+    // Μετατροπή Επωνύμων (τα Κεφαλαία) σε Ονομαστική
+    nameNom = nameNom.split(" ").map(w => {
+        if (w === w.toUpperCase()) {
+            if (w.endsWith("ΟΥ")) return w.slice(0, -2) + "ΟΣ";
+            if (w.endsWith("Η")) return w + "Σ";
+            if (w.endsWith("Α")) return w + "Σ";
+        }
+        return w;
+    }).join(" ");
     
+    // Χρήση 3 στηλών (Κείμενο | Άνω Κάτω Τελεία | Στοιχείο) για απόλυτη στοίχιση
     let body = `
     <p style="text-align: right; font-family: 'Times New Roman'; font-size: 10pt; line-height: 1.2; margin-bottom: 10pt;">
         Χορηγείται από το Τυπογραφείο<br>
@@ -507,18 +536,18 @@ function exportDeltioTautotitas() {
     </p>
     
     <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; border: none; line-height: 1.6;">
-        <tr><td style="width: 45%;">ΕΠΩΝΥΜΟ</td><td>: <b>${d.v("surname").toUpperCase()}</b></td></tr>
-        <tr><td>ΟΝΟΜΑ</td><td>: <b>${d.v("name")}</b></td></tr>
-        <tr><td>ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td>: <b>${d.v("father")}</b></td></tr>
-        <tr><td>ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td>: <b>${d.v("mother")}</b></td></tr>
-        <tr><td>ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td>: <b>${d.v("dob")}</b></td></tr>
-        <tr><td>ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td>: <b>${d.v("pob")}</b></td></tr>
-        <tr><td>ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td>: <b>${katoikia}</b></td></tr>
-        <tr><td>ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td>: <b>${d.v("adt") || "---"}</b></td></tr>
-        <tr><td>Ημερομηνία Έκδοσης</td><td>: <b>${d.v("authDate") || "---"}</b></td></tr>
-        <tr><td>Αρχή Έκδοσης</td><td>: <b>${d.v("auth") || "---"}</b></td></tr>
-        <tr><td>Α.Φ.Μ</td><td>: <b>${d.v("afm") || "---"}</b></td></tr>
-        <tr><td>Δ.Ο.Υ.</td><td>: <b>${d.v("doy") || "---"}</b></td></tr>
+        <tr><td style="width: 42%; vertical-align: top;">ΕΠΩΝΥΜΟ</td><td style="width: 3%; vertical-align: top;">:</td><td style="width: 55%; vertical-align: top;"><b>${d.v("surname").toUpperCase()}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΟΝΟΜΑ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("name")}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("father")}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("mother")}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("dob")}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("pob")}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${katoikia}</b></td></tr>
+        <tr><td style="vertical-align: top;">ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("adt") || "---"}</b></td></tr>
+        <tr><td style="vertical-align: top;">Ημερομηνία Έκδοσης</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("authDate") || "---"}</b></td></tr>
+        <tr><td style="vertical-align: top;">Αρχή Έκδοσης</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("auth") || "---"}</b></td></tr>
+        <tr><td style="vertical-align: top;">Α.Φ.Μ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("afm") || "---"}</b></td></tr>
+        <tr><td style="vertical-align: top;">Δ.Ο.Υ.</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("doy") || "---"}</b></td></tr>
     </table>
     
     <br><br><br>
@@ -530,8 +559,8 @@ function exportDeltioTautotitas() {
                 ${d.city}, ${d.fullDateStr}<br><br>
                 -Ο-<br>
                 Ανακριτικός Υπάλληλος<br><br><br><br><br>
-                <b>${nameStr}</b><br>
-                ${rankStr}
+                <b>${nameNom}</b><br>
+                ${rankNom}
             </td>
         </tr>
     </table>
