@@ -231,72 +231,97 @@ button[style*="ffc107"] {
 .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* ==========================================
-   ΣΥΣΤΗΜΑ DARK MODE (ΣΚΟΤΕΙΝΗ ΛΕΙΤΟΥΡΓΙΑ)
+//* ==========================================
+   ΣΥΣΤΗΜΑ DARK MODE (ΠΛΗΡΕΣ & ΔΙΟΡΘΩΜΕΝΟ)
    ========================================== */
 body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
 }
 
 body.dark-mode .container {
-    background-color: #1e1e1e;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+    background-color: transparent !important;
 }
 
-/* Αλλαγή χρωμάτων στους τίτλους για να διαβάζονται στο σκοτάδι */
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode .step-title {
-    color: #90caf9 !important; 
-}
-
-/* Σκοτεινές Καρτέλες (Tabs) */
-body.dark-mode .tab-button {
-    background-color: #333;
-    color: #ccc;
-    border-bottom: none;
-}
-
-body.dark-mode .tab-button.active {
-    background-color: #1e1e1e;
-    color: #fff;
-    border-bottom: 3px solid #90caf9;
-}
-
-body.dark-mode .tab-content {
+/* Βασικά κουτιά και πλαίσια */
+body.dark-mode .section, 
+body.dark-mode .ai-settings, 
+body.dark-mode .global-settings,
+body.dark-mode .privacy-banner {
     background-color: #1e1e1e !important;
-    border-color: #333;
+    border-color: #333 !important;
+    color: #e0e0e0 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
 }
 
-/* Πεδία κειμένου και φόρμες (Inputs) */
-body.dark-mode input[type="text"],
-body.dark-mode input[type="date"],
-body.dark-mode input[type="time"],
-body.dark-mode select,
-body.dark-mode textarea {
-    background-color: #2c2c2c;
-    color: #fff;
-    border: 1px solid #555;
-}
-
-body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
-    border-color: #90caf9;
-    box-shadow: 0 0 5px rgba(144, 202, 249, 0.4);
-}
-
-/* Σκοτείνιασμα στα χρωματιστά κουτιά (π.χ. Βήμα 1, Βήμα 2 κλπ) */
-body.dark-mode .step-box {
-    background-color: #2a2a2a !important;
+/* Καρτέλες (Tabs) */
+body.dark-mode .tab-btn {
+    background-color: #2c2c2c !important;
+    color: #999 !important;
     border-color: #444 !important;
 }
+body.dark-mode .tab-btn:hover {
+    background-color: #3c3c3c !important;
+    color: #ddd !important;
+}
+body.dark-mode .tab-btn.active {
+    background-color: #1e1e1e !important;
+    color: #90caf9 !important;
+    border-color: #1a365d !important;
+}
+body.dark-mode .tab-content {
+    background-color: #1e1e1e !important;
+    border-color: #1a365d !important;
+}
 
-body.dark-mode .step-box p, body.dark-mode label {
+/* Εσωτερικά κουτιά και grid (Πληροφορίες, AI, Ρυθμίσεις) */
+body.dark-mode .witness-settings-grid,
+body.dark-mode .ai-box,
+body.dark-mode .info-text,
+body.dark-mode .step-box,
+body.dark-mode [id^="panel_"] {
+    background-color: #2a2a2a !important;
+    border-color: #444 !important;
+    color: #ccc !important;
+}
+
+/* Τίτλοι μέσα στα βήματα */
+body.dark-mode .step-title {
+    background-color: #1e1e1e !important;
+    border-color: #444 !important;
+    color: #90caf9 !important;
+}
+
+/* Φόρμες, Inputs & Textareas */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="password"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #2c2c2c !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+}
+body.dark-mode input:focus, 
+body.dark-mode textarea:focus, 
+body.dark-mode select:focus {
+    border-color: #90caf9 !important;
+    box-shadow: 0 0 5px rgba(144, 202, 249, 0.4) !important;
+}
+
+/* Κείμενα μέσα στα Label */
+body.dark-mode label, body.dark-mode strong {
     color: #bbb !important;
 }
 
-/* Ελαφριά μείωση φωτεινότητας στα κουμπιά Word για να μην τυφλώνουν */
-body.dark-mode button.btn-word, body.dark-mode button.btn-word-apologia {
+/* Ειδικά χρώματα πεδίων (ώστε να μη χτυπάνε στο μάτι) */
+body.dark-mode .manual-input { background-color: #332b1f !important; border-left-color: #c78d38 !important; }
+body.dark-mode .accent-warning { background-color: #332222 !important; border-left-color: #b83b3b !important; }
+
+/* Μείωση φωτεινότητας στα μεγάλα χρωματιστά κουμπιά */
+body.dark-mode button[class^="btn-word"],
+body.dark-mode button.btn-add,
+body.dark-mode button.btn-parse,
+body.dark-mode button.btn-copy {
     filter: brightness(0.85);
 }
-body.dark-mode button.btn-word:hover, body.dark-mode button.btn-word-apologia:hover {
-    filter: brightness(1);
-}
+body.dark-mode button[class^="btn-word"]:hover { filter: brightness(1.1); }
