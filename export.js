@@ -513,8 +513,11 @@ function exportDeltioTautotitas() {
         return w;
     }).join(" ");
     
+    // Δημιουργία μεταβλητής για το "αέρα" ανάμεσα στις γραμμές (8pt κενό από κάτω σε κάθε γραμμή)
+    let tdS = 'valign="top" style="padding-bottom: 8pt;"'; 
+    
     let body = `
-    <table border="1" width="100%" cellpadding="2" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; text-align: center; border-collapse: collapse; margin-bottom: 25pt;">
+    <table border="1" width="100%" cellpadding="2" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; text-align: center; border-collapse: collapse;">
         <tr>
             <td width="33%" valign="top" style="padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">Χορηγείται από το Τυπογραφείο</p></td>
             <td width="33%" valign="top" style="padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο</p></td>
@@ -525,27 +528,29 @@ function exportDeltioTautotitas() {
         </tr>
     </table>
     
+    <br><br>
+    
     <p style="text-align: center; font-weight: bold; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 5pt; margin-top: 0;">
         ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
     </p>
     
-    <p style="text-align: center; font-family: 'Times New Roman'; font-size: 12pt; margin-bottom: 25pt; margin-top: 0;">
+    <p style="text-align: center; font-family: 'Times New Roman'; font-size: 12pt; margin-bottom: 30pt; margin-top: 0;">
         ( Επισυνάπτεται στη δικογραφία )
     </p>
     
-    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 11.5pt; line-height: 1.4;">
-        <tr><td width="38%" valign="top">ΕΠΩΝΥΜΟ</td><td width="2%" valign="top">:</td><td width="60%" valign="top"><b>${d.v("surname").toUpperCase()}</b></td></tr>
-        <tr><td valign="top">ΟΝΟΜΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("name")}</b></td></tr>
-        <tr><td valign="top">ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("father")}</b></td></tr>
-        <tr><td valign="top">ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("mother")}</b></td></tr>
-        <tr><td valign="top">ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("dob")}</b></td></tr>
-        <tr><td valign="top">ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("pob")}</b></td></tr>
-        <tr><td valign="top">ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td valign="top">:</td><td valign="top"><b>${katoikia}</b></td></tr>
-        <tr><td valign="top">ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("adt") || "---"}</b></td></tr>
-        <tr><td valign="top">Ημερομηνία Έκδοσης</td><td valign="top">:</td><td valign="top"><b>${d.v("authDate") || "---"}</b></td></tr>
-        <tr><td valign="top">Αρχή Έκδοσης</td><td valign="top">:</td><td valign="top"><b>${d.v("auth") || "---"}</b></td></tr>
-        <tr><td valign="top">Α.Φ.Μ</td><td valign="top">:</td><td valign="top"><b>${d.v("afm") || "---"}</b></td></tr>
-        <tr><td valign="top">Δ.Ο.Υ.</td><td valign="top">:</td><td valign="top"><b>${d.v("doy") || "---"}</b></td></tr>
+    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 11.5pt;">
+        <tr><td width="38%" ${tdS}>ΕΠΩΝΥΜΟ</td><td width="2%" ${tdS}>:</td><td width="60%" ${tdS}><b>${d.v("surname").toUpperCase()}</b></td></tr>
+        <tr><td ${tdS}>ΟΝΟΜΑ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("name")}</b></td></tr>
+        <tr><td ${tdS}>ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("father")}</b></td></tr>
+        <tr><td ${tdS}>ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("mother")}</b></td></tr>
+        <tr><td ${tdS}>ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("dob")}</b></td></tr>
+        <tr><td ${tdS}>ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("pob")}</b></td></tr>
+        <tr><td ${tdS}>ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td ${tdS}>:</td><td ${tdS}><b>${katoikia}</b></td></tr>
+        <tr><td ${tdS}>ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("adt") || "---"}</b></td></tr>
+        <tr><td ${tdS}>Ημερομηνία Έκδοσης</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("authDate") || "---"}</b></td></tr>
+        <tr><td ${tdS}>Αρχή Έκδοσης</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("auth") || "---"}</b></td></tr>
+        <tr><td ${tdS}>Α.Φ.Μ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("afm") || "---"}</b></td></tr>
+        <tr><td ${tdS}>Δ.Ο.Υ.</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("doy") || "---"}</b></td></tr>
     </table>
     
     <br><br>
