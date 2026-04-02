@@ -516,12 +516,17 @@ function exportDeltioTautotitas() {
     }).join(" ");
     
     // Χρήση 3 στηλών (Κείμενο | Άνω Κάτω Τελεία | Στοιχείο) για απόλυτη στοίχιση
-    let body = `
-    <p style="text-align: right; font-family: 'Times New Roman'; font-size: 10pt; line-height: 1.2; margin-bottom: 10pt;">
-        Χορηγείται από το Τυπογραφείο<br>
-        Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο<br>
-        ΥΠΟΔΕΙΓΜΑ :Δ – 9γ
-    </p>
+   let body = `
+    <table align="right" border="1" cellpadding="5" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; line-height: 1.2; margin-bottom: 10pt; border-collapse: collapse;">
+        <tr>
+            <td>
+                Χορηγείται από το Τυπογραφείο<br>
+                Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο<br>
+                ΥΠΟΔΕΙΓΜΑ :Δ – 9γ
+            </td>
+        </tr>
+    </table>
+    <div style="clear: both;"></div>
     
     <p style="text-align: left; font-family: 'Times New Roman'; font-size: 11pt; margin-bottom: 25pt;">
         Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»
@@ -535,27 +540,27 @@ function exportDeltioTautotitas() {
         ( Επισυνάπτεται στη δικογραφία )
     </p>
     
-    <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; border: none; line-height: 1.6;">
-        <tr><td style="width: 42%; vertical-align: top;">ΕΠΩΝΥΜΟ</td><td style="width: 3%; vertical-align: top;">:</td><td style="width: 55%; vertical-align: top;"><b>${d.v("surname").toUpperCase()}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΟΝΟΜΑ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("name")}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("father")}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("mother")}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("dob")}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("pob")}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${katoikia}</b></td></tr>
-        <tr><td style="vertical-align: top;">ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("adt") || "---"}</b></td></tr>
-        <tr><td style="vertical-align: top;">Ημερομηνία Έκδοσης</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("authDate") || "---"}</b></td></tr>
-        <tr><td style="vertical-align: top;">Αρχή Έκδοσης</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("auth") || "---"}</b></td></tr>
-        <tr><td style="vertical-align: top;">Α.Φ.Μ</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("afm") || "---"}</b></td></tr>
-        <tr><td style="vertical-align: top;">Δ.Ο.Υ.</td><td style="vertical-align: top;">:</td><td style="vertical-align: top;"><b>${d.v("doy") || "---"}</b></td></tr>
+    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 12pt; line-height: 1.6;">
+        <tr><td width="42%" valign="top">ΕΠΩΝΥΜΟ</td><td width="3%" valign="top">:</td><td width="55%" valign="top"><b>${d.v("surname").toUpperCase()}</b></td></tr>
+        <tr><td valign="top">ΟΝΟΜΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("name")}</b></td></tr>
+        <tr><td valign="top">ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("father")}</b></td></tr>
+        <tr><td valign="top">ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("mother")}</b></td></tr>
+        <tr><td valign="top">ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("dob")}</b></td></tr>
+        <tr><td valign="top">ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("pob")}</b></td></tr>
+        <tr><td valign="top">ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td valign="top">:</td><td valign="top"><b>${katoikia}</b></td></tr>
+        <tr><td valign="top">ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("adt") || "---"}</b></td></tr>
+        <tr><td valign="top">Ημερομηνία Έκδοσης</td><td valign="top">:</td><td valign="top"><b>${d.v("authDate") || "---"}</b></td></tr>
+        <tr><td valign="top">Αρχή Έκδοσης</td><td valign="top">:</td><td valign="top"><b>${d.v("auth") || "---"}</b></td></tr>
+        <tr><td valign="top">Α.Φ.Μ</td><td valign="top">:</td><td valign="top"><b>${d.v("afm") || "---"}</b></td></tr>
+        <tr><td valign="top">Δ.Ο.Υ.</td><td valign="top">:</td><td valign="top"><b>${d.v("doy") || "---"}</b></td></tr>
     </table>
     
     <br><br><br>
     
-    <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; border: none;">
+    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 12pt; text-align: center;">
         <tr>
-            <td style="width: 50%;"></td>
-            <td style="width: 50%;">
+            <td width="50%"></td>
+            <td width="50%">
                 ${d.city}, ${d.fullDateStr}<br><br>
                 -Ο-<br>
                 Ανακριτικός Υπάλληλος<br><br><br><br><br>
