@@ -458,14 +458,13 @@ function exportNotification() {
 
 // 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
 function exportDeltioTautotitas() {
-    // Ελέγχουμε αν έχουν συμπληρωθεί τα βασικά στοιχεία
     if (!validateRequiredFields(['surname', 'name', 'father', 'mother', 'dob', 'pob'])) return;
     
     let d = getD();
     
-    // Σύνθεση Κατοικίας
-    let katoikia = `${d.v("area")}, ΔΗΜΟΣ ${d.v("dimos")}`;
-    if (d.v("odos")) katoikia += `, ΟΔΟΣ ${d.v("odos")} ${d.v("arithmos")}`;
+    // Σύνθεση Κατοικίας (Με πεζά στα Δήμος/οδός όπως ζητήθηκε)
+    let katoikia = `${d.v("area")}, Δήμος ${d.v("dimos")}`;
+    if (d.v("odos")) katoikia += `, οδός ${d.v("odos")} ${d.v("arithmos")}`;
     
     // Διαχωρισμός Βαθμού και Ονοματεπώνυμου
     let anakrRaw = d.v("doc_anakr");
@@ -491,7 +490,7 @@ function exportDeltioTautotitas() {
         .replace(/Αστυφύλακα/g, "Αστυφύλακας")
         .replace(/Υπαρχιφύλακα/g, "Υπαρχιφύλακας");
         
-    // Έξυπνη μετατροπή Ονόματος σε Ονομαστική (Υποστηρίζει τα συνηθέστερα μικρά ονόματα της Υπηρεσίας)
+    // Έξυπνη μετατροπή Ονόματος σε Ονομαστική
     let nameNom = fullName.join(" ")
         .replace(/Νικολάου/g, "Νικόλαος")
         .replace(/Παύλου/g, "Παύλος")
@@ -505,7 +504,6 @@ function exportDeltioTautotitas() {
         .replace(/Σαλονικιού/g, "Σαλονικιός")
         .replace(/Δήμου/g, "Δήμος");
         
-    // Μετατροπή Επωνύμων (τα Κεφαλαία) σε Ονομαστική
     nameNom = nameNom.split(" ").map(w => {
         if (w === w.toUpperCase()) {
             if (w.endsWith("ΟΥ")) return w.slice(0, -2) + "ΟΣ";
@@ -515,22 +513,17 @@ function exportDeltioTautotitas() {
         return w;
     }).join(" ");
     
-    // Χρήση 3 στηλών (Κείμενο | Άνω Κάτω Τελεία | Στοιχείο) για απόλυτη στοίχιση
-   let body = `
-    <table align="right" border="1" cellpadding="5" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; line-height: 1.2; margin-bottom: 10pt; border-collapse: collapse;">
+    let body = `
+    <table border="1" width="100%" cellpadding="5" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; text-align: center; border-collapse: collapse; margin-bottom: 25pt;">
         <tr>
-            <td>
-                Χορηγείται από το Τυπογραφείο<br>
-                Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο<br>
-                ΥΠΟΔΕΙΓΜΑ :Δ – 9γ
-            </td>
+            <td width="33%" valign="top">Χορηγείται από το Τυπογραφείο</td>
+            <td width="33%" valign="top">Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο</td>
+            <td width="33%" valign="top">ΥΠΟΔΕΙΓΜΑ :Δ – 9γ</td>
+        </tr>
+        <tr>
+            <td colspan="3" valign="top" style="text-align: left;">Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»</td>
         </tr>
     </table>
-    <div style="clear: both;"></div>
-    
-    <p style="text-align: left; font-family: 'Times New Roman'; font-size: 11pt; margin-bottom: 25pt;">
-        Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»
-    </p>
     
     <p style="text-align: center; font-weight: bold; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 5pt;">
         ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
