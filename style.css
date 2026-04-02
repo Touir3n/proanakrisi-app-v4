@@ -234,66 +234,93 @@ button[style*="ffc107"] {
 /* ==========================================
    ΣΥΣΤΗΜΑ DARK MODE (ΟΛΙΚΗ & ΕΠΙΘΕΤΙΚΗ ΔΙΟΡΘΩΣΗ)
    ========================================== */
+
+/* 1. ΒΑΣΙΚΟ ΦΟΝΤΟ ΚΑΙ ΚΕΙΜΕΝΟ ΟΘΟΝΗΣ */
 html, body.dark-mode {
-    background-color: #0b1121 !important; 
+    background-color: #0b1121 !important; /* Βαθύ σκοτεινό μπλε */
     color: #e0e0e0 !important;
     min-height: 100vh !important;
+    margin: 0;
 }
 
-/* Διόρθωση AI Settings & Global Settings */
+body.dark-mode .container {
+    background-color: transparent !important;
+    min-height: 100vh;
+}
+
+/* 2. ΚΕΝΤΡΙΚΑ ΠΛΑΙΣΙΑ & ΚΑΡΤΕΛΕΣ */
 body.dark-mode .ai-settings, 
 body.dark-mode .global-settings,
+body.dark-mode .privacy-banner,
 body.dark-mode .ai-box,
-body.dark-mode #model_selection_div {
-    background-color: #1e1e1e !important;
-    border-color: #444 !important;
-    color: #e0e0e0 !important;
-}
-
-/* Διόρθωση Καρτέλας Προκαταρκτικής (tab_prok) και των εσωτερικών της κουτιών */
-body.dark-mode #tab_prok,
-body.dark-mode #tab_prok div[style*="background"] {
-    background-color: #1e1e1e !important;
-    border-color: #444 !important;
-    color: #e0e0e0 !important;
-}
-
-/* Διόρθωση όλων των Tab Contents λόγω inline styles */
-body.dark-mode .tab-content {
-    background-color: #1e1e1e !important;
-    border-color: #333 !important;
-}
-
-/* Σκοτείνιασμα όλων των step-box */
+body.dark-mode .tab-content,
 body.dark-mode .step-box {
-    background-color: #262626 !important;
-    border-color: #444 !important;
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
 }
 
-/* Διόρθωση τίτλων και κειμένων */
-body.dark-mode .step-title, 
-body.dark-mode .section-title {
+/* 3. "ΣΚΟΥΠΙΣΜΑ" ΟΛΩΝ ΤΩΝ ΕΣΩΤΕΡΙΚΩΝ INLINE ΧΡΩΜΑΤΩΝ */
+/* Οποιοδήποτε εσωτερικό div (π.χ. Προκαταρκτική, Ναρκωτικά) έχει δικό του ανοιχτόχρωμο φόντο, ΓΙΝΕΤΑΙ ΣΚΟΥΡΟ! */
+body.dark-mode .container div[style*="background"] {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* 4. TABS (ΚΟΥΜΠΙΑ ΚΑΡΤΕΛΩΝ) */
+body.dark-mode .tab-btn {
+    background-color: #334155 !important;
+    color: #94a3b8 !important;
+    border-color: #1e293b !important;
+}
+
+body.dark-mode .tab-btn.active {
     background-color: #1a365d !important;
-    color: #90caf9 !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid #90caf9 !important;
 }
 
+/* 5. ΠΕΔΙΑ ΕΙΣΑΓΩΓΗΣ (INPUTS, TEXTAREAS, SELECTS) */
+body.dark-mode input, 
+body.dark-mode textarea, 
+body.dark-mode select {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+}
+
+body.dark-mode input:focus, 
+body.dark-mode textarea:focus, 
+body.dark-mode select:focus {
+    border-color: #90caf9 !important;
+    box-shadow: 0 0 5px rgba(144, 202, 249, 0.4) !important;
+}
+
+/* Ειδικά πεδία σε dark mode για να μην βγάζουν λευκό/ροζ φόντο */
+body.dark-mode .manual-input { background-color: #2d2417 !important; border-left-color: #c78d38 !important; }
+body.dark-mode .accent-warning { background-color: #2d1a1a !important; border-left-color: #b83b3b !important; }
+
+/* 6. ΚΕΙΜΕΝΑ ΚΑΙ ΕΤΙΚΕΤΕΣ ΟΛΗΣ ΤΗΣ ΣΕΛΙΔΑΣ */
 body.dark-mode label, 
-body.dark-mode p, 
-body.dark-mode span {
-    color: #ccc !important;
+body.dark-mode .info-text,
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode strong {
+    color: #cbd5e1 !important;
 }
 
-/* Πεδία κειμένου */
-body.dark-mode input[type="text"],
-body.dark-mode input[type="password"],
-body.dark-mode select,
-body.dark-mode textarea {
-    background-color: #2c2c2c !important;
-    color: #fff !important;
-    border: 1px solid #555 !important;
+/* 7. ΤΙΤΛΟΙ ΚΑΙ ΕΠΙΚΕΦΑΛΙΔΕΣ */
+body.dark-mode .step-title,
+body.dark-mode .section-title {
+    background-color: #0f172a !important;
+    color: #90caf9 !important;
+    border-color: #334155 !important;
 }
 
-/* Μικρή βοήθεια στα κουμπιά για να μην είναι πολύ έντονα */
+/* 8. ΚΟΥΜΠΙΑ (Ελαφρύ σκοτείνιασμα για να μην τυφλώνουν) */
 body.dark-mode button {
-    filter: brightness(0.9);
+    filter: brightness(0.85);
+}
+body.dark-mode button:hover {
+    filter: brightness(1.1);
 }
