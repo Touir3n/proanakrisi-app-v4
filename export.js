@@ -540,4 +540,3 @@ function exportDeltioTautotitas() {
     // Εξαγωγή του αρχείου Word
     makeDoc("Δελτίο Ταυτότητας Κατηγορουμένου", "", body, `4_ΔΕΛΤΙΟ_ΤΑΥΤΟΤΗΤΑΣ_${d.v("surname")}.doc`);
 }
-}
