@@ -462,7 +462,7 @@ function exportDeltioTautotitas() {
     
     let d = getD();
     
-    // Σύνθεση Κατοικίας (Με πεζά στα Δήμος/οδός όπως ζητήθηκε)
+    // Σύνθεση Κατοικίας (Με πεζά στα Δήμος/οδός)
     let katoikia = `${d.v("area")}, Δήμος ${d.v("dimos")}`;
     if (d.v("odos")) katoikia += `, οδός ${d.v("odos")} ${d.v("arithmos")}`;
     
@@ -514,27 +514,27 @@ function exportDeltioTautotitas() {
     }).join(" ");
     
     let body = `
-    <table border="1" width="100%" cellpadding="5" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; text-align: center; border-collapse: collapse; margin-bottom: 25pt;">
+    <table border="1" width="100%" cellpadding="2" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 10pt; text-align: center; border-collapse: collapse; margin-bottom: 25pt;">
         <tr>
-            <td width="33%" valign="top">Χορηγείται από το Τυπογραφείο</td>
-            <td width="33%" valign="top">Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο</td>
-            <td width="33%" valign="top">ΥΠΟΔΕΙΓΜΑ :Δ – 9γ</td>
+            <td width="33%" valign="top" style="padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">Χορηγείται από το Τυπογραφείο</p></td>
+            <td width="33%" valign="top" style="padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο</p></td>
+            <td width="33%" valign="top" style="padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">ΥΠΟΔΕΙΓΜΑ :Δ – 9γ</p></td>
         </tr>
         <tr>
-            <td colspan="3" valign="top" style="text-align: left;">Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»</td>
+            <td colspan="3" valign="top" style="text-align: left; padding: 3px;"><p style="margin: 0; padding: 0; line-height: 1.1;">Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»</p></td>
         </tr>
     </table>
     
-    <p style="text-align: center; font-weight: bold; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 5pt;">
+    <p style="text-align: center; font-weight: bold; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 5pt; margin-top: 0;">
         ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
     </p>
     
-    <p style="text-align: center; font-family: 'Times New Roman'; font-size: 12pt; margin-bottom: 30pt;">
+    <p style="text-align: center; font-family: 'Times New Roman'; font-size: 12pt; margin-bottom: 25pt; margin-top: 0;">
         ( Επισυνάπτεται στη δικογραφία )
     </p>
     
-    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 12pt; line-height: 1.6;">
-        <tr><td width="42%" valign="top">ΕΠΩΝΥΜΟ</td><td width="3%" valign="top">:</td><td width="55%" valign="top"><b>${d.v("surname").toUpperCase()}</b></td></tr>
+    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 11.5pt; line-height: 1.4;">
+        <tr><td width="38%" valign="top">ΕΠΩΝΥΜΟ</td><td width="2%" valign="top">:</td><td width="60%" valign="top"><b>${d.v("surname").toUpperCase()}</b></td></tr>
         <tr><td valign="top">ΟΝΟΜΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("name")}</b></td></tr>
         <tr><td valign="top">ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td valign="top">:</td><td valign="top"><b>${d.v("father")}</b></td></tr>
         <tr><td valign="top">ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td valign="top">:</td><td valign="top"><b>${d.v("mother")}</b></td></tr>
@@ -548,17 +548,17 @@ function exportDeltioTautotitas() {
         <tr><td valign="top">Δ.Ο.Υ.</td><td valign="top">:</td><td valign="top"><b>${d.v("doy") || "---"}</b></td></tr>
     </table>
     
-    <br><br><br>
+    <br><br>
     
     <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 12pt; text-align: center;">
         <tr>
             <td width="50%"></td>
             <td width="50%">
-                ${d.city}, ${d.fullDateStr}<br><br>
-                -Ο-<br>
-                Ανακριτικός Υπάλληλος<br><br><br><br><br>
-                <b>${nameNom}</b><br>
-                ${rankNom}
+                <p style="margin: 0; line-height: 1.2;">${d.city}, ${d.fullDateStr}</p><br>
+                <p style="margin: 0; line-height: 1.2;">-Ο-</p>
+                <p style="margin: 0; line-height: 1.2;">Ανακριτικός Υπάλληλος</p><br><br><br><br>
+                <p style="margin: 0; line-height: 1.2;"><b>${nameNom}</b></p>
+                <p style="margin: 0; line-height: 1.2;">${rankNom}</p>
             </td>
         </tr>
     </table>
