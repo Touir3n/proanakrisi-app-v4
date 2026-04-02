@@ -455,21 +455,36 @@ function copyProfileText() {
     .catch(err => { alert("Σφάλμα κατά την αντιγραφή: " + err); });
 }
 // ==========================================
-// ΣΥΣΤΗΜΑ ΑΠΟΘΗΚΕΥΣΗΣ & ΦΟΡΤΩΣΗΣ ΥΠΟΘΕΣΕΩΝ
+// ΣΥΣΤΗΜΑ ΑΠΟΘΗΚΕΥΣΗΣ & ΦΟΡΤΩΣΗΣ ΥΠΟΘΕΣΕΩΝ (ΟΛΙΚΗ ΣΑΡΩΣΗ DOM)
 // ==========================================
 function exportWorkspace() {
     let data = {};
+    
+    // 1. Σάρωση όλων των πεδίων της οθόνης
+    let elements = document.querySelectorAll('input, textarea, select');
+    elements.forEach(el => {
+        if (el.id && el.id !== "gemini_api_key" && el.id !== "import_file") {
+            data["dom_" + el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        }
+    });
+    
+    // 2. Σάρωση της μνήμης για τις κρυφές ρυθμίσεις
     for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
-        data[key] = localStorage.getItem(key);
+        if (key !== "gemini_api_key" && key !== "gemini_model") {
+            data["ls_" + key] = localStorage.getItem(key);
+        }
     }
+
     let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
     let url = URL.createObjectURL(blob);
     let a = document.createElement("a");
+    
     let d = new Date();
     let dateStr = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
     let surname = document.getElementById("surname") ? document.getElementById("surname").value.trim() : "ΚΕΝΟ";
     if (!surname) surname = "ΚΕΝΟ";
+    
     a.href = url;
     a.download = `Υπόθεση_${surname}_${dateStr}.json`;
     a.click();
@@ -482,25 +497,37 @@ function importWorkspace(event) {
     reader.onload = function(e) {
         try {
             let data = JSON.parse(e.target.result);
-            // Κρατάμε το AI Key ασφαλές!
-            let apiKey = localStorage.getItem("gemini_api_key");
-            let model = localStorage.getItem("gemini_model");
             
-            localStorage.clear();
-            
-            if (apiKey) localStorage.setItem("gemini_api_key", apiKey);
-            if (model) localStorage.setItem("gemini_model", model);
+            // Καθαρισμός προηγούμενης μνήμης συμβάντος
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith('mem_')) localStorage.removeItem(k);
+            });
 
+            // Γέμισμα όλων των πεδίων ακαριαία χωρίς ανανέωση της σελίδας
             for (let key in data) {
-                if (key !== "gemini_api_key" && key !== "gemini_model") {
-                    localStorage.setItem(key, data[key]);
+                if (key.startsWith("ls_")) {
+                    localStorage.setItem(key.substring(3), data[key]);
+                } else if (key.startsWith("dom_")) {
+                    let id = key.substring(4);
+                    let el = document.getElementById(id);
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = data[key];
+                        } else {
+                            el.value = data[key];
+                        }
+                    }
                 }
             }
-            alert("Η υπόθεση φορτώθηκε επιτυχώς! Η σελίδα θα ανανεωθεί.");
-            location.reload();
+            
+            // Ενημέρωση UI αν πρόκειται για ναρκωτικά
+            if (typeof toggleDrugPanels === "function") toggleDrugPanels();
+            
+            alert("Η υπόθεση φορτώθηκε επιτυχώς! Όλα τα κείμενά σας βρίσκονται ακριβώς όπως τα αφήσατε.");
         } catch(err) {
-            alert("Σφάλμα κατά την ανάγνωση του αρχείου.");
+            alert("Σφάλμα κατά την ανάγνωση του αρχείου JSON.");
         }
+        event.target.value = ""; // Επαναφορά του file input
     };
     reader.readAsText(file);
 }
