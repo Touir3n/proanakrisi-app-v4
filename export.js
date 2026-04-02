@@ -454,4 +454,89 @@ function exportNotification() {
     <p style="${pStyleLast}">Για πιστοποίηση συντάχτηκε η παρούσα έκθεση, η οποία αφού αναγνώστηκε και βεβαιώθηκε, υπογράφεται ως ακολούθως:</p>
     ${sigBlock("Ο κατά του οποίου η γνωστοποίηση", "Ο Β΄ Ανακρ. Υπάλληλος", "Ο Ανακριτικός Υπάλληλος")}`;
     makeDoc("Γνωστοποίηση", header, body, `ΓΝΩΣΤΟΠΟΙΗΣΗ_${d.v("surname")}.doc`);
+
+    // 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
+function exportDeltioTautotitas() {
+    // Ελέγχουμε αν έχουν συμπληρωθεί τα βασικά στοιχεία
+    if (!validateRequiredFields(['surname', 'name', 'father', 'mother', 'dob', 'pob'])) return;
+    
+    let d = getD();
+    
+    // Σύνθεση Κατοικίας
+    let katoikia = `${d.v("area")}, ΔΗΜΟΣ ${d.v("dimos")}`;
+    if (d.v("odos")) katoikia += `, ΟΔΟΣ ${d.v("odos")} ${d.v("arithmos")}`;
+    
+    // Διαχωρισμός Βαθμού και Ονοματεπώνυμου για την Υπογραφή του Α' Ανακριτικού
+    let anakrRaw = d.v("doc_anakr");
+    let parts = anakrRaw.split(" ");
+    let rank = [];
+    let fullName = [];
+    
+    parts.forEach(p => {
+        if (p === "Α΄" || p === "Β΄" || p.toLowerCase().includes("αστυνόμου") || p.toLowerCase().includes("φύλακα")) {
+            rank.push(p);
+        } else {
+            fullName.push(p);
+        }
+    });
+    // Αν για κάποιο λόγο δεν βρεθεί βαθμός, θεωρούμε την 1η λέξη βαθμό
+    if (rank.length === 0) { rank = [parts[0]]; fullName = parts.slice(1); }
+    
+    // Μετατροπή της κατάληξης του Βαθμού από Γενική σε Ονομαστική (π.χ. Ανθυπαστυνόμου -> Ανθυπαστυνόμος)
+    let rankStr = rank.join(" ").replace(/ου$/i, "ος").replace(/α$/i, "ας");
+    let nameStr = fullName.join(" ");
+    
+    let body = `
+    <p style="text-align: right; font-family: 'Times New Roman'; font-size: 10pt; line-height: 1.2; margin-bottom: 10pt;">
+        Χορηγείται από το Τυπογραφείο<br>
+        Συντάσσεται από τον αρμόδιο Ανακριτικό Υπάλληλο<br>
+        ΥΠΟΔΕΙΓΜΑ :Δ – 9γ
+    </p>
+    
+    <p style="text-align: left; font-family: 'Times New Roman'; font-size: 11pt; margin-bottom: 25pt;">
+        Υπόδειγμα : «Δελτίο στοιχείων ταυτότητας κατηγορούμενου»
+    </p>
+    
+    <p style="text-align: center; font-weight: bold; font-family: 'Times New Roman'; font-size: 14pt; margin-bottom: 5pt;">
+        ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
+    </p>
+    
+    <p style="text-align: center; font-family: 'Times New Roman'; font-size: 12pt; margin-bottom: 30pt;">
+        ( Επισυνάπτεται στη δικογραφία )
+    </p>
+    
+    <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; border: none; line-height: 1.6;">
+        <tr><td style="width: 45%;">ΕΠΩΝΥΜΟ</td><td>: <b>${d.v("surname").toUpperCase()}</b></td></tr>
+        <tr><td>ΟΝΟΜΑ</td><td>: <b>${d.v("name")}</b></td></tr>
+        <tr><td>ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td>: <b>${d.v("father")}</b></td></tr>
+        <tr><td>ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td>: <b>${d.v("mother")}</b></td></tr>
+        <tr><td>ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td>: <b>${d.v("dob")}</b></td></tr>
+        <tr><td>ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td>: <b>${d.v("pob")}</b></td></tr>
+        <tr><td>ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td>: <b>${katoikia}</b></td></tr>
+        <tr><td>ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td>: <b>${d.v("adt") || "---"}</b></td></tr>
+        <tr><td>Ημερομηνία Έκδοσης</td><td>: <b>${d.v("authDate") || "---"}</b></td></tr>
+        <tr><td>Αρχή Έκδοσης</td><td>: <b>${d.v("auth") || "---"}</b></td></tr>
+        <tr><td>Α.Φ.Μ</td><td>: <b>${d.v("afm") || "---"}</b></td></tr>
+        <tr><td>Δ.Ο.Υ.</td><td>: <b>${d.v("doy") || "---"}</b></td></tr>
+    </table>
+    
+    <br><br><br>
+    
+    <table style="width: 100%; font-family: 'Times New Roman'; font-size: 12pt; text-align: center; border: none;">
+        <tr>
+            <td style="width: 50%;"></td>
+            <td style="width: 50%;">
+                ${d.city}, ${d.fullDateStr}<br><br>
+                -Ο-<br>
+                Ανακριτικός Υπάλληλος<br><br><br><br><br>
+                <b>${nameStr}</b><br>
+                ${rankStr}
+            </td>
+        </tr>
+    </table>
+    `;
+    
+    // Εξαγωγή του αρχείου Word
+    makeDoc("Δελτίο Ταυτότητας Κατηγορουμένου", "", body, `4_ΔΕΛΤΙΟ_ΤΑΥΤΟΤΗΤΑΣ_${d.v("surname")}.doc`);
+}
 }
