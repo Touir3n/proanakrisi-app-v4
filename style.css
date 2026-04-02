@@ -235,7 +235,7 @@ button[style*="ffc107"] {
    ΣΥΣΤΗΜΑ DARK MODE (ΠΛΗΡΕΣ & ΔΙΟΡΘΩΜΕΝΟ)
    ========================================== */
 body.dark-mode {
-    background-color: #0b1121 !important; /* Βαθύ, σκοτεινό μπλε */
+    background-color: #0f172a !important; /* Σκούρο Slate */
     color: #e0e0e0 !important;
 }
 
