@@ -230,3 +230,73 @@ button[style*="ffc107"] {
 
 .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* ==========================================
+   ΣΥΣΤΗΜΑ DARK MODE (ΣΚΟΤΕΙΝΗ ΛΕΙΤΟΥΡΓΙΑ)
+   ========================================== */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .container {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+}
+
+/* Αλλαγή χρωμάτων στους τίτλους για να διαβάζονται στο σκοτάδι */
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode .step-title {
+    color: #90caf9 !important; 
+}
+
+/* Σκοτεινές Καρτέλες (Tabs) */
+body.dark-mode .tab-button {
+    background-color: #333;
+    color: #ccc;
+    border-bottom: none;
+}
+
+body.dark-mode .tab-button.active {
+    background-color: #1e1e1e;
+    color: #fff;
+    border-bottom: 3px solid #90caf9;
+}
+
+body.dark-mode .tab-content {
+    background-color: #1e1e1e !important;
+    border-color: #333;
+}
+
+/* Πεδία κειμένου και φόρμες (Inputs) */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="time"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #2c2c2c;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
+    border-color: #90caf9;
+    box-shadow: 0 0 5px rgba(144, 202, 249, 0.4);
+}
+
+/* Σκοτείνιασμα στα χρωματιστά κουτιά (π.χ. Βήμα 1, Βήμα 2 κλπ) */
+body.dark-mode .step-box {
+    background-color: #2a2a2a !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .step-box p, body.dark-mode label {
+    color: #bbb !important;
+}
+
+/* Ελαφριά μείωση φωτεινότητας στα κουμπιά Word για να μην τυφλώνουν */
+body.dark-mode button.btn-word, body.dark-mode button.btn-word-apologia {
+    filter: brightness(0.85);
+}
+body.dark-mode button.btn-word:hover, body.dark-mode button.btn-word-apologia:hover {
+    filter: brightness(1);
+}
