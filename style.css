@@ -232,12 +232,12 @@ button[style*="ffc107"] {
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* ==========================================
-   ΣΥΣΤΗΜΑ DARK MODE (ΟΛΙΚΗ & ΕΠΙΘΕΤΙΚΗ ΔΙΟΡΘΩΣΗ)
+   ΣΥΣΤΗΜΑ DARK MODE (ΤΕΛΙΚΗ ΔΙΟΡΘΩΣΗ)
    ========================================== */
 
-/* 1. ΒΑΣΙΚΟ ΦΟΝΤΟ ΚΑΙ ΚΕΙΜΕΝΟ ΟΘΟΝΗΣ */
-html, body.dark-mode {
-    background-color: #0b1121 !important; /* Βαθύ σκοτεινό μπλε */
+/* 1. ΒΑΣΙΚΟ ΦΟΝΤΟ - Εφαρμόζεται ΑΥΣΤΗΡΑ μόνο όταν είναι ενεργό το Dark Mode */
+body.dark-mode {
+    background-color: #0b1121 !important; 
     color: #e0e0e0 !important;
     min-height: 100vh !important;
     margin: 0;
@@ -245,7 +245,6 @@ html, body.dark-mode {
 
 body.dark-mode .container {
     background-color: transparent !important;
-    min-height: 100vh;
 }
 
 /* 2. ΚΕΝΤΡΙΚΑ ΠΛΑΙΣΙΑ & ΚΑΡΤΕΛΕΣ */
@@ -254,16 +253,18 @@ body.dark-mode .global-settings,
 body.dark-mode .privacy-banner,
 body.dark-mode .ai-box,
 body.dark-mode .tab-content,
-body.dark-mode .step-box {
+body.dark-mode .step-box,
+body.dark-mode [id^="panel_"] {
     background-color: #1e293b !important;
     border-color: #334155 !important;
     color: #e2e8f0 !important;
 }
 
-/* 3. "ΣΚΟΥΠΙΣΜΑ" ΟΛΩΝ ΤΩΝ ΕΣΩΤΕΡΙΚΩΝ INLINE ΧΡΩΜΑΤΩΝ */
-/* Οποιοδήποτε εσωτερικό div (π.χ. Προκαταρκτική, Ναρκωτικά) έχει δικό του ανοιχτόχρωμο φόντο, ΓΙΝΕΤΑΙ ΣΚΟΥΡΟ! */
-body.dark-mode .container div[style*="background"] {
-    background-color: #1e293b !important;
+/* 3. ΚΑΤΑΡΓΗΣΗ ΟΛΩΝ ΤΩΝ ΕΣΩΤΕΡΙΚΩΝ ΧΡΩΜΑΤΩΝ */
+/* Κάνει όλα τα "πεισματάρικα" εσωτερικά κουτάκια διάφανα για να πάρουν το σκούρο χρώμα */
+body.dark-mode .tab-content div,
+body.dark-mode .step-box div {
+    background-color: transparent !important;
     border-color: #334155 !important;
 }
 
@@ -296,11 +297,11 @@ body.dark-mode select:focus {
     box-shadow: 0 0 5px rgba(144, 202, 249, 0.4) !important;
 }
 
-/* Ειδικά πεδία σε dark mode για να μην βγάζουν λευκό/ροζ φόντο */
+/* Ειδικά πεδία (Manual/Warning) */
 body.dark-mode .manual-input { background-color: #2d2417 !important; border-left-color: #c78d38 !important; }
 body.dark-mode .accent-warning { background-color: #2d1a1a !important; border-left-color: #b83b3b !important; }
 
-/* 6. ΚΕΙΜΕΝΑ ΚΑΙ ΕΤΙΚΕΤΕΣ ΟΛΗΣ ΤΗΣ ΣΕΛΙΔΑΣ */
+/* 6. ΚΕΙΜΕΝΑ ΚΑΙ ΕΤΙΚΕΤΕΣ */
 body.dark-mode label, 
 body.dark-mode .info-text,
 body.dark-mode p,
@@ -317,7 +318,7 @@ body.dark-mode .section-title {
     border-color: #334155 !important;
 }
 
-/* 8. ΚΟΥΜΠΙΑ (Ελαφρύ σκοτείνιασμα για να μην τυφλώνουν) */
+/* 8. ΚΟΥΜΠΙΑ */
 body.dark-mode button {
     filter: brightness(0.85);
 }
