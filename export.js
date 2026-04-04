@@ -456,21 +456,65 @@ function exportNotification() {
     makeDoc("Γνωστοποίηση", header, body, `ΓΝΩΣΤΟΠΟΙΗΣΗ_${d.v("surname")}.doc`);
 }
 
-// 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
+/// 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
 function exportDeltioTautotitas() {
     if (!validateRequiredFields(['surname', 'name', 'father', 'mother', 'dob', 'pob'])) return;
     
     let d = getD();
     
-    // Σύνθεση Κατοικίας (Με πεζά στα Δήμος/οδός)
-    let katoikia = `${d.v("area")}, Δήμος ${d.v("dimos")}`;
+    // ========================================================
+    // ΕΞΥΠΝΗ ΜΕΤΑΤΡΟΠΗ ΣΕ ΟΝΟΜΑΣΤΙΚΗ ΠΤΩΣΗ (Για το Δελτίο)
+    // ========================================================
+    
+    // 1. Πατρώνυμο (Αρσενικό: Γενική -> Ονομαστική)
+    let fatherNom = d.v("father").split(" ").map(w => {
+        let u = w.toUpperCase();
+        if (u.endsWith("ΟΥ")) return w.slice(0, -2) + (w===u ? "ΟΣ" : "ος");
+        if (u.endsWith("Η") || u.endsWith("Α")) return w + (w===u ? "Σ" : "ς");
+        return w;
+    }).join(" ");
+
+    // 2. Μητρώνυμο (Θηλυκό: Γενική -> Ονομαστική)
+    let motherNom = d.v("mother").split(" ").map(w => {
+        let u = w.toUpperCase();
+        if (u.endsWith("ΗΣ") || u.endsWith("ΑΣ")) return w.slice(0, -1);
+        return w;
+    }).join(" ");
+
+    // 3. Περιοχή Κατοικίας (Γενική -> Ονομαστική)
+    let areaNom = d.v("area").split(" ").map(w => {
+        let u = w.toUpperCase();
+        if (u.endsWith("ΟΥ")) return w.slice(0, -2) + (w===u ? "ΟΣ" : "ος");
+        if (u.endsWith("ΗΣ") || u.endsWith("ΑΣ")) return w.slice(0, -1);
+        if (u === "ΑΘΗΝΩΝ") return w===u ? "ΑΘΗΝΑ" : "Αθήνα";
+        if (u === "ΣΕΡΡΩΝ") return w===u ? "ΣΕΡΡΕΣ" : "Σέρρες";
+        return w;
+    }).join(" ");
+
+    // 4. Τόπος Γέννησης (Αιτιατική -> Ονομαστική)
+    let pobNom = d.v("pob").split(" ").map(w => {
+        let u = w.toUpperCase();
+        if (u.endsWith("Ο") && !u.endsWith("ΙΟ")) return w + (w===u ? "Σ" : "ς");
+        return w;
+    }).join(" ");
+
+    // 5. Δήμος (Γενική -> Ονομαστική)
+    let dimosNom = d.v("dimos").split(" ").map(w => {
+        let u = w.toUpperCase();
+        if (u.endsWith("ΟΥ")) return w.slice(0, -2) + (w===u ? "ΟΣ" : "ος");
+        if (u.endsWith("ΗΣ") || u.endsWith("ΑΣ")) return w.slice(0, -1);
+        return w;
+    }).join(" ");
+    
+    // Σύνθεση Κατοικίας 
+    let katoikia = `${areaNom}`;
+    if (dimosNom) katoikia += `, Δήμος ${dimosNom}`;
     if (d.v("odos")) katoikia += `, οδός ${d.v("odos")} ${d.v("arithmos")}`;
     
-    // Διαχωρισμός Βαθμού και Ονοματεπώνυμου
+    // Διαχωρισμός Βαθμού και Ονοματεπώνυμου Ανακριτικού
     let anakrRaw = d.v("doc_anakr");
     let parts = anakrRaw.split(" ");
-    let rank = [];
-    let fullName = [];
+    let rank = []; let fullName = [];
     
     parts.forEach(p => {
         if (p === "Α΄" || p === "Β΄" || p.toLowerCase().includes("αστυνόμου") || p.toLowerCase().includes("φύλακα")) {
@@ -481,39 +525,28 @@ function exportDeltioTautotitas() {
     });
     if (rank.length === 0) { rank = [parts[0]]; fullName = parts.slice(1); }
     
-    // Έξυπνη μετατροπή Βαθμού σε Ονομαστική
+    // Βαθμός και Όνομα Ανακριτικού σε Ονομαστική
     let rankNom = rank.join(" ")
-        .replace(/Υπαστυνόμου/g, "Υπαστυνόμος")
-        .replace(/Ανθυπαστυνόμου/g, "Ανθυπαστυνόμος")
-        .replace(/Αστυνόμου/g, "Αστυνόμος")
-        .replace(/Αρχιφύλακα/g, "Αρχιφύλακας")
-        .replace(/Αστυφύλακα/g, "Αστυφύλακας")
-        .replace(/Υπαρχιφύλακα/g, "Υπαρχιφύλακας");
+        .replace(/Υπαστυνόμου/g, "Υπαστυνόμος").replace(/Ανθυπαστυνόμου/g, "Ανθυπαστυνόμος")
+        .replace(/Αστυνόμου/g, "Αστυνόμος").replace(/Αρχιφύλακα/g, "Αρχιφύλακας")
+        .replace(/Αστυφύλακα/g, "Αστυφύλακας").replace(/Υπαρχιφύλακα/g, "Υπαρχιφύλακας");
         
-    // Έξυπνη μετατροπή Ονόματος σε Ονομαστική
     let nameNom = fullName.join(" ")
-        .replace(/Νικολάου/g, "Νικόλαος")
-        .replace(/Παύλου/g, "Παύλος")
-        .replace(/Γεωργίου/g, "Γεώργιος")
-        .replace(/Κωνσταντίνου/g, "Κωνσταντίνος")
-        .replace(/Δημητρίου/g, "Δημήτριος")
-        .replace(/Θεοδώρου/g, "Θεόδωρος")
-        .replace(/Ιωάννη/g, "Ιωάννης")
-        .replace(/Παναγιώτη/g, "Παναγιώτης")
-        .replace(/Θεοχάρη/g, "Θεοχάρης")
-        .replace(/Σαλονικιού/g, "Σαλονικιός")
+        .replace(/Νικολάου/g, "Νικόλαος").replace(/Παύλου/g, "Παύλος")
+        .replace(/Γεωργίου/g, "Γεώργιος").replace(/Κωνσταντίνου/g, "Κωνσταντίνος")
+        .replace(/Δημητρίου/g, "Δημήτριος").replace(/Θεοδώρου/g, "Θεόδωρος")
+        .replace(/Ιωάννη/g, "Ιωάννης").replace(/Παναγιώτη/g, "Παναγιώτης")
+        .replace(/Θεοχάρη/g, "Θεοχάρης").replace(/Σαλονικιού/g, "Σαλονικιός")
         .replace(/Δήμου/g, "Δήμος");
         
     nameNom = nameNom.split(" ").map(w => {
         if (w === w.toUpperCase()) {
             if (w.endsWith("ΟΥ")) return w.slice(0, -2) + "ΟΣ";
-            if (w.endsWith("Η")) return w + "Σ";
-            if (w.endsWith("Α")) return w + "Σ";
+            if (w.endsWith("Η") || w.endsWith("Α")) return w + "Σ";
         }
         return w;
     }).join(" ");
     
-    // Δημιουργία μεταβλητής για το "αέρα" ανάμεσα στις γραμμές (8pt κενό από κάτω σε κάθε γραμμή)
     let tdS = 'valign="top" style="padding-bottom: 8pt;"'; 
     
     let body = `
@@ -541,10 +574,10 @@ function exportDeltioTautotitas() {
     <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Times New Roman'; font-size: 11.5pt;">
         <tr><td width="38%" ${tdS}>ΕΠΩΝΥΜΟ</td><td width="2%" ${tdS}>:</td><td width="60%" ${tdS}><b>${d.v("surname").toUpperCase()}</b></td></tr>
         <tr><td ${tdS}>ΟΝΟΜΑ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("name")}</b></td></tr>
-        <tr><td ${tdS}>ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("father")}</b></td></tr>
-        <tr><td ${tdS}>ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("mother")}</b></td></tr>
+        <tr><td ${tdS}>ΟΝΟΜΑ ΠΑΤΕΡΑ</td><td ${tdS}>:</td><td ${tdS}><b>${fatherNom}</b></td></tr>
+        <tr><td ${tdS}>ΟΝΟΜΑ ΜΗΤΕΡΑΣ</td><td ${tdS}>:</td><td ${tdS}><b>${motherNom}</b></td></tr>
         <tr><td ${tdS}>ΗΜΕΡΟΜΗΝΙΑ ΓΕΝΝΗΣΗΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("dob")}</b></td></tr>
-        <tr><td ${tdS}>ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("pob")}</b></td></tr>
+        <tr><td ${tdS}>ΤΟΠΟΣ ΓΕΝΝΗΣΗΣ</td><td ${tdS}>:</td><td ${tdS}><b>${pobNom}</b></td></tr>
         <tr><td ${tdS}>ΤΟΠΟΣ ΚΑΤΟΙΚΙΑΣ (Δήμος ή Κοινότητα)</td><td ${tdS}>:</td><td ${tdS}><b>${katoikia}</b></td></tr>
         <tr><td ${tdS}>ΑΡΙΘΜΟΣ ΔΕΛΤΙΟΥ ΤΑΥΤΟΤΗΤΑΣ</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("adt") || "---"}</b></td></tr>
         <tr><td ${tdS}>Ημερομηνία Έκδοσης</td><td ${tdS}>:</td><td ${tdS}><b>${d.v("authDate") || "---"}</b></td></tr>
