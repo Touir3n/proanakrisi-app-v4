@@ -232,6 +232,37 @@ button[style*="ffc107"] {
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 /* ==========================================
+   ΑΦΑΙΡΕΣΗ ΚΟΥΤΙΩΝ & ΟΜΟΙΟΜΟΡΦΟ UI (LIGHT & DARK MODE)
+   ========================================== */
+.step-box,
+#tab_prok div[style*="background"],
+#tab_apologia div[style*="background"],
+#tab_drugs div[style*="background"],
+#tab_simple div[style*="background"],
+#tab_dv div[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Μετατροπή των τίτλων (ώστε να μην είναι κι αυτοί σε χρωματιστό κουτί, αλλά να υπογραμμίζονται ωραία) */
+.step-title {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #8ba4b8 !important; /* Διακριτική μπλε/γκρι υπογράμμιση */
+    padding-bottom: 5px !important;
+    border-radius: 0 !important;
+}
+
+/* Αφαίρεση περιγράμματος από τους εσωτερικούς τίτλους στα Ναρκωτικά */
+.tab-content h4 {
+    border-bottom: 1px dashed #ccc !important;
+    padding-bottom: 5px;
+}
+
+/* ==========================================
    ΣΥΣΤΗΜΑ DARK MODE (ΑΠΟΛΥΤΟ & ΤΕΛΙΚΟ)
    ========================================== */
 
