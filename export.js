@@ -456,7 +456,7 @@ function exportNotification() {
     makeDoc("Γνωστοποίηση", header, body, `ΓΝΩΣΤΟΠΟΙΗΣΗ_${d.v("surname")}.doc`);
 }
 
-/// 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
+// 13. ΔΕΛΤΙΟ ΣΤΟΙΧΕΙΩΝ ΤΑΥΤΟΤΗΤΑΣ ΚΑΤΗΓΟΡΟΥΜΕΝΟΥ
 function exportDeltioTautotitas() {
     if (!validateRequiredFields(['surname', 'name', 'father', 'mother', 'dob', 'pob'])) return;
     
