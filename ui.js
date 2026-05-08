@@ -521,7 +521,7 @@ function importWorkspace(event) {
             }
             
             // Ενημέρωση UI αν πρόκειται για ναρκωτικά
-            if (typeof toggleDrugPanels === "function") toggleDrugPanels();
+            toggleDrugPanels();
             
             alert("Η υπόθεση φορτώθηκε επιτυχώς! Όλα τα κείμενά σας βρίσκονται ακριβώς όπως τα αφήσατε.");
         } catch(err) {
