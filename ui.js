@@ -488,48 +488,6 @@ function declineGreek(word, gender, targetCase, isSurname = false) {
     return w;
 }
 
-// Αλγόριθμος κλίσης Ελληνικών Ονομάτων
-function declineGreek(word, gender, targetCase, isSurname = false) {
-    if (!word) return "";
-    let w = word.trim();
-    
-    if (gender === 'M') {
-        if (targetCase === 'gen') {
-            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'ΟΥ');
-            if (w.endsWith('ος')) return w.replace(/ος$/, 'ου');
-            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ης')) return w.replace(/ς$/, '');
-            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ας')) return w.replace(/ς$/, '');
-            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ες')) return w.replace(/ς$/, '');
-            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
-        } else if (targetCase === 'acc') {
-            if (w.endsWith('ΟΣ')) return w.replace(/ΟΣ$/, 'Ο');
-            if (w.endsWith('ος')) return w.replace(/ος$/, 'ο');
-            if (w.endsWith('ΗΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ης')) return w.replace(/ς$/, '');
-            if (w.endsWith('ΑΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ας')) return w.replace(/ς$/, '');
-            if (w.endsWith('ΕΣ')) return w.replace(/Σ$/, '');
-            if (w.endsWith('ες')) return w.replace(/ς$/, '');
-            if (w.endsWith('Σ') || w.endsWith('ς')) return w.slice(0, -1);
-        }
-    } else if (gender === 'F') {
-        if (!isSurname) { 
-            if (targetCase === 'gen') {
-                if (w.endsWith('Α')) return w + 'Σ';
-                if (w.endsWith('α')) return w + 'ς';
-                if (w.endsWith('Η')) return w + 'Σ';
-                if (w.endsWith('η')) return w + 'ς';
-                if (w.endsWith('Ω')) return w + 'Σ';
-                if (w.endsWith('ω')) return w + 'ς';
-            }
-        }
-    }
-    return w;
-}
-
 function getProfileText(caseType = 'nom') {
     let v = id => { let el = document.getElementById(id); return el ? el.value.trim() : ""; };
     
