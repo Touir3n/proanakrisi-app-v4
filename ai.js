@@ -15,8 +15,8 @@ function sanitizeForAI(text) {
 function toggleAI() {
     let panel = document.getElementById("ai_settings_panel");
     let arrow = document.getElementById("ai_arrow");
-    if (panel.style.display === "none") { panel.style.display = "block"; arrow.innerHTML = "⬆️ Κλείσιμο"; } 
-    else { panel.style.display = "none"; arrow.innerHTML = "⬇️ Άνοιγμα"; }
+    if (panel.style.display === "none") { panel.style.display = "block"; arrow.textContent = "⬆️ Κλείσιμο"; }
+    else { panel.style.display = "none"; arrow.textContent = "⬇️ Άνοιγμα"; }
 }
 
 function logoutAI() {
@@ -35,7 +35,7 @@ async function saveApiKeyAndFetchModels() {
         let data = await res.json();
         if(data.error) { alert("Σφάλμα ελέγχου κλειδιού: " + data.error.message); return; }
         
-        let select = document.getElementById("gemini_model"); select.innerHTML = ""; 
+        let select = document.getElementById("gemini_model"); select.replaceChildren();
         let validModels = data.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
         
         validModels.forEach(m => {
@@ -87,13 +87,6 @@ async function refineTextAI(elementId, spinnerId, btnId) {
     if (result) { el.value = result.trim(); saveMem(elementId); }
 }
 
-function escapeHtmlForAI(str) {
-    return String(str || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
-
 function normalizeGoldenRuleLines(raw) {
     let lines = String(raw || "").replace(/```/g, "").split(/\n+/).map(x => x.trim()).filter(Boolean);
     let labels = [
@@ -112,7 +105,12 @@ function normalizeGoldenRuleLines(raw) {
 async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
     let text = document.getElementById(sourceId).value.trim();
     let resDiv = document.getElementById(resultId);
-    if (!text) { resDiv.innerHTML = "Γράψτε πρώτα την κατάθεση."; resDiv.className = "ai-result error"; resDiv.style.display = "block"; return; }
+    if (!text) {
+        resDiv.textContent = "Γράψτε πρώτα την κατάθεση.";
+        resDiv.className = "ai-result error";
+        resDiv.style.display = "block";
+        return;
+    }
     let prompt = `Αξιολόγησε το παρακάτω κείμενο με βάση τον Χρυσό Κανόνα της αστυνομίας.
 Απάντησε ΑΥΣΤΗΡΑ μόνο σε 5 γραμμές, χωρίς εισαγωγή και χωρίς σχόλια:
 ΠΟΥ (Τόπος): ✅ ή ❌
@@ -126,7 +124,17 @@ async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
     let result = await callGeminiAPI(prompt, btnId, spinnerId);
     if (result) {
         let lines = normalizeGoldenRuleLines(result);
-        resDiv.innerHTML = "<strong>Αξιολόγηση Χρυσού Κανόνα:</strong><br><br>" + lines.map(escapeHtmlForAI).join("<br>");
+        let strong = document.createElement("strong");
+        strong.textContent = "Αξιολόγηση Χρυσού Κανόνα:";
+        let frag = document.createDocumentFragment();
+        frag.appendChild(strong);
+        frag.appendChild(document.createElement("br"));
+        frag.appendChild(document.createElement("br"));
+        lines.forEach((line, idx) => {
+            frag.appendChild(document.createTextNode(line));
+            if (idx < lines.length - 1) frag.appendChild(document.createElement("br"));
+        });
+        resDiv.replaceChildren(frag);
         resDiv.style.display = "block";
     }
 }
