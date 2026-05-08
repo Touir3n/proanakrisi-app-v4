@@ -17,8 +17,8 @@ const defaultOfficers = "Υπαστυνόμου Α΄ ΜΟΥΤΣΑΚΗ Νικολ
 function toggleConfig() {
     let panel = document.getElementById("cfg_settings_panel");
     let arrow = document.getElementById("cfg_arrow");
-    if (panel.style.display === "none") { panel.style.display = "block"; arrow.innerHTML = "⬆️ Κλείσιμο"; } 
-    else { panel.style.display = "none"; arrow.innerHTML = "⬇️ Άνοιγμα"; }
+    if (panel.style.display === "none") { panel.style.display = "block"; arrow.textContent = "⬆️ Κλείσιμο"; }
+    else { panel.style.display = "none"; arrow.textContent = "⬇️ Άνοιγμα"; }
 }
 
 function saveGlobalSettings() {
@@ -53,7 +53,7 @@ function populateOfficers(text) {
     if(officers.length === 0) return;
     let sel1 = document.getElementById("doc_anakr"); let sel2 = document.getElementById("doc_banakr");
     let val1 = localStorage.getItem('mem_doc_anakr'); let val2 = localStorage.getItem('mem_doc_banakr');
-    sel1.innerHTML = ""; sel2.innerHTML = "";
+    sel1.replaceChildren(); sel2.replaceChildren();
     officers.forEach(o => { sel1.add(new Option(o, o)); sel2.add(new Option(o, o)); });
     if (val1 && officers.includes(val1)) sel1.value = val1;
     if (val2 && officers.includes(val2)) sel2.value = val2;
@@ -143,11 +143,119 @@ window.onload = function() {
 
 function buildDVForm() {
     const container = document.getElementById("dv_mode_container");
-    let html = `<div class="dv-item large"><div style="display: flex; gap: 5px; margin-bottom: 5px;"><label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; flex: 1;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας; *</label><button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_dv" onclick="refineTextAI('dv_q_main', 'spin_ref_dv', 'btn_ref_dv')"><span id="spin_ref_dv" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button><button class="btn-undo" onclick="undoText('dv_q_main')">↩️ Αναίρεση</button></div><textarea id="dv_q_main" placeholder="Περιγράψτε το αρχικό ιστορικό..." style="height: 100px;" oninput="saveMem(this.id)"></textarea><div style="margin-top: 10px; margin-bottom: 20px;"><button class="btn-ai" id="btn_check_rule_dv" onclick="checkGoldenRule('dv_q_main', 'ai_golden_rule_result_dv', 'spinner_rule_dv', 'btn_check_rule_dv')"><span id="spinner_rule_dv" class="spinner" style="display: none;"></span>✨ AI Έλεγχος "Χρυσού Κανόνα" <span style="font-weight: normal; font-size: 11px;">(Ποιος, Πού, Πότε, Τι, Γιατί)</span></button><div id="ai_golden_rule_result_dv" class="ai-result"></div></div></div>`;
-    dvQuestions.forEach((q, index) => { html += `<div class="dv-item"><label>ΕΡΩΤΗΣΗ: ${q}</label><textarea id="dv_q_${index}" oninput="saveMem(this.id)"></textarea></div>`; });
-    html += `<div class="dv-item"><label>ΕΡΩΤΗΣΗ: Έχετε να προσθέσετε κάτι άλλο;</label><textarea id="dv_q_last" oninput="saveMem(this.id)">Επιθυμώ την ποινική δίωξη του δράστη...</textarea></div>`;
-    container.innerHTML = html;
-    loadMem("dv_q_main"); dvQuestions.forEach((q, i) => loadMem("dv_q_" + i)); loadMem("dv_q_last");
+    container.replaceChildren();
+
+    // First item
+    const mainItem = document.createElement("div");
+    mainItem.className = "dv-item large";
+
+    const headerDiv = document.createElement("div");
+    headerDiv.style.display = "flex";
+    headerDiv.style.gap = "5px";
+    headerDiv.style.marginBottom = "5px";
+
+    const mainLabel = document.createElement("label");
+    mainLabel.style.fontSize = "14px";
+    mainLabel.style.color = "#0056b3";
+    mainLabel.style.display = "block";
+    mainLabel.style.fontWeight = "bold";
+    mainLabel.style.flex = "1";
+    mainLabel.textContent = "ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας; *";
+    headerDiv.appendChild(mainLabel);
+
+    const refBtn = document.createElement("button");
+    refBtn.className = "btn-ai";
+    refBtn.style.width = "auto";
+    refBtn.style.padding = "4px 8px";
+    refBtn.style.fontSize = "11px";
+    refBtn.id = "btn_ref_dv";
+    refBtn.onclick = function() { refineTextAI('dv_q_main', 'spin_ref_dv', 'btn_ref_dv'); };
+
+    const spinSpan = document.createElement("span");
+    spinSpan.id = "spin_ref_dv";
+    spinSpan.className = "spinner";
+    spinSpan.style.display = "none";
+    refBtn.appendChild(spinSpan);
+    refBtn.appendChild(document.createTextNode("✨ Διόρθωση AI"));
+    headerDiv.appendChild(refBtn);
+
+    const undoBtn = document.createElement("button");
+    undoBtn.className = "btn-undo";
+    undoBtn.onclick = function() { undoText('dv_q_main'); };
+    undoBtn.textContent = "↩️ Αναίρεση";
+    headerDiv.appendChild(undoBtn);
+
+    mainItem.appendChild(headerDiv);
+
+    const mainTextarea = document.createElement("textarea");
+    mainTextarea.id = "dv_q_main";
+    mainTextarea.placeholder = "Περιγράψτε το αρχικό ιστορικό...";
+    mainTextarea.style.height = "100px";
+    mainTextarea.oninput = function() { saveMem(this.id); };
+    mainItem.appendChild(mainTextarea);
+
+    const ruleDivContainer = document.createElement("div");
+    ruleDivContainer.style.marginTop = "10px";
+    ruleDivContainer.style.marginBottom = "20px";
+
+    const ruleBtn = document.createElement("button");
+    ruleBtn.className = "btn-ai";
+    ruleBtn.id = "btn_check_rule_dv";
+    ruleBtn.onclick = function() { checkGoldenRule('dv_q_main', 'ai_golden_rule_result_dv', 'spinner_rule_dv', 'btn_check_rule_dv'); };
+
+    const ruleSpin = document.createElement("span");
+    ruleSpin.id = "spinner_rule_dv";
+    ruleSpin.className = "spinner";
+    ruleSpin.style.display = "none";
+    ruleBtn.appendChild(ruleSpin);
+    ruleBtn.appendChild(document.createTextNode("✨ AI Έλεγχος \"Χρυσού Κανόνα\" "));
+
+    const ruleInfo = document.createElement("span");
+    ruleInfo.style.fontWeight = "normal";
+    ruleInfo.style.fontSize = "11px";
+    ruleInfo.textContent = "(Ποιος, Πού, Πότε, Τι, Γιατί)";
+    ruleBtn.appendChild(ruleInfo);
+
+    ruleDivContainer.appendChild(ruleBtn);
+
+    const ruleResDiv = document.createElement("div");
+    ruleResDiv.id = "ai_golden_rule_result_dv";
+    ruleResDiv.className = "ai-result";
+    ruleDivContainer.appendChild(ruleResDiv);
+
+    mainItem.appendChild(ruleDivContainer);
+    container.appendChild(mainItem);
+
+    // Question items
+    dvQuestions.forEach((q, index) => {
+        const item = document.createElement("div");
+        item.className = "dv-item";
+        const label = document.createElement("label");
+        label.textContent = `ΕΡΩΤΗΣΗ: ${q}`;
+        item.appendChild(label);
+        const textarea = document.createElement("textarea");
+        textarea.id = `dv_q_${index}`;
+        textarea.oninput = function() { saveMem(this.id); };
+        item.appendChild(textarea);
+        container.appendChild(item);
+    });
+
+    // Last item
+    const lastItem = document.createElement("div");
+    lastItem.className = "dv-item";
+    const lastLabel = document.createElement("label");
+    lastLabel.textContent = "ΕΡΩΤΗΣΗ: Έχετε να προσθέσετε κάτι άλλο;";
+    lastItem.appendChild(lastLabel);
+    const lastTextarea = document.createElement("textarea");
+    lastTextarea.id = "dv_q_last";
+    lastTextarea.oninput = function() { saveMem(this.id); };
+    lastTextarea.value = "Επιθυμώ την ποινική δίωξη του δράστη...";
+    lastItem.appendChild(lastTextarea);
+    container.appendChild(lastItem);
+
+    loadMem("dv_q_main");
+    dvQuestions.forEach((q, i) => loadMem("dv_q_" + i));
+    loadMem("dv_q_last");
 }
 
 function setInputIfExists(id, value) {
@@ -549,7 +657,7 @@ function toggleDarkMode() {
     // Αλλαγή του κειμένου και του εικονιδίου στο κουμπί
     const btn = document.getElementById('darkModeBtn');
     if (btn) {
-        btn.innerHTML = isDark ? '☀️ Φωτεινό' : '🌙 Σκοτεινό';
+        btn.textContent = isDark ? '☀️ Φωτεινό' : '🌙 Σκοτεινό';
     }
 }
 
@@ -562,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Βάζουμε ένα μικρό delay για να προλάβει να φορτώσει το κουμπί στο DOM
         setTimeout(() => {
             if (document.getElementById('darkModeBtn')) {
-                document.getElementById('darkModeBtn').innerHTML = '☀️ Φωτεινό';
+                document.getElementById('darkModeBtn').textContent = '☀️ Φωτεινό';
             }
         }, 100);
     }
