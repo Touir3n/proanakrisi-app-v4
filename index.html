@@ -103,7 +103,7 @@
     <div class="section">
         <div class="section-title">ΒΗΜΑ 2: Έλεγχος & Συμπλήρωση Στοιχείων</div>
         
-        <div class="profiles-container" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6;">
+        <div class="profiles-container">
             <span style="font-weight: bold; font-size: 13px; color: #495057;">💾 Αποθήκευση:</span>
             <button style="padding: 6px 12px; font-size: 12px; background-color: #6c757d; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePersonProfile('Μάρτυρας')">Ως Μάρτυρας</button>
             <button style="padding: 6px 12px; font-size: 12px; background-color: #dc3545; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePersonProfile('Κατηγορούμενος')">Ως Κατηγορούμενος</button>
@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 20px; display: flex; align-items: center; background: #fdf2f2; padding: 10px; border-radius: 8px; border: 1px solid #f5c6c6;">
+        <div class="foreigner-switch-container">
             <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
                 <input type="checkbox" id="is_foreigner" onchange="toggleForeignerFields()" style="opacity: 0; width: 0; height: 0;">
                 <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;"></span>

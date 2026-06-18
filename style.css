@@ -145,6 +145,26 @@ button:hover { background-color: #2563eb; }
     border: 1px solid #334155; 
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
+.profiles-container {
+    display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6;
+}
+.foreigner-switch-container {
+    margin-bottom: 20px; display: flex; align-items: center; background: #fdf2f2; padding: 10px; border-radius: 8px; border: 1px solid #f5c6c6;
+}
+.dark-mode .profiles-container {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+.dark-mode .profiles-container span {
+    color: #e2e8f0 !important;
+}
+.dark-mode .foreigner-switch-container {
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+}
+.dark-mode .foreigner-switch-container span {
+    color: #fca5a5 !important;
+}
 .dark-mode .section-title { 
     background-color: #0f172a; 
     color: #e2e8f0; 
