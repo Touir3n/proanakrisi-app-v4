@@ -1,5 +1,4 @@
 @echo off
-chcp 65001 >nul
 set "HTML_FILE=%~dp0index.html"
 
 REM Try launching with Chrome
