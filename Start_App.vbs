@@ -1,4 +1,6 @@
 Set objFSO = CreateObject("Scripting.FileSystemObject")
-strPath = objFSO.GetParentFolderName(WScript.ScriptFullName) & "\index.html"
+strDir = objFSO.GetParentFolderName(WScript.ScriptFullName)
+strURL = "file:///" & Replace(strDir, "\", "/") & "/index.html"
+
 Set objShell = CreateObject("WScript.Shell")
-objShell.Run "cmd.exe /c start """" chrome --app=""" & strPath & """ --start-maximized", 0, False
+objShell.Run "cmd.exe /c start """" chrome --app=""" & strURL & """ --start-maximized", 0, False
