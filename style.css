@@ -327,4 +327,14 @@ input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:f
 .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
 .tab-content.active { display: block; }
 
+/* GLOBAL DARK MODE OVERRIDES FOR INLINE STYLES */
+.dark-mode .step-box { background-color: #0f172a !important; border-color: #334155 !important; }
+.dark-mode .info-text { background-color: #172554 !important; border-left-color: #3b82f6 !important; color: #bfdbfe !important; }
+.dark-mode .tab-btn[style*="background-color: #d1ecf1"] { background-color: #1e3a8a !important; border-color: #1e40af !important; color: #bfdbfe !important; }
+.dark-mode div[style*="background: #e9ecef"] { background-color: #1e293b !important; border-color: #334155 !important; }
+.dark-mode div[style*="background-color: #e9ecef"] { background-color: #1e293b !important; border-color: #334155 !important; }
+.dark-mode #tab_drugs { background-color: transparent !important; }
+.dark-mode #panel_body_search, .dark-mode #panel_car_search, .dark-mode #panel_surrender { background-color: #1e293b !important; border-color: #334155 !important; }
+.dark-mode #panel_body_search h4, .dark-mode #panel_car_search h4, .dark-mode #panel_surrender h4 { color: #e2e8f0 !important; }
+
 
