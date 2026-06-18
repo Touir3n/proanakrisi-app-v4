@@ -165,6 +165,27 @@ button:hover { background-color: #2563eb; }
 .dark-mode .foreigner-switch-container span {
     color: #fca5a5 !important;
 }
+
+/* Base styles for Prok & Model Selection */
+.model-selection-box { background: #fff3e0; border: 1px solid #ffe0b2; }
+.tab-prok-bg { background-color: #fff9f2; }
+.prok-inner-box { border: 1px solid #ffcc80; background: #fffcf8; }
+.step-box-white { border-color: #ffcc80; background: #fff; }
+.prok-time-wrapper { background: #fafafa; border: 1px solid #eee; }
+.prok-time-wrapper2 { background: #f0fbff; border: 1px solid #bee5eb; }
+.prok-deadline-box { background: #fffdf5; border: 1px solid #ffeeba; }
+.prok-memo-box { background: #f8f9fa; border: 1px solid #d6d8db; }
+
+/* Dark mode overrides for Prok & Model Selection */
+.dark-mode .model-selection-box { background-color: #431407; border-color: #7c2d12; }
+.dark-mode .tab-prok-bg { background-color: transparent; }
+.dark-mode .prok-inner-box { background-color: #1e293b; border-color: #334155; }
+.dark-mode .step-box-white { background-color: #0f172a; border-color: #334155; }
+.dark-mode .prok-time-wrapper { background-color: #1e293b; border-color: #334155; }
+.dark-mode .prok-time-wrapper2 { background-color: #0f172a; border-color: #334155; }
+.dark-mode .prok-deadline-box { background-color: #1e293b; border-color: #334155; }
+.dark-mode .prok-memo-box { background-color: #1e293b; border-color: #334155; }
+
 .dark-mode .section-title { 
     background-color: #0f172a; 
     color: #e2e8f0; 

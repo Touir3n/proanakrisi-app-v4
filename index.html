@@ -50,7 +50,7 @@
                 </a>
             </div>
             
-            <div id="model_selection_div" style="display: none; gap: 10px; align-items: center; background: #fff3e0; padding: 10px; border-radius: 4px; border: 1px solid #ffe0b2;">
+            <div id="model_selection_div" class="model-selection-box" style="display: none; gap: 10px; align-items: center; padding: 10px; border-radius: 4px;">
                 <label style="font-size: 13px; font-weight: bold; color: #e65100; margin:0;">Ενεργό Μοντέλο AI:</label>
                 <select id="gemini_model" style="flex: 1; border-color: #ffb74d;" onchange="localStorage.setItem('gemini_model', this.value)"></select>
                 <span id="key_status" style="font-size: 13px; color: green; font-weight: bold;">✅ Συνδέθηκε!</span>
@@ -540,12 +540,12 @@
             </div>
         </div>
 
-        <div id="tab_prok" class="tab-content" style="background-color: #fff9f2;">
+        <div id="tab_prok" class="tab-content tab-prok-bg">
             <div class="info-text" style="background-color: #ffe5b4; border-left: 4px solid #ff9900; color: #804d00;">
                 <strong>📁 ΠΡΟΚΑΤΑΡΚΤΙΚΗ ΕΞΕΤΑΣΗ (Άρθρο 244 Κ.Π.Δ.):</strong> Εξαγωγή εγγράφων για ενημέρωση δικαιωμάτων υπόπτου, χορήγηση προθεσμίας και ανωμοτί κατάθεση.
             </div>
             
-            <div style="border: 1px solid #ffcc80; background: #fffcf8; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <div class="prok-inner-box" style="padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 10px;">
                     <div class="form-group" style="grid-column: span 2;">
                         <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας: *</label>
@@ -579,10 +579,10 @@
                 </div>
             </div>
 
-<div class="step-box" style="border-color: #ffcc80; background: #fff;">
+<div class="step-box step-box-white">
                 <div class="step-title" style="color: #e67300;">ΗΜΕΡΑ 1η (Γνωστοποίηση & Ανωμοτί / Προθεσμία)</div>
                 
-                <div style="display: flex; gap: 15px; margin-bottom: 12px; background: #fafafa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee;">
+                <div class="prok-time-wrapper" style="display: flex; gap: 15px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px;">
                     <div class="time-box" style="flex: 1;">
                         <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Δικαιωμάτων:</label>
                         <input type="text" id="prok_rights_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_rights_end" oninput="saveMem(this.id)" style="padding: 5px;">
@@ -602,7 +602,7 @@
                     </div>
                     
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                        <div style="display: flex; gap: 10px; background: #fffdf5; border: 1px solid #ffeeba; padding: 6px 10px; border-radius: 6px;">
+                        <div class="prok-deadline-box" style="display: flex; gap: 10px; padding: 6px 10px; border-radius: 6px;">
                             <div style="flex: 1; display: flex; align-items: center; gap: 5px;">
                                 <label style="margin: 0; font-size: 11px; color: #856404; white-space: nowrap;">Έως (Ημ/νία):</label>
                                 <input type="text" id="prok_dead_date" placeholder="12-05-2026" oninput="saveMem(this.id)" style="padding: 4px 6px; font-size: 12px; border-color: #ffeeba; height: 26px;">
@@ -620,7 +620,7 @@
             <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 15px;">
                 <div class="step-title" style="color: #117a8b;">ΜΕΤΑ ΤΗΝ ΠΑΡΕΛΕΥΣΗ ΠΡΟΘΕΣΜΙΑΣ</div>
                 
-                <div style="display: flex; gap: 15px; margin-bottom: 12px; background: #f0fbff; padding: 8px 12px; border-radius: 6px; border: 1px solid #bee5eb;">
+                <div class="prok-time-wrapper2" style="display: flex; gap: 15px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px;">
                     <div class="time-box" style="flex: 1;">
                         <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Ανωμοτί:</label>
                         <input type="text" id="prok_after_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_after_end" oninput="saveMem(this.id)" style="padding: 5px;">
@@ -638,7 +638,7 @@
                     </div>
                     
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                        <div style="display: flex; align-items: center; gap: 10px; background: #f8f9fa; border: 1px solid #d6d8db; padding: 6px 10px; border-radius: 6px;">
+                        <div class="prok-memo-box" style="display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 6px;">
                             <label style="margin: 0; font-size: 11px; color: #6c757d; white-space: nowrap;">Αρ. Σελίδων Υπομνήματος:</label>
                             <input type="text" id="prok_pages" placeholder="π.χ. τρεις (3)" oninput="saveMem(this.id)" style="padding: 4px 6px; font-size: 12px; flex: 1; border-color: #d6d8db; height: 26px;">
                         </div>
