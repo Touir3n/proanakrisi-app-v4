@@ -542,7 +542,7 @@
                 <strong>💊 ΕΚΘΕΣΕΙΣ ΝΑΡΚΩΤΙΚΩΝ / ΚΑΤΑΣΧΕΣΕΩΝ:</strong> Συμπληρώστε τα στοιχεία της ουσίας. Επιλέξτε τον τύπο έρευνας για να εμφανιστούν τα κατάλληλα πεδία (π.χ. στοιχεία οχήματος).
             </div>
             
-            <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 15px;">
+            <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 15px;">
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Τύπος Έρευνας / Κατάσχεσης:</label>
                     <select id="drug_search_type" onchange="toggleDrugPanels(); saveMem(this.id)">
@@ -558,7 +558,7 @@
 
             <div id="panel_body_search" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
                 <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Σωματικής Έρευνας</h4>
-                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
+                <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 0;">
                     <div class="form-group" style="grid-column: span 2;"><label>Ακριβές Σημείο Ανεύρεσης: *</label><input type="text" id="drug_body_loc" placeholder="π.χ. στην αριστερή τσέπη του παντελονιού του" oninput="saveMem(this.id)"></div>
                     <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που έκανε την έρευνα (Αιτιατική):</label><input type="text" id="drug_body_officer" placeholder="π.χ. τον Αρχιφύλακα ΝΙΚΗΤΑΚΗ Γεώργιο (Αν μείνει κενό, μπαίνει 'εμάς')" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Ημερομηνία Έρευνας:</label><input type="text" id="drug_body_date" oninput="saveMem(this.id)"></div>
@@ -571,7 +571,7 @@
 
             <div id="panel_car_search" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
                 <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Έρευνας Αυτοκινήτου</h4>
-                <div class="grid-form" style="grid-template-columns: repeat(3, 1fr); margin-top: 0;">
+                <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-top: 0;">
                     <div class="form-group"><label>Αριθμός Πινακίδας: *</label><input type="text" id="drug_car_plate" placeholder="π.χ. ΙΙΙ-9999" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Μάρκα: *</label><input type="text" id="drug_car_brand" placeholder="π.χ. TOYOTA" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Χρώμα: *</label><input type="text" id="drug_car_color" placeholder="π.χ. μαύρο" oninput="saveMem(this.id)"></div>
@@ -586,7 +586,7 @@
 
             <div id="panel_surrender" style="display: none; background: #eef2f5; padding: 15px; border-radius: 8px; border: 1px solid #cdd4dc; margin-bottom: 20px;">
                 <h4 style="margin-top: 0; margin-bottom: 10px; color: #1a365d;">Στοιχεία Παράδοσης</h4>
-                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-top: 0;">
+                <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 0;">
                     <div class="form-group" style="grid-column: span 2;"><label>Αστυνομικός που σας τα παρέδωσε (Ονομαστική): *</label><input type="text" id="drug_surrender_officer" placeholder="π.χ. ο Αστυφύλακας ΓΕΩΡΓΙΟΥ Γεώργιος" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Ημερομηνία Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_date" oninput="saveMem(this.id)"></div>
                     <div class="form-group"><label>Ώρα Ανεύρεσης/Παράδοσης:</label><input type="text" id="drug_surrender_time" oninput="saveMem(this.id)"></div>
@@ -623,13 +623,13 @@
             </div>
             
             <div class="prok-inner-box" style="padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <div class="grid-form" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 10px;">
+                <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 10px;">
                     <div class="form-group" style="grid-column: span 2;">
                         <label style="color: #e67300;">Α.Β.Μ. / Αριθμός Εισαγγελικής Παραγγελίας: *</label>
                         <input type="text" id="prok_abm" value="υπ' αριθμ. ....... παραγγελίας της Εισαγγελίας Πλημμελειοδικών Θεσσαλονίκης" oninput="saveMem(this.id)">
                     </div>
                     <div class="form-group" style="grid-column: span 2;">
-                        <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center;">
+                        <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center; flex-wrap: wrap;">
                             <label style="color: #e67300; flex: 1; margin: 0;">Αποδιδόμενη Πράξη / Κατηγορία: *</label>
                             <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_charge" onclick="explainLawAI()"><span id="spin_ref_charge" class="spinner" style="display:none;"></span>✨ AI Νόμος</button>
                             <button class="btn-undo" type="button" onclick="undoText('prok_charge')">↩️ Αναίρεση</button>
@@ -697,7 +697,7 @@
             <div class="step-box" style="border-color: #17a2b8; background: #f4fcff; margin-top: 15px;">
                 <div class="step-title" style="color: #117a8b;">ΜΕΤΑ ΤΗΝ ΠΑΡΕΛΕΥΣΗ ΠΡΟΘΕΣΜΙΑΣ</div>
                 
-                <div class="prok-time-wrapper2" style="display: flex; gap: 15px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px;">
+                <div class="prok-time-wrapper2" style="display: flex; gap: 15px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px; flex-wrap: wrap;">
                     <div class="time-box" style="flex: 1;">
                         <label style="align-self: center; margin-right: 10px; margin-bottom: 0; font-weight: bold; font-size: 12px; color: #555;">Ώρες Ανωμοτί:</label>
                         <input type="text" id="prok_after_start" oninput="saveMem(this.id)" style="padding: 5px;"><input type="text" id="prok_after_end" oninput="saveMem(this.id)" style="padding: 5px;">
@@ -724,6 +724,8 @@
                 </div>
         </div> <!-- End of step3_content -->
     </div>
+</div>
+
 <script src="ui.js"></script>
 <script src="ai.js"></script>
 <script src="export.js"></script>
