@@ -21,6 +21,19 @@ function toggleConfig() {
     else { panel.style.display = "none"; arrow.textContent = "⬇️ Άνοιγμα"; }
 }
 
+function toggleStep(contentId, arrowId) {
+    let content = document.getElementById(contentId);
+    let arrow = document.getElementById(arrowId);
+    if (!content || !arrow) return;
+    if (content.style.display === "none") {
+        content.style.display = "block";
+        arrow.textContent = "⬆️ Κλείσιμο";
+    } else {
+        content.style.display = "none";
+        arrow.textContent = "⬇️ Άνοιγμα";
+    }
+}
+
 function toggleGlobalAI() {
     let aiEnabled = localStorage.getItem("ai_enabled") !== "false";
     aiEnabled = !aiEnabled;
