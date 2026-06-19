@@ -24,72 +24,85 @@
             <span><b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα ΑΔΤ, ΑΦΜ, τηλέφωνα & πινακίδες. Για ασφαλή χρήση AI, χρησιμοποιείτε μόνο αρχικά ονομάτων (π.χ. «Κ»).</span>
         </div>
     </div>
-<div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; margin-top: 15px; flex-wrap: wrap;">
-        <button id="toggleAIBtn" onclick="toggleGlobalAI()" style="background-color: #8b5cf6; padding: 8px 12px; font-size: 13px; flex: 1; border: none; color: white; border-radius: 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;">🤖 Ενεργό AI</button>
-        <button onclick="exportWorkspace()" style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; flex: 1;">💾 Αποθήκευση Υπόθεσης (.json)</button>
-        <label style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; cursor: pointer; color: white; border-radius: 8px; flex: 1; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);">
-            📂 Φόρτωση Υπόθεσης
-            <input type="file" id="import_file" accept=".json" style="display: none;" onchange="importWorkspace(event)">
-        </label>
+<div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; margin-top: 15px; flex-wrap: wrap;">
+    <button onclick="exportWorkspace()" style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; flex: 1;">💾 Αποθήκευση Υπόθεσης (.json)</button>
+    <label style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; cursor: pointer; color: white; border-radius: 8px; flex: 1; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);">
+        📂 Φόρτωση Υπόθεσης
+        <input type="file" id="import_file" accept=".json" style="display: none;" onchange="importWorkspace(event)">
+    </label>
     <button onclick="clearFields()" style="background-color: #d32f2f; padding: 10px 15px; font-size: 13px; flex: 1;">🗑️ Νέα Υπόθεση (Καθαρισμός)</button>
-        <button id="darkModeBtn" onclick="toggleDarkMode()" style="background-color: #343a40; color: white; padding: 10px 15px; font-size: 13px; flex: 0.5; border: none; border-radius: 4px; cursor: pointer;">🌙 Σκοτεινό</button>
-    </div>
-    <div class="ai-settings">
-        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAI()">
-            <strong style="color: #e65100;">✨ Ρυθμίσεις Τεχνητής Νοημοσύνης (Gemini API)</strong>
-            <span id="ai_arrow">⬇️ Άνοιγμα</span>
-        </div>
-        <div id="ai_settings_panel" style="display: none; margin-top: 10px;">
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Επικολλήστε το δωρεάν Gemini API Key σας.</p>
-            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                <input type="password" id="gemini_api_key" placeholder="Επικόλληση κλειδιού (π.χ. AIzaSy...)" style="flex: 2;">
-                <button onclick="saveApiKeyAndFetchModels()" style="background-color: #ff9800; flex: 1;">💾 Σύνδεση</button>
-                <button onclick="logoutAI()" style="background-color: #6c757d; color: white;">🗑️ Καθαρισμός</button>
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" style="text-decoration:none;">
-                    <button type="button" style="background-color: #17a2b8; height:100%; display:flex; align-items:center; cursor: pointer; border: none; border-radius: 4px; color: white; padding: 10px;">🔗 Λήψη Κλειδιού</button>
-                </a>
-            </div>
-            
-            <div id="model_selection_div" class="model-selection-box" style="display: none; gap: 10px; align-items: center; padding: 10px; border-radius: 4px;">
-                <label style="font-size: 13px; font-weight: bold; color: #e65100; margin:0;">Ενεργό Μοντέλο AI:</label>
-                <select id="gemini_model" style="flex: 1; border-color: #ffb74d;" onchange="localStorage.setItem('gemini_model', this.value)"></select>
-                <span id="key_status" style="font-size: 13px; color: green; font-weight: bold;">✅ Συνδέθηκε!</span>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <div class="global-settings">
-        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleConfig()">
-            <strong style="color: #2e7d32;">⚙️ Γενικές Ρυθμίσεις Υπηρεσίας & Προσωπικού (Προαιρετικό)</strong>
-            <span id="cfg_arrow">⬇️ Άνοιγμα</span>
+<div class="section" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
+    <div class="section-title" style="cursor: pointer; background: #e9ecef; border-bottom: none;" onclick="toggleStep('settings_content', 'settings_arrow')">
+        <span>⚙️ Ρυθμίσεις Εφαρμογής & AI</span>
+        <span id="settings_arrow">⬇️ Άνοιγμα</span>
+    </div>
+    
+    <div id="settings_content" style="display: none; padding-top: 15px; border-top: 1px solid #dee2e6;">
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap;">
+            <button id="toggleAIBtn" onclick="toggleGlobalAI()" style="background-color: #8b5cf6; padding: 8px 12px; font-size: 13px; flex: 1; border: none; color: white; border-radius: 20px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;">🤖 Ενεργό AI</button>
+            <button id="darkModeBtn" onclick="toggleDarkMode()" style="background-color: #343a40; color: white; padding: 10px 15px; font-size: 13px; flex: 1; border: none; border-radius: 4px; cursor: pointer;">🌙 Σκοτεινό</button>
         </div>
-        <div id="cfg_settings_panel" style="display: none; margin-top: 10px;">
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Αν θελήσετε να φτιάξετε δικογραφία για άλλη Υπηρεσία/Περιοχή, αλλάξτε τα παρακάτω κουτιά. Αν κάτι πάει στραβά, πατήστε Επαναφορά.</p>
-            <div class="grid-form" style="grid-template-columns: repeat(3, 1fr);">
-                <div class="form-group"><label>Τόπος Σύνταξης</label><input type="text" id="cfg_city" oninput="saveSettings()"></div>
-                <div class="form-group"><label>Τμήμα Σύντομο</label><input type="text" id="cfg_dept" oninput="saveSettings()"></div>
-                <div class="form-group"><label>Εισαγγελία</label><input type="text" id="cfg_prosecutor" oninput="saveSettings()"></div>
-                <div class="form-group" style="grid-column: span 3;"><label>Τμήμα Πλήρες</label><input type="text" id="cfg_deptFull" oninput="saveSettings()"></div>
-                <div class="form-group" style="grid-column: span 3;">
-                    <label style="color: #d32f2f;">Λίστα Ανακριτικών Υπαλλήλων (ΑΥΣΤΗΡΑ σε ΓΕΝΙΚΗ πτώση! π.χ. Ανθυπαστυνόμου ΠΑΠΑΔΟΠΟΥΛΟΥ Γεωργίου)</label>
-                    <textarea id="cfg_officers" style="height: 140px; font-size: 13px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" oninput="saveSettings()"></textarea>
+
+        <div class="ai-settings" style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAI()">
+                <strong style="color: #e65100;">✨ Ρυθμίσεις Τεχνητής Νοημοσύνης (Gemini API)</strong>
+                <span id="ai_arrow">⬇️ Άνοιγμα</span>
+            </div>
+            <div id="ai_settings_panel" style="display: none; margin-top: 10px;">
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Επικολλήστε το δωρεάν Gemini API Key σας.</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="password" id="gemini_api_key" placeholder="Επικόλληση κλειδιού (π.χ. AIzaSy...)" style="flex: 2;">
+                    <button onclick="saveApiKeyAndFetchModels()" style="background-color: #ff9800; flex: 1;">💾 Σύνδεση</button>
+                    <button onclick="logoutAI()" style="background-color: #6c757d; color: white;">🗑️ Καθαρισμός</button>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="text-decoration:none;">
+                        <button type="button" style="background-color: #17a2b8; height:100%; display:flex; align-items:center; cursor: pointer; border: none; border-radius: 4px; color: white; padding: 10px;">🔗 Λήψη Κλειδιού</button>
+                    </a>
+                </div>
+                
+                <div id="model_selection_div" class="model-selection-box" style="display: none; gap: 10px; align-items: center; padding: 10px; border-radius: 4px;">
+                    <label style="font-size: 13px; font-weight: bold; color: #e65100; margin:0;">Ενεργό Μοντέλο AI:</label>
+                    <select id="gemini_model" style="flex: 1; border-color: #ffb74d;" onchange="localStorage.setItem('gemini_model', this.value)"></select>
+                    <span id="key_status" style="font-size: 13px; color: green; font-weight: bold;">✅ Συνδέθηκε!</span>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button type="button" onclick="exportDictionary()" style="background-color: #6f42c1; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Εξαγωγή Λεξικού & Ρυθμίσεων
-                </button>
-                <div style="flex: 1; position: relative;">
-                    <input type="file" id="importDictFile" accept=".json" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;" onchange="importDictionary(event)">
-                    <button type="button" style="background-color: #17a2b8; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; pointer-events: none;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                        Εισαγωγή Λεξικού
+        </div>
+
+        <div class="global-settings" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleConfig()">
+                <strong style="color: #2e7d32;">⚙️ Γενικές Ρυθμίσεις Υπηρεσίας & Προσωπικού (Προαιρετικό)</strong>
+                <span id="cfg_arrow">⬇️ Άνοιγμα</span>
+            </div>
+            <div id="cfg_settings_panel" style="display: none; margin-top: 10px;">
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Αν θελήσετε να φτιάξετε δικογραφία για άλλη Υπηρεσία/Περιοχή, αλλάξτε τα παρακάτω κουτιά. Αν κάτι πάει στραβά, πατήστε Επαναφορά.</p>
+                <div class="grid-form" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="form-group"><label>Τόπος Σύνταξης</label><input type="text" id="cfg_city" oninput="saveSettings()"></div>
+                    <div class="form-group"><label>Τμήμα Σύντομο</label><input type="text" id="cfg_dept" oninput="saveSettings()"></div>
+                    <div class="form-group"><label>Εισαγγελία</label><input type="text" id="cfg_prosecutor" oninput="saveSettings()"></div>
+                    <div class="form-group" style="grid-column: span 3;"><label>Τμήμα Πλήρες</label><input type="text" id="cfg_deptFull" oninput="saveSettings()"></div>
+                    <div class="form-group" style="grid-column: span 3;">
+                        <label style="color: #d32f2f;">Λίστα Ανακριτικών Υπαλλήλων (ΑΥΣΤΗΡΑ σε ΓΕΝΙΚΗ πτώση! π.χ. Ανθυπαστυνόμου ΠΑΠΑΔΟΠΟΥΛΟΥ Γεωργίου)</label>
+                        <textarea id="cfg_officers" style="height: 140px; font-size: 13px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" oninput="saveSettings()"></textarea>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="button" onclick="exportDictionary()" style="background-color: #6f42c1; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Εξαγωγή Λεξικού & Ρυθμίσεων
                     </button>
+                    <div style="flex: 1; position: relative;">
+                        <input type="file" id="importDictFile" accept=".json" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;" onchange="importDictionary(event)">
+                        <button type="button" style="background-color: #17a2b8; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; pointer-events: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Εισαγωγή Λεξικού
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <div class="section">
         <div class="section-title" style="cursor: pointer;" onclick="toggleStep('step1_content', 'step1_arrow')">
