@@ -115,15 +115,46 @@
             </div>
         </div>
 
+        <div class="profiles-container" style="background-color: #e2e3e5; border-color: #d6d8db; margin-top: 10px;">
+            <span style="font-weight: bold; font-size: 13px; color: #383d41;">👮 Αστυνομικοί (Μόνιμη Αποθήκευση):</span>
+            <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center; width: 100%; flex-wrap: wrap;">
+                <select id="police_dept_select" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc;">
+                    <option value="Α.Τ. Βόλβης">Α.Τ. Βόλβης</option>
+                    <option value="Ο.Π.Κ.Ε. Βόλβης">Ο.Π.Κ.Ε. Βόλβης</option>
+                    <option value="Άλλη">Άλλη Υπηρεσία</option>
+                </select>
+                <button style="padding: 6px 12px; font-size: 12px; background-color: #004085; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePoliceOfficer()">💾 Αποθήκευση Στοιχείων Φόρμας</button>
+            </div>
+            <div style="flex-basis: 100%; height: 0;"></div>
+            <span style="font-weight: bold; font-size: 13px; color: #383d41;">🔄 Φόρτωση Αστυνομικού:</span>
+            <div id="saved_police_list" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; width: 100%;">
+                <span style="font-size: 12px; color: #888; font-style: italic;">Δεν υπάρχουν αποθηκευμένοι αστυνομικοί.</span>
+            </div>
+        </div>
+
         <div class="foreigner-switch-container">
-            <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
-                <input type="checkbox" id="is_foreigner" onchange="toggleForeignerFields()" style="opacity: 0; width: 0; height: 0;">
-                <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;"></span>
-            </label>
-            <span style="margin-left: 10px; font-weight: bold; color: #d9534f; font-size: 14px;">Αλλοδαπός / Χωρίς Ταυτότητα (Χειροκίνητη Εισαγωγή)</span>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="display: flex; align-items: center;">
+                    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
+                        <input type="checkbox" id="is_foreigner" onchange="toggleForeignerFields()" style="opacity: 0; width: 0; height: 0;">
+                        <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;"></span>
+                    </label>
+                    <span style="margin-left: 10px; font-weight: bold; color: #d9534f; font-size: 14px;">Αλλοδαπός / Χειροκίνητα</span>
+                </div>
+                
+                <div style="display: flex; align-items: center;">
+                    <label class="switch police-switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
+                        <input type="checkbox" id="is_police" onchange="togglePoliceFields()" style="opacity: 0; width: 0; height: 0;">
+                        <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;"></span>
+                    </label>
+                    <span style="margin-left: 10px; font-weight: bold; color: #004085; font-size: 14px;">👮 Αστυνομικός</span>
+                </div>
+            </div>
             <style>
                 .switch input:checked + .slider { background-color: #d9534f; }
+                .switch.police-switch input:checked + .slider { background-color: #004085; }
                 .switch input:focus + .slider { box-shadow: 0 0 1px #d9534f; }
+                .switch.police-switch input:focus + .slider { box-shadow: 0 0 1px #004085; }
                 .switch input:checked + .slider:before { transform: translateX(20px); }
                 .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
             </style>
@@ -231,8 +262,14 @@
             </div>
 
             <div style="margin-top: 15px;">
-                <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                    <label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; flex: 1;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε στην Υπηρεσία μας; *</label>
+                <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center;">
+                    <label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; flex: 1;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε... *</label>
+                    <select id="police_ready_texts" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc; max-width: 220px;" onchange="insertPoliceReadyText()">
+                        <option value="">-- Έτοιμα Κείμενα Αστυνομικού --</option>
+                        <option value="Σήμερα και περί ώρα [ΩΡΑ] στα πλαίσια της υπηρεσίας μας, ">Σύλληψη σε περιπολία</option>
+                        <option value="Σήμερα και περί ώρα [ΩΡΑ] κατόπιν σήματος του Κέντρου (R/T), μεταβήκαμε ">Μετάβαση μετά από σήμα R/T</option>
+                        <option value="Αναφέρω ότι στα πλαίσια συνεχιζόμενης έρευνας της Υπηρεσίας μας, ">Αναφορά / Συνεχιζόμενη Έρευνα</option>
+                    </select>
                     <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_simple" onclick="refineTextAI('doc_testimony_simple', 'spin_ref_simple', 'btn_ref_simple')"><span id="spin_ref_simple" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button>
                     <button class="btn-undo" onclick="undoText('doc_testimony_simple')">↩️ Αναίρεση</button>
                 </div>
@@ -249,6 +286,7 @@
 
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn-word" style="flex: 1;" onclick="exportToWord()">📝 Λήψη Ένορκης Μάρτυρα (.doc)</button>
+                <button class="btn-word" style="flex: 1; background-color: #004085;" onclick="exportPoliceOath()">👮 Ένορκη Αστυνομικού (.doc)</button>
                 <button class="btn-word" style="flex: 1; background-color: #17a2b8;" onclick="exportTestimonyInterpreter()">🗣️ Ένορκη Μάρτυρα με Διερμηνέα</button>
             </div>
         </div>

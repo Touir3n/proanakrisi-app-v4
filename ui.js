@@ -546,8 +546,11 @@ function getProfileText(caseType = 'nom') {
     let father = v("father");
     let mother = v("mother");
 
+    let isPol = document.getElementById('is_police') && document.getElementById('is_police').checked;
+    
     let katoikosStr = caseType === 'nom' ? 'κάτοικος' : (caseType === 'gen' ? 'κατοίκου' : 'κάτοικο');
     let katoxosStr = caseType === 'nom' ? 'κάτοχος' : (caseType === 'gen' ? 'κατόχου' : 'κάτοχο');
+    let uphretonStr = caseType === 'nom' ? (g==='M'?'υπηρετών':'υπηρετούσα') : (caseType === 'gen' ? (g==='M'?'υπηρετούντος':'υπηρετούσας') : (g==='M'?'υπηρετούντα':'υπηρετούσα'));
 
     let isFor = document.getElementById('is_foreigner') && document.getElementById('is_foreigner').checked;
     
@@ -558,18 +561,27 @@ function getProfileText(caseType = 'nom') {
 
     let pobStr = isFor && v("born_country") ? v("born_country") : v("pob");
 
-    let text = `${surname} ${name} του ${father} και της ${mother}, γεν. ${v("dob")} στην ${pobStr}${natStr}, ${katoikosStr} ${v("area")}, Δήμου ${v("dimos")}`;
-    if (v("odos")) text += `, οδός ${v("odos")}`;
-    if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
+    let text = `${surname} ${name} του ${father} και της ${mother}, γεν. ${v("dob")} στην ${pobStr}${natStr}`;
+    
+    if (isPol) {
+        text += `, ${uphretonStr} στο ${v("area")}`;
+    } else {
+        text += `, ${katoikosStr} ${v("area")}, Δήμου ${v("dimos")}`;
+        if (v("odos")) text += `, οδός ${v("odos")}`;
+        if (v("arithmos")) text += `, αρ. ${v("arithmos")}`;
+    }
+    
     if (v("epaggelma")) text += `, επάγγελμα ${v("epaggelma")}`;
     
     if (isFor && v("passport")) {
         text += `, ${katoxosStr} του υπ' αριθ. ${v("passport")} διαβατηρίου / ταξιδιωτικού εγγράφου`;
+    } else if (isPol) {
+        text += `, ${katoxosStr} της υπ' αριθ. ${v("adt")} υπηρεσιακής ταυτότητας`;
     } else {
         text += `, ${katoxosStr} του υπ' αριθ. ${v("adt")} δελτίου ταυτότητας, εκδ. ${v("authDate")} από ${v("auth")}`;
     }
 
-    if (v("afm") || v("doy")) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
+    if (!isPol && (v("afm") || v("doy"))) text += `, με Α.Φ.Μ. ${v("afm")} από Δ.Ο.Υ. ${v("doy")}`;
     if (v("phone")) text += `, ${katoxosStr} της με αριθμό ${v("phone")} σύνδεσης κινητής τηλεφωνίας`;
     if (v("email")) text += `, καθώς και της διεύθυνσης ηλεκτρονικού ταχυδρομείου (email) ${v("email")}`;
     
@@ -965,7 +977,31 @@ function toggleForeignerFields() {
     });
 }
 
-const PERSON_FIELDS = ['gender', 'surname', 'name', 'father', 'mother', 'dob', 'pob', 'area', 'dimos', 'odos', 'arithmos', 'epaggelma', 'adt', 'authDate', 'auth', 'afm', 'doy', 'phone', 'email', 'is_foreigner', 'nationality', 'born_country', 'passport'];
+function togglePoliceFields() {
+    const isPolice = document.getElementById('is_police').checked;
+    
+    const lblAdt = document.querySelector('label[for="adt"]') || document.getElementById('adt').previousElementSibling;
+    const lblArea = document.querySelector('label[for="area"]') || document.getElementById('area').previousElementSibling;
+    const lblPhone = document.querySelector('label[for="phone"]') || document.getElementById('phone').previousElementSibling;
+    const lblEmail = document.querySelector('label[for="email"]') || document.getElementById('email').previousElementSibling;
+
+    if (isPolice) {
+        lblAdt.innerText = "Α.Γ.Μ. / Υπηρεσιακή Ταυτότητα";
+        lblArea.innerText = "Υπηρεσία (Γενική)";
+        lblPhone.innerText = "Υπηρεσιακό Τηλέφωνο";
+        lblEmail.innerText = "Υπηρεσιακό Email";
+        
+        let epag = document.getElementById('epaggelma');
+        if(!epag.value) epag.value = "Αστυνομικός";
+    } else {
+        lblAdt.innerText = "Α.Δ.Τ.";
+        lblArea.innerText = "Περιοχή Κατοικίας (Γενική)";
+        lblPhone.innerText = "Τηλέφωνο";
+        lblEmail.innerText = "Email";
+    }
+}
+
+const PERSON_FIELDS = ['gender', 'surname', 'name', 'father', 'mother', 'dob', 'pob', 'area', 'dimos', 'odos', 'arithmos', 'epaggelma', 'adt', 'authDate', 'auth', 'afm', 'doy', 'phone', 'email', 'is_foreigner', 'nationality', 'born_country', 'passport', 'is_police'];
 
 function savePersonProfile(role) {
     let data = {};
@@ -1038,11 +1074,143 @@ function renderSavedProfiles() {
     }
 }
 
+function getSavedPoliceOfficers() {
+    let str = localStorage.getItem('police_officers');
+    if(!str) return [];
+    return JSON.parse(str);
+}
+
+function savePoliceOfficer() {
+    let dept = document.getElementById('police_dept_select').value;
+    let data = {};
+    PERSON_FIELDS.forEach(f => {
+        let el = document.getElementById(f);
+        if (el) {
+            if (el.type === 'checkbox') data[f] = el.checked;
+            else data[f] = el.value;
+        }
+    });
+    
+    if(!data.surname || !data.name) {
+        alert("Συμπληρώστε τουλάχιστον Επώνυμο και Όνομα!");
+        return;
+    }
+    
+    data.id = Date.now().toString();
+    data.police_dept = dept;
+    // ensure is_police is true for them
+    data.is_police = true; 
+    
+    let officers = getSavedPoliceOfficers();
+    officers.push(data);
+    localStorage.setItem('police_officers', JSON.stringify(officers));
+    
+    renderSavedPolice();
+}
+
+function loadPoliceOfficer(id) {
+    let officers = getSavedPoliceOfficers();
+    let data = officers.find(o => o.id === id);
+    if(!data) return;
+    
+    PERSON_FIELDS.forEach(f => {
+        let el = document.getElementById(f);
+        if (el && data[f] !== undefined) {
+            if (el.type === 'checkbox') el.checked = data[f];
+            else el.value = data[f];
+        }
+    });
+    
+    toggleForeignerFields();
+    togglePoliceFields();
+}
+
+function deletePoliceOfficer(id) {
+    if(confirm('Διαγραφή αυτού του Αστυνομικού;')) {
+        let officers = getSavedPoliceOfficers();
+        officers = officers.filter(o => o.id !== id);
+        localStorage.setItem('police_officers', JSON.stringify(officers));
+        renderSavedPolice();
+    }
+}
+
+function renderSavedPolice() {
+    let container = document.getElementById('saved_police_list');
+    if(!container) return;
+    
+    let officers = getSavedPoliceOfficers();
+    container.innerHTML = '';
+    
+    if(officers.length === 0) {
+        container.innerHTML = '<span style="font-size: 12px; color: #888; font-style: italic;">Δεν υπάρχουν αποθηκευμένοι αστυνομικοί.</span>';
+        return;
+    }
+    
+    // Group by dept
+    let grouped = {};
+    officers.forEach(o => {
+        if(!grouped[o.police_dept]) grouped[o.police_dept] = [];
+        grouped[o.police_dept].push(o);
+    });
+    
+    Object.keys(grouped).forEach(dept => {
+        let groupDiv = document.createElement('div');
+        groupDiv.style = "width: 100%; margin-bottom: 5px;";
+        groupDiv.innerHTML = `<div style="font-size: 12px; font-weight: bold; color: #004085; margin-bottom: 3px;">📍 ${dept}</div>`;
+        
+        let chipsDiv = document.createElement('div');
+        chipsDiv.style = "display: flex; gap: 6px; flex-wrap: wrap;";
+        
+        grouped[dept].forEach(o => {
+            let name = o.surname + ' ' + (o.name ? o.name.charAt(0)+'.' : '');
+            let chip = document.createElement('div');
+            chip.style = 'display: inline-flex; align-items: center; background: #cce5ff; border: 1px solid #b8daff; border-radius: 16px; padding: 4px 10px; font-size: 13px; cursor: pointer; color: #004085;';
+            
+            let loadBtn = document.createElement('span');
+            loadBtn.innerText = name;
+            loadBtn.onclick = function() { loadPoliceOfficer(o.id); };
+            loadBtn.title = 'Φόρτωση Αστυνομικού στη φόρμα';
+            
+            let delBtn = document.createElement('span');
+            delBtn.innerHTML = ' &times;';
+            delBtn.style = 'color: #dc3545; font-weight: bold; margin-left: 5px; cursor: pointer;';
+            delBtn.title = 'Διαγραφή Αστυνομικού';
+            delBtn.onclick = function(e) { e.stopPropagation(); deletePoliceOfficer(o.id); };
+            
+            chip.appendChild(loadBtn);
+            chip.appendChild(delBtn);
+            chipsDiv.appendChild(chip);
+        });
+        
+        groupDiv.appendChild(chipsDiv);
+        container.appendChild(groupDiv);
+    });
+}
+
+function insertPoliceReadyText() {
+    let sel = document.getElementById('police_ready_texts');
+    if(!sel.value) return;
+    let tArea = document.getElementById('doc_testimony_simple');
+    
+    // Create undo point
+    window.undoStacks = window.undoStacks || {};
+    if (!window.undoStacks['doc_testimony_simple']) window.undoStacks['doc_testimony_simple'] = [];
+    window.undoStacks['doc_testimony_simple'].push(tArea.value);
+    if (window.undoStacks['doc_testimony_simple'].length > 15) window.undoStacks['doc_testimony_simple'].shift();
+    
+    tArea.value = sel.value + tArea.value;
+    sel.value = ""; // reset dropdown
+    saveMem('doc_testimony_simple');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         renderSavedProfiles();
+        renderSavedPolice();
         let isFor = document.getElementById('is_foreigner');
         if(isFor) toggleForeignerFields();
+        let isPol = document.getElementById('is_police');
+        if(isPol) togglePoliceFields();
     }, 500);
 });
 
