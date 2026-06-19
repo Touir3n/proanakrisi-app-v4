@@ -33,6 +33,13 @@
     <button onclick="clearFields()" style="background-color: #d32f2f; padding: 10px 15px; font-size: 13px; flex: 1;">🗑️ Νέα Υπόθεση (Καθαρισμός)</button>
 </div>
 
+<div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; background-color: #f8f9fa; padding: 8px; border-radius: 8px; border: 1px solid #dee2e6;">
+    <span style="font-size: 12px; font-weight: bold; color: #495057; display: flex; align-items: center;">Εργαλεία:</span>
+    <span style="font-size: 12px; font-weight: bold; color: #ffeb3b; background-color: #495057; padding: 4px 10px; border-radius: 4px; display: flex; align-items: center;">💾 Auto-Save Ενεργό</span>
+    <button onclick="refreshTimes()" style="background-color: #ffc107; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔄 Ανανέωση Ημερομηνίας/Ώρας</button>
+    <button onclick="resetExportCounter()" style="background-color: #dc3545; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔄 Επανέναρξη Αρίθμησης</button>
+</div>
+
 <div class="section" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
     <div class="section-title" style="cursor: pointer; background: #e9ecef; border-bottom: none;" onclick="toggleStep('settings_content', 'settings_arrow')">
         <span>⚙️ Ρυθμίσεις Εφαρμογής & AI</span>
@@ -219,13 +226,8 @@
 
     <div class="section">
         <div class="section-title" style="cursor: pointer;" onclick="toggleStep('step3_content', 'step3_arrow')">
-            <span style="display: flex; align-items: center; gap: 10px;">ΒΗΜΑ 3: Στοιχεία Έκθεσης & Προσωπικό</span>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <span style="font-size: 11px; font-weight: normal; color: #ffeb3b;" onclick="event.stopPropagation();">💾 Auto-Save Ενεργό</span>
-                <button onclick="event.stopPropagation(); refreshTimes()" style="background-color: #ffc107; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔄 Ανανέωση Ημερομηνίας/Ώρας</button>
-                <button onclick="event.stopPropagation(); resetExportCounter()" style="background-color: #dc3545; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2); margin-left: 5px;">🔄 Επανέναρξη Αρίθμησης</button>
-                <span id="step3_arrow" style="margin-left: 10px;">⬇️ Άνοιγμα</span>
-            </div>
+            <span>ΒΗΜΑ 3: Στοιχεία Έκθεσης & Προσωπικό</span>
+            <span id="step3_arrow">⬇️ Άνοιγμα</span>
         </div>
         <div id="step3_content" style="display: none;">
         
