@@ -32,7 +32,19 @@ function generateAutoCharge() {
 }
 
 function getTimeRange(startId, endId, fallbackStart = "doc_start", fallbackEnd = "doc_end") {
-    let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+    let v = function(id) {
+        if (id === "doc_end") {
+            let start = document.getElementById("doc_start") ? document.getElementById("doc_start").value.trim() : "";
+            let durationStr = document.getElementById("doc_duration") ? document.getElementById("doc_duration").value.trim() : "15";
+            let duration = parseInt(durationStr) || 15;
+            if (!start || !start.match(/^\d{2}:\d{2}$/)) return "";
+            let parts = start.split(":");
+            let d = new Date();
+            d.setHours(parseInt(parts[0]), parseInt(parts[1]) + duration, 0, 0);
+            return d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
+        }
+        return document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+    };
     return { start: v(startId) || v(fallbackStart), end: v(endId) || v(fallbackEnd) };
 }
 
@@ -48,6 +60,19 @@ function makeDoc(title, headerTitle, bodyContent, filename) {
     let blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
     let url = URL.createObjectURL(blob); let link = document.createElement('a'); link.href = url; link.download = finalFilename; 
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    
+    // Auto advance time if checked
+    let chk = document.getElementById('auto_advance_time');
+    let startInput = document.getElementById('doc_start');
+    let durationInput = document.getElementById('doc_duration');
+    if (chk && chk.checked && startInput && startInput.value.trim().match(/^\d{2}:\d{2}$/)) {
+        let duration = parseInt(durationInput ? durationInput.value : 15) || 15;
+        let parts = startInput.value.trim().split(":");
+        let d = new Date();
+        d.setHours(parseInt(parts[0]), parseInt(parts[1]) + duration, 0, 0);
+        startInput.value = d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
+        if (typeof saveMem === 'function') saveMem('doc_start');
+    }
 }
 
 function sigBlock(role1, role2, role3) {
@@ -72,7 +97,19 @@ function sigBlock4(role1, role2, role3, role4) {
 }
 
 function getD() {
-    let v = id => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+    let v = function(id) {
+        if (id === "doc_end") {
+            let start = document.getElementById("doc_start") ? document.getElementById("doc_start").value.trim() : "";
+            let durationStr = document.getElementById("doc_duration") ? document.getElementById("doc_duration").value.trim() : "15";
+            let duration = parseInt(durationStr) || 15;
+            if (!start || !start.match(/^\d{2}:\d{2}$/)) return "";
+            let parts = start.split(":");
+            let d = new Date();
+            d.setHours(parseInt(parts[0]), parseInt(parts[1]) + duration, 0, 0);
+            return d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
+        }
+        return document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+    };
     let g = v("gender");
     let c_city = document.getElementById("cfg_city").value.trim();
     let c_dept = document.getElementById("cfg_dept").value.trim();

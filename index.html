@@ -24,20 +24,16 @@
             <span><b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα ΑΔΤ, ΑΦΜ, τηλέφωνα & πινακίδες. Για ασφαλή χρήση AI, χρησιμοποιείτε μόνο αρχικά ονομάτων (π.χ. «Κ»).</span>
         </div>
     </div>
-<div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; margin-top: 15px; flex-wrap: wrap;">
-    <button onclick="exportWorkspace()" style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; flex: 1;">💾 Αποθήκευση Υπόθεσης (.json)</button>
-    <label style="background-color: #607d8b; padding: 10px 15px; font-size: 13px; cursor: pointer; color: white; border-radius: 8px; flex: 1; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);">
-        📂 Φόρτωση Υπόθεσης
-        <input type="file" id="import_file" accept=".json" style="display: none;" onchange="importWorkspace(event)">
-    </label>
-    <button onclick="clearFields()" style="background-color: #d32f2f; padding: 10px 15px; font-size: 13px; flex: 1;">🗑️ Νέα Υπόθεση (Καθαρισμός)</button>
-</div>
-
-<div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; background-color: #f8f9fa; padding: 8px; border-radius: 8px; border: 1px solid #dee2e6;">
-    <span style="font-size: 12px; font-weight: bold; color: #495057; display: flex; align-items: center;">Εργαλεία:</span>
-    <span style="font-size: 12px; font-weight: bold; color: #ffeb3b; background-color: #495057; padding: 4px 10px; border-radius: 4px; display: flex; align-items: center;">💾 Auto-Save Ενεργό</span>
-    <button onclick="refreshTimes()" style="background-color: #ffc107; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔄 Ανανέωση Ημερομηνίας/Ώρας</button>
-    <button onclick="resetExportCounter()" style="background-color: #dc3545; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔄 Επανέναρξη Αρίθμησης</button>
+<div style="display: flex; gap: 8px; justify-content: center; align-items: center; margin: 15px 0; flex-wrap: wrap; background-color: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <span style="font-size: 12px; font-weight: bold; color: #6c757d; margin-right: 5px;">ΕΡΓΑΛΕΙΑ ΥΠΟΘΕΣΗΣ:</span>
+    <button onclick="exportWorkspace()" style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Αποθήκευση όλων των δεδομένων σε αρχείο">💾 Αποθήκευση</button>
+    <label style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 0; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Φόρτωση δεδομένων από αρχείο">📂 Φόρτωση<input type="file" id="import_file" accept=".json" style="display: none;" onchange="importWorkspace(event)"></label>
+    <button onclick="clearFields()" style="background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'" title="Πλήρης καθαρισμός δεδομένων (Νέα Υπόθεση)">🗑️ Καθαρισμός</button>
+    
+    <div style="width: 1px; height: 24px; background-color: #ced4da; margin: 0 5px;"></div>
+    
+    <button onclick="refreshTimes()" style="background-color: #ffc107; color: #212529; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0a800'" onmouseout="this.style.backgroundColor='#ffc107'" title="Επικαιροποίηση Ώρας Έναρξης (Η τρέχουσα ώρα του υπολογιστή)">🕒 Ανανέωση Ώρας</button>
+    <button onclick="resetExportCounter()" style="background-color: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#dae0e5'" onmouseout="this.style.backgroundColor='#e9ecef'" title="Επαναφορά μετρητή αρχείων στο 1">🔄 Reset Αρίθμησης</button>
 </div>
 
 <div class="section" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
@@ -257,9 +253,30 @@
         </div>
         <div id="step4_content" style="display: block;">
 
-        <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 15px; background: #eef2f5; padding: 10px; border-radius: 8px;">
-            <div class="form-group"><label style="color: #0c5460;">Γενική Ώρα Έναρξης (Ισχύει για όλες τις εκθέσεις)</label><input type="text" id="doc_start"></div>
-            <div class="form-group"><label style="color: #0c5460;">Γενική Ώρα Λήξης</label><input type="text" id="doc_end"></div>
+        <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 15px; background: #eef2f5; padding: 10px; border-radius: 8px; border: 1px solid #cdd4dc;">
+            <div class="form-group">
+                <label style="color: #1a365d;">Ώρα Έναρξης (Υπόθεσης/Τρέχουσας Έκθεσης)</label>
+                <input type="text" id="doc_start" title="Η ώρα που ανοίξατε την εφαρμογή ή πατήσατε 'Ανανέωση Ώρας'">
+            </div>
+            <div class="form-group">
+                <label style="color: #1a365d;">Διάρκεια ανά Έκθεση</label>
+                <select id="doc_duration" onchange="saveMem(this.id)" style="padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">
+                    <option value="5">5 λεπτά</option>
+                    <option value="10">10 λεπτά</option>
+                    <option value="15" selected>15 λεπτά</option>
+                    <option value="20">20 λεπτά</option>
+                    <option value="30">30 λεπτά</option>
+                    <option value="45">45 λεπτά</option>
+                    <option value="60">1 ώρα</option>
+                </select>
+            </div>
+            <div class="form-group" style="justify-content: center; align-items: flex-start; padding-top: 15px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1a365d; font-weight: 600; font-size: 13px;">
+                    <input type="checkbox" id="auto_advance_time" checked onchange="saveMem(this.id)" style="width: 18px; height: 18px; margin: 0;">
+                    Αυτόματη προώθηση ώρας μετά από κάθε εξαγωγή
+                </label>
+                <span style="font-size: 11px; color: #6c757d; margin-top: 4px;">Η Ώρα Έναρξης θα αυξάνεται αυτόματα κατά τη Διάρκεια μόλις κατεβάσετε ένα έγγραφο.</span>
+            </div>
         </div>
 
         <div class="tabs" style="margin-bottom: 25px; gap: 12px;">
@@ -302,12 +319,7 @@
             <div style="margin-top: 15px;">
                 <div style="display: flex; gap: 5px; margin-bottom: 5px; align-items: center; flex-wrap: wrap;">
                     <label style="font-size: 14px; color: #0056b3; display: block; font-weight: bold; flex: 1;">ΕΡΩΤΗΣΗ: Τι προσήλθατε να καταθέσετε... *</label>
-                    <select id="police_ready_texts" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc; max-width: 220px;" onchange="insertPoliceReadyText()">
-                        <option value="">-- Έτοιμα Κείμενα Αστυνομικού --</option>
-                        <option value="Σήμερα και περί ώρα [ΩΡΑ] στα πλαίσια της υπηρεσίας μας, ">Σύλληψη σε περιπολία</option>
-                        <option value="Σήμερα και περί ώρα [ΩΡΑ] κατόπιν σήματος του Κέντρου (R/T), μεταβήκαμε ">Μετάβαση μετά από σήμα R/T</option>
-                        <option value="Αναφέρω ότι στα πλαίσια συνεχιζόμενης έρευνας της Υπηρεσίας μας, ">Αναφορά / Συνεχιζόμενη Έρευνα</option>
-                    </select>
+                    <div id="tpl_container_doc_testimony_simple"></div>
                     <button class="btn-ai" style="width: auto; padding: 4px 8px; font-size: 11px;" id="btn_ref_simple" onclick="refineTextAI('doc_testimony_simple', 'spin_ref_simple', 'btn_ref_simple')"><span id="spin_ref_simple" class="spinner" style="display:none;"></span>✨ Διόρθωση AI</button>
                     <button class="btn-undo" onclick="undoText('doc_testimony_simple')">↩️ Αναίρεση</button>
                 </div>
@@ -458,12 +470,18 @@
             </div>
 
             <div class="form-group" style="margin-bottom: 12px;">
-                <label style="color:#0056b3; font-size: 13px;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία) *</label>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px;">
+                    <label style="color:#0056b3; font-size: 13px; margin:0;">Βασικό Κατηγορητήριο (Μπαίνει Σύλληψη, Δικαιώματα & Απολογία) *</label>
+                    <div id="tpl_container_apologia_charge_short"></div>
+                </div>
                 <textarea id="apologia_charge_short" style="height: 50px; border: 2px solid #b3cce6;" placeholder="π.χ. παράβαση των άρθρων..." oninput="saveMem(this.id)"></textarea>
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
-                <label style="color:#28a745; font-size: 13px;">Πραγματικά Περιστατικά (Μπαίνει ΜΟΝΟ στην Απολογία)</label>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px;">
+                    <label style="color:#28a745; font-size: 13px; margin:0;">Πραγματικά Περιστατικά (Μπαίνει ΜΟΝΟ στην Απολογία)</label>
+                    <div id="tpl_container_apologia_charge_details"></div>
+                </div>
                 <textarea id="apologia_charge_details" style="height: 70px; border: 2px solid #c3e6cb;" placeholder="Ειδικότερα,..." oninput="saveMem(this.id)"></textarea>
             </div>
 

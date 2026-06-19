@@ -1200,23 +1200,107 @@ function renderSavedPolice() {
     });
 }
 
-function insertPoliceReadyText() {
-    let sel = document.getElementById('police_ready_texts');
-    if(!sel.value) return;
-    let tArea = document.getElementById('doc_testimony_simple');
+// ==========================================
+// ΣΥΣΤΗΜΑ ΠΡΟΤΥΠΩΝ (CUSTOM TEMPLATES)
+// ==========================================
+function initTemplates(textareaId, categoryName) {
+    let containerId = "tpl_container_" + textareaId;
+    let container = document.getElementById(containerId);
+    if (!container) return;
+
+    let templates = JSON.parse(localStorage.getItem('custom_templates_' + categoryName)) || {};
     
-    // Create undo point
-    window.undoStacks = window.undoStacks || {};
-    if (!window.undoStacks['doc_testimony_simple']) window.undoStacks['doc_testimony_simple'] = [];
-    window.undoStacks['doc_testimony_simple'].push(tArea.value);
-    if (window.undoStacks['doc_testimony_simple'].length > 15) window.undoStacks['doc_testimony_simple'].shift();
-    
-    tArea.value = sel.value + tArea.value;
-    sel.value = ""; // reset dropdown
-    saveMem('doc_testimony_simple');
+    // Add default templates if empty
+    if (Object.keys(templates).length === 0 && categoryName === 'testimony') {
+        templates = {
+            "Σύλληψη σε περιπολία": "Σήμερα και περί ώρα [ΩΡΑ] στα πλαίσια της υπηρεσίας μας, ",
+            "Μετάβαση μετά από σήμα R/T": "Σήμερα και περί ώρα [ΩΡΑ] κατόπιν σήματος του Κέντρου (R/T), μεταβήκαμε ",
+            "Αναφορά / Συνεχιζόμενη Έρευνα": "Αναφέρω ότι στα πλαίσια συνεχιζόμενης έρευνας της Υπηρεσίας μας, "
+        };
+        localStorage.setItem('custom_templates_' + categoryName, JSON.stringify(templates));
+    }
+
+    let selectHtml = `<select id="tpl_select_${textareaId}" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc; max-width: 180px;">
+                        <option value="">-- Επιλογή Προτύπου --</option>`;
+    for (let title in templates) {
+        selectHtml += `<option value="${title}">${title}</option>`;
+    }
+    selectHtml += `</select>`;
+
+    container.innerHTML = `
+        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 12px; font-weight: bold; color: #1a365d;">🔖 Πρότυπα:</span>
+            ${selectHtml}
+            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white;">Εισαγωγή</button>
+            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">💾 Νέο</button>
+            <button onclick="deleteTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="background-color: #dc3545; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">🗑️</button>
+        </div>
+    `;
 }
 
+function applyTemplate(textareaId, categoryName) {
+    let sel = document.getElementById(`tpl_select_${textareaId}`);
+    if(!sel || !sel.value) return;
+    let templates = JSON.parse(localStorage.getItem('custom_templates_' + categoryName)) || {};
+    let text = templates[sel.value];
+    if(!text) return;
+    
+    let tArea = document.getElementById(textareaId);
+    
+    window.undoStacks = window.undoStacks || {};
+    if (!window.undoStacks[textareaId]) window.undoStacks[textareaId] = [];
+    window.undoStacks[textareaId].push(tArea.value);
+    if (window.undoStacks[textareaId].length > 15) window.undoStacks[textareaId].shift();
+    
+    tArea.value = tArea.value + (tArea.value ? "\\n\\n" : "") + text;
+    sel.value = "";
+    if(typeof saveMem === 'function') saveMem(textareaId);
+}
+
+function saveTemplate(textareaId, categoryName) {
+    let tArea = document.getElementById(textareaId);
+    let text = tArea.value.trim();
+    if(!text) {
+        alert("Το πεδίο κειμένου είναι άδειο. Γράψτε κάτι για να το αποθηκεύσετε ως πρότυπο.");
+        return;
+    }
+    let title = prompt("Δώστε έναν σύντομο τίτλο για το νέο σας πρότυπο:");
+    if(!title) return;
+    
+    let templates = JSON.parse(localStorage.getItem('custom_templates_' + categoryName)) || {};
+    templates[title] = text;
+    localStorage.setItem('custom_templates_' + categoryName, JSON.stringify(templates));
+    
+    // Refresh all template dropdowns of this category
+    document.querySelectorAll('[id^="tpl_container_"]').forEach(container => {
+        let tid = container.id.replace('tpl_container_', '');
+        // Just re-init for the matching category. We don't have category mapped globally easily, so we just init the current one.
+        // Or better: initTemplates(tid, categoryName) for the current one only.
+    });
+    initTemplates(textareaId, categoryName);
+}
+
+function deleteTemplate(textareaId, categoryName) {
+    let sel = document.getElementById(`tpl_select_${textareaId}`);
+    if(!sel || !sel.value) {
+        alert("Επιλέξτε ένα πρότυπο από τη λίστα για να το διαγράψετε.");
+        return;
+    }
+    if(confirm(`Είστε σίγουροι ότι θέλετε να διαγράψετε το πρότυπο "` + sel.value + `";`)) {
+        let templates = JSON.parse(localStorage.getItem('custom_templates_' + categoryName)) || {};
+        delete templates[sel.value];
+        localStorage.setItem('custom_templates_' + categoryName, JSON.stringify(templates));
+        initTemplates(textareaId, categoryName);
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize custom templates
+    initTemplates('doc_testimony_simple', 'testimony');
+    initTemplates('apologia_charge_short', 'charge_short');
+    initTemplates('apologia_charge_details', 'charge_details');
+
     setTimeout(function() {
         renderSavedProfiles();
         renderSavedPolice();
