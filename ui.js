@@ -49,6 +49,11 @@ function applyGlobalAIState() {
         btn.style.backgroundColor = aiEnabled ? "#ff9800" : "#6c757d";
     }
     
+    let privacyBanner = document.getElementById("privacy_banner");
+    if(privacyBanner) {
+        privacyBanner.style.display = aiEnabled ? "" : "none";
+    }
+    
     let aiButtons = document.querySelectorAll(".btn-ai");
     aiButtons.forEach(b => {
         if(b.id !== 'btn_tonismos') {

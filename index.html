@@ -19,7 +19,7 @@
             <h1>🏛️ ΠΡΟΑΝΑΚΡΙΤΙΚΗ ΜΗΧΑΝΗ</h1>
             <p>ΕΦΑΡΜΟΓΗ ΑΝΑΚΡΙΤΙΚΟΥ ΥΠΑΛΛΗΛΟΥ</p>
         </div>
-        <div class="privacy-banner" style="background-color: rgba(0,0,0,0.15); font-size: 13px; padding: 8px 15px; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 0 0 12px 12px;">
+        <div id="privacy_banner" class="privacy-banner" style="background-color: rgba(0,0,0,0.15); font-size: 13px; padding: 8px 15px; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 0 0 12px 12px;">
             <span style="font-size: 16px;">🔒</span>
             <span><b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα ΑΔΤ, ΑΦΜ, τηλέφωνα & πινακίδες. Για ασφαλή χρήση AI, χρησιμοποιείτε μόνο αρχικά ονομάτων (π.χ. «Κ»).</span>
         </div>
@@ -144,10 +144,10 @@
         </div>
         <div id="step2_content" style="display: none;">
         <div class="profiles-container">
-            <span style="font-weight: bold; font-size: 13px; color: #495057;">💾 Αποθήκευση:</span>
-            <button style="padding: 6px 12px; font-size: 12px; background-color: #6c757d; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePersonProfile('Μάρτυρας')">Ως Μάρτυρας</button>
-            <button style="padding: 6px 12px; font-size: 12px; background-color: #dc3545; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePersonProfile('Κατηγορούμενος')">Ως Κατηγορούμενος</button>
-            <button style="padding: 6px 12px; font-size: 12px; background-color: #17a2b8; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePersonProfile('Διερμηνέας')">Ως Διερμηνέας</button>
+            <span style="font-weight: bold; font-size: 13px; color: #495057; flex: none;">💾 Αποθήκευση:</span>
+            <button style="padding: 10px 12px; font-size: 13px; font-weight: bold; background-color: #6c757d; border:none; color: white; border-radius: 6px; cursor: pointer; flex: 1;" onclick="savePersonProfile('Μάρτυρας')">Ως Μάρτυρας</button>
+            <button style="padding: 10px 12px; font-size: 13px; font-weight: bold; background-color: #dc3545; border:none; color: white; border-radius: 6px; cursor: pointer; flex: 1;" onclick="savePersonProfile('Κατηγορούμενος')">Ως Κατηγορούμενος</button>
+            <button style="padding: 10px 12px; font-size: 13px; font-weight: bold; background-color: #17a2b8; border:none; color: white; border-radius: 6px; cursor: pointer; flex: 1;" onclick="savePersonProfile('Διερμηνέας')">Ως Διερμηνέας</button>
             <div style="flex-basis: 100%; height: 0;"></div>
             <span style="font-weight: bold; font-size: 13px; color: #495057;">🔄 Φόρτωση:</span>
             <div id="saved_profiles_list" style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -295,12 +295,13 @@
             </div>
         </div>
 
-        <div class="tabs" style="margin-bottom: 25px; gap: 12px;">
+        <div class="tabs" style="margin-bottom: 25px; gap: 12px; justify-content: center;">
             <div class="tab-btn active" onclick="switchTab('simple', this)">📝 Απλή Ένορκη</div>
             <div class="tab-btn tab-btn-pink" onclick="switchTab('dv', this)">⚠️ Ενδοοικ. Μάρτυρας</div>
             <div class="tab-btn tab-btn-red" onclick="switchTab('apologia', this)">⚖️ Σύλληψη/Κατηγορούμενος</div>
             <div class="tab-btn" style="background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460;" onclick="switchTab('drugs', this)">💊 Ναρκωτικά / Κατασχέσεις</div>
             <div class="tab-btn tab-btn-orange" onclick="switchTab('prok', this)">📁 Προκαταρκτική</div>
+            <div class="tab-btn" style="background-color: #e2e8f0; border-color: #cbd5e1; color: #475569;" onclick="switchTab('reports', this)">📄 Σήματα / Αναφορές</div>
         </div>
 
         <div id="tab_simple" class="tab-content active">
