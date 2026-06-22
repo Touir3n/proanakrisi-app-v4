@@ -1325,11 +1325,12 @@ function applyTemplate(textareaId, categoryName) {
     if(!text) return;
     
     // Smart Variables Replacement
-    let profiles = JSON.parse(localStorage.getItem('person_profiles')) || {};
-    let katP = profiles['Κατηγορούμενος'] || profiles['Ύποπτος'];
+    let katStr = localStorage.getItem('profile_Κατηγορούμενος') || localStorage.getItem('profile_Ύποπτος');
+    let katP = katStr ? JSON.parse(katStr) : null;
     let defName = katP ? getReportProfileString(katP, 'nom_name') : "";
     
-    let witP = profiles['Μάρτυρας'] || profiles['Παθών'];
+    let witStr = localStorage.getItem('profile_Μάρτυρας') || localStorage.getItem('profile_Παθών');
+    let witP = witStr ? JSON.parse(witStr) : null;
     let victim = witP ? getReportProfileString(witP, 'nom_name') : "";
     
     let crime = document.getElementById('apologia_charge_short') ? document.getElementById('apologia_charge_short').value : "";
@@ -1428,15 +1429,16 @@ window.copyReportText = function() {
 window.insertReportVariable = function(role) {
     let tArea = document.getElementById('report_text');
     let textToInsert = "";
-    let profiles = JSON.parse(localStorage.getItem('person_profiles')) || {};
 
     if (role === 'kat') {
-        let p = profiles['Κατηγορούμενος'] || profiles['Ύποπτος'];
+        let pStr = localStorage.getItem('profile_Κατηγορούμενος') || localStorage.getItem('profile_Ύποπτος');
+        let p = pStr ? JSON.parse(pStr) : null;
         if (!p) { alert("Δεν βρέθηκε αποθηκευμένος Κατηγορούμενος. Αποθηκεύστε πρώτα τα στοιχεία στο Βήμα 2."); return; }
         let type = document.getElementById('insert_kat_type').value;
         textToInsert = getReportProfileString(p, type);
     } else if (role === 'wit') {
-        let p = profiles['Μάρτυρας'] || profiles['Παθών'];
+        let pStr = localStorage.getItem('profile_Μάρτυρας') || localStorage.getItem('profile_Παθών');
+        let p = pStr ? JSON.parse(pStr) : null;
         if (!p) { alert("Δεν βρέθηκε αποθηκευμένος Μάρτυρας/Παθών. Αποθηκεύστε πρώτα τα στοιχεία στο Βήμα 2."); return; }
         let type = document.getElementById('insert_wit_type').value;
         textToInsert = getReportProfileString(p, type);
