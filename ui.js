@@ -1325,9 +1325,13 @@ function applyTemplate(textareaId, categoryName) {
     if(!text) return;
     
     // Smart Variables Replacement
-    let d = typeof getD === 'function' ? getD() : null;
-    let defName = d && d.prof ? d.prof : ((document.getElementById('surname') ? document.getElementById('surname').value : "") + " " + (document.getElementById('name') ? document.getElementById('name').value : ""));
-    let victim = document.getElementById('wit_fullname') ? document.getElementById('wit_fullname').value : "";
+    let profiles = JSON.parse(localStorage.getItem('person_profiles')) || {};
+    let katP = profiles['Κατηγορούμενος'] || profiles['Ύποπτος'];
+    let defName = katP ? getReportProfileString(katP, 'nom_name') : "";
+    
+    let witP = profiles['Μάρτυρας'] || profiles['Παθών'];
+    let victim = witP ? getReportProfileString(witP, 'nom_name') : "";
+    
     let crime = document.getElementById('apologia_charge_short') ? document.getElementById('apologia_charge_short').value : "";
     let arrLoc = document.getElementById('arr_loc') ? document.getElementById('arr_loc').value : "";
     let arrTime = document.getElementById('arr_street_time') ? document.getElementById('arr_street_time').value : "";
@@ -1421,4 +1425,80 @@ window.copyReportText = function() {
     });
 };
 
+window.insertReportVariable = function(role) {
+    let tArea = document.getElementById('report_text');
+    let textToInsert = "";
+    let profiles = JSON.parse(localStorage.getItem('person_profiles')) || {};
 
+    if (role === 'kat') {
+        let p = profiles['Κατηγορούμενος'] || profiles['Ύποπτος'];
+        if (!p) { alert("Δεν βρέθηκε αποθηκευμένος Κατηγορούμενος. Αποθηκεύστε πρώτα τα στοιχεία στο Βήμα 2."); return; }
+        let type = document.getElementById('insert_kat_type').value;
+        textToInsert = getReportProfileString(p, type);
+    } else if (role === 'wit') {
+        let p = profiles['Μάρτυρας'] || profiles['Παθών'];
+        if (!p) { alert("Δεν βρέθηκε αποθηκευμένος Μάρτυρας/Παθών. Αποθηκεύστε πρώτα τα στοιχεία στο Βήμα 2."); return; }
+        let type = document.getElementById('insert_wit_type').value;
+        textToInsert = getReportProfileString(p, type);
+    } else if (role === 'crime') {
+        textToInsert = document.getElementById('apologia_charge_short') ? document.getElementById('apologia_charge_short').value : "";
+        if (!textToInsert) { alert("Δεν έχει συμπληρωθεί το Αδίκημα (σύντομη περιγραφή) στο Βήμα 3 (Απολογία)."); return; }
+    } else if (role === 'loc') {
+        let loc = document.getElementById('ai_loc') ? document.getElementById('ai_loc').value : "";
+        let time = document.getElementById('ai_time') ? document.getElementById('ai_time').value : "";
+        textToInsert = (loc ? loc + " " : "") + (time ? time : "");
+        if (!textToInsert.trim()) { alert("Δεν έχει συμπληρωθεί Τόπος/Ώρα Συμβάντος στο Βήμα 2."); return; }
+    }
+    
+    let startPos = tArea.selectionStart;
+    let endPos = tArea.selectionEnd;
+    
+    window.undoStacks = window.undoStacks || {};
+    if (!window.undoStacks['report_text']) window.undoStacks['report_text'] = [];
+    window.undoStacks['report_text'].push(tArea.value);
+    
+    tArea.value = tArea.value.substring(0, startPos) + textToInsert + tArea.value.substring(endPos, tArea.value.length);
+    tArea.selectionStart = tArea.selectionEnd = startPos + textToInsert.length;
+    tArea.focus();
+    if(typeof saveMem === 'function') saveMem('report_text');
+};
+
+function getReportProfileString(p, type) {
+    let s = p.surname || "";
+    let n = p.name || "";
+    let gender = p.gender || "Άνδρας";
+    
+    if (type === 'nom_name') {
+        return (s + " " + n).trim();
+    } else if (type === 'gen_name') {
+        return (getGreekGenitive(s, true, gender) + " " + getGreekGenitive(n, false, gender)).trim();
+    } else if (type === 'nom_full') {
+        let res = (s + " " + n).trim();
+        if (p.fname) res += " του " + p.fname;
+        if (p.mname) res += " και της " + p.mname;
+        if (p.birth_year) res += " γεν. " + p.birth_year;
+        if (p.birth_loc) res += " στην " + p.birth_loc;
+        if (p.katoik) res += " κάτ. " + p.katoik;
+        if (p.odos) res += " οδός " + p.odos;
+        if (p.id_num) res += " κάτοχος Δ.Α.Τ. " + p.id_num;
+        return res;
+    }
+    return "";
+}
+
+function getGreekGenitive(word, isSurname, gender) {
+    if (!word) return "";
+    let w = word.trim();
+    let up = w.toUpperCase();
+    if (gender === 'Άνδρας') {
+        if (up.endsWith('ΟΣ')) return w.slice(0, -2) + (w === up ? 'ΟΥ' : 'ου');
+        if (up.endsWith('ΗΣ')) return w.slice(0, -1);
+        if (up.endsWith('ΑΣ')) return w.slice(0, -1);
+    } else if (gender === 'Γυναίκα') {
+        if (!isSurname) {
+            if (up.endsWith('Α')) return w.slice(0, -1) + (w === up ? 'ΑΣ' : 'ας');
+            if (up.endsWith('Η')) return w.slice(0, -1) + (w === up ? 'ΗΣ' : 'ης');
+        }
+    }
+    return w;
+}

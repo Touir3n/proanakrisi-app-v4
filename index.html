@@ -764,7 +764,30 @@
                     <span style="font-size: 14px; font-weight: bold; color: #2c3e50;">📄 Σημαντικές Αναφορές (Σήματα)</span>
                     <div id="tpl_container_report_text"></div>
                 </div>
-                <p style="font-size: 12px; color: #6c757d; margin-top: -5px; margin-bottom: 10px;">Ο παθών αντλείται από τα στοιχεία του Μάρτυρα.</p>
+                <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; background: #eef2f5; padding: 10px; border-radius: 6px; border: 1px solid #cdd4dc; align-items: center;">
+                    <span style="font-size: 11px; font-weight: bold; color: #475569; margin-right: 5px;">Εισαγωγή στο κείμενο:</span>
+                    
+                    <select id="insert_kat_type" style="padding: 4px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="nom_name">Κατηγ/νος: Ονοματεπώνυμο (Ονομ.)</option>
+                        <option value="gen_name">Κατηγ/νος: Ονοματεπώνυμο (Γενική)</option>
+                        <option value="nom_full">Κατηγ/νος: Πλήρη Στοιχεία</option>
+                    </select>
+                    <button class="btn-word" style="padding: 4px 10px; margin: 0; font-size: 11px; background-color: #dc3545;" onclick="insertReportVariable('kat')">➕ Εισαγωγή</button>
+                    
+                    <span style="border-left: 1px solid #cdd4dc; height: 24px; margin: 0 5px;"></span>
+                    
+                    <select id="insert_wit_type" style="padding: 4px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="nom_name">Παθών: Ονοματεπώνυμο (Ονομ.)</option>
+                        <option value="gen_name">Παθών: Ονοματεπώνυμο (Γενική)</option>
+                        <option value="nom_full">Παθών: Πλήρη Στοιχεία</option>
+                    </select>
+                    <button class="btn-word" style="padding: 4px 10px; margin: 0; font-size: 11px; background-color: #28a745;" onclick="insertReportVariable('wit')">➕ Εισαγωγή</button>
+                    
+                    <span style="border-left: 1px solid #cdd4dc; height: 24px; margin: 0 5px;"></span>
+                    
+                    <button class="btn-word" style="padding: 4px 10px; margin: 0; font-size: 11px; background-color: #6f42c1;" onclick="insertReportVariable('crime')">➕ Αδίκημα</button>
+                    <button class="btn-word" style="padding: 4px 10px; margin: 0; font-size: 11px; background-color: #17a2b8;" onclick="insertReportVariable('loc')">➕ Τόπος/Ώρα Συμβάντος</button>
+                </div>
                 <textarea id="report_text" style="width: 100%; height: 350px; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-size: 13px;" placeholder="Συντάξτε εδώ το σήμα ή την αναφορά σας..." oninput="saveMem(this.id)"></textarea>
                 <button class="btn-copy" style="margin-top: 15px; width: 100%; background-color: #007bff; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="copyReportText()">📋 Αντιγραφή Κειμένου (Για επικόλληση στο Police On Line)</button>
             </div>
