@@ -105,19 +105,6 @@
                         <textarea id="cfg_officers" style="height: 140px; font-size: 13px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" oninput="saveSettings()"></textarea>
                     </div>
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button type="button" onclick="exportDictionary()" style="background-color: #6f42c1; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        Εξαγωγή Λεξικού & Ρυθμίσεων
-                    </button>
-                    <div style="flex: 1; position: relative;">
-                        <input type="file" id="importDictFile" accept=".json" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;" onchange="importDictionary(event)">
-                        <button type="button" style="background-color: #17a2b8; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; pointer-events: none;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                            Εισαγωγή Λεξικού
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -776,11 +763,14 @@
                     color: #334155; font-weight: 500; cursor: pointer; outline: none; transition: border-color 0.2s;
                 }
                 .toolbar-select:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.25); }
+                .dark-mode .toolbar-select { background-color: #334155 !important; color: #e2e8f0 !important; border-color: #475569 !important; }
+                .dark-mode .report-toolbar-container { background: #1e293b !important; border-color: #334155 !important; box-shadow: none !important; }
+                .dark-mode .report-toolbar-item { background: #0f172a !important; border-color: #334155 !important; }
                 </style>
-                <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; background: linear-gradient(145deg, #f8fafc, #f1f5f9); padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; align-items: center; box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);">
+                <div class="report-toolbar-container" style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; background: linear-gradient(145deg, #f8fafc, #f1f5f9); padding: 10px 14px; border-radius: 10px; border: 1px solid #e2e8f0; align-items: center; box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);">
                     <span style="font-size: 12px; font-weight: bold; color: #475569; margin-right: 5px;">Εισαγωγή:</span>
                     
-                    <div style="display: flex; gap: 4px; align-items: center; background: white; padding: 4px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    <div class="report-toolbar-item" style="display: flex; gap: 4px; align-items: center; background: white; padding: 4px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                         <select id="insert_kat_type" class="toolbar-select" style="border: none; box-shadow: none;">
                             <option value="nom_name">Κατηγ: Ονοματεπώνυμο (Ονομ.)</option>
                             <option value="gen_name">Κατηγ: Ονοματεπώνυμο (Γεν.)</option>
@@ -789,7 +779,7 @@
                         <button class="btn-toolbar" style="background-color: #ef4444; padding: 5px 10px;" onclick="insertReportVariable('kat')" title="Εισαγωγή Κατηγορουμένου">➕</button>
                     </div>
                     
-                    <div style="display: flex; gap: 4px; align-items: center; background: white; padding: 4px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    <div class="report-toolbar-item" style="display: flex; gap: 4px; align-items: center; background: white; padding: 4px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                         <select id="insert_wit_type" class="toolbar-select" style="border: none; box-shadow: none;">
                             <option value="nom_name">Παθών: Ονοματεπώνυμο (Ονομ.)</option>
                             <option value="gen_name">Παθών: Ονοματεπώνυμο (Γεν.)</option>

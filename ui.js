@@ -1492,11 +1492,11 @@ function getGreekGenitive(word, isSurname, gender) {
     if (!word) return "";
     let w = word.trim();
     let up = w.toUpperCase();
-    if (gender === 'Άνδρας') {
+    if (gender === 'male' || gender === 'Άνδρας') {
         if (up.endsWith('ΟΣ')) return w.slice(0, -2) + (w === up ? 'ΟΥ' : 'ου');
         if (up.endsWith('ΗΣ')) return w.slice(0, -1);
         if (up.endsWith('ΑΣ')) return w.slice(0, -1);
-    } else if (gender === 'Γυναίκα') {
+    } else if (gender === 'female' || gender === 'Γυναίκα') {
         if (!isSurname) {
             if (up.endsWith('Α')) return w.slice(0, -1) + (w === up ? 'ΑΣ' : 'ας');
             if (up.endsWith('Η')) return w.slice(0, -1) + (w === up ? 'ΗΣ' : 'ης');
