@@ -56,6 +56,11 @@ function applyGlobalAIState() {
         }
     });
 
+    let undoButtons = document.querySelectorAll(".btn-undo");
+    undoButtons.forEach(b => {
+        b.style.display = aiEnabled ? "" : "none";
+    });
+
     let aiBoxes = document.querySelectorAll(".ai-box");
     aiBoxes.forEach(b => {
         b.style.display = aiEnabled ? "" : "none";
@@ -136,11 +141,29 @@ function loadMem(id) { let saved = localStorage.getItem('mem_' + id); if (saved 
 function clearMem() {
     Object.keys(localStorage).forEach(k => { if (k.startsWith('mem_') && k !== 'mem_doc_anakr' && k !== 'mem_doc_banakr') localStorage.removeItem(k); });
     window.originalTexts = {};
+    window.undoStacks = {};
 }
 
 function undoText(elementId) {
-    if (window.originalTexts[elementId]) { document.getElementById(elementId).value = window.originalTexts[elementId]; saveMem(elementId); } 
-    else { alert("Δεν υπάρχει προηγούμενο κείμενο για αναίρεση."); }
+    let tArea = document.getElementById(elementId);
+    if (!tArea) return;
+    
+    // First try template undo stack
+    if (window.undoStacks && window.undoStacks[elementId] && window.undoStacks[elementId].length > 0) {
+        let lastText = window.undoStacks[elementId].pop();
+        tArea.value = lastText;
+        if(typeof saveMem === 'function') saveMem(elementId);
+        return;
+    }
+    
+    // Fallback to AI original text
+    if (window.originalTexts && window.originalTexts[elementId]) { 
+        tArea.value = window.originalTexts[elementId]; 
+        saveMem(elementId); 
+        return;
+    } 
+    
+    alert("Δεν υπάρχει προηγούμενο κείμενο για αναίρεση.");
 }
 
 function toggleDrugPanels() {
@@ -610,21 +633,21 @@ function copyProfileText() {
 // ==========================================
 // ΣΥΣΤΗΜΑ ΑΠΟΘΗΚΕΥΣΗΣ & ΦΟΡΤΩΣΗΣ ΥΠΟΘΕΣΕΩΝ (ΟΛΙΚΗ ΣΑΡΩΣΗ DOM)
 // ==========================================
-function exportWorkspace() {
+function exportCaseData() {
     let data = {};
     
     // 1. Σάρωση όλων των πεδίων της οθόνης
     let elements = document.querySelectorAll('input, textarea, select');
     elements.forEach(el => {
-        if (el.id && el.id !== "gemini_api_key" && el.id !== "import_file") {
+        if (el.id && el.id !== "gemini_api_key" && el.id !== "import_case_file" && el.id !== "import_settings_file") {
             data["dom_" + el.id] = el.type === 'checkbox' ? el.checked : el.value;
         }
     });
     
-    // 2. Σάρωση της μνήμης για τις κρυφές ρυθμίσεις
+    // 2. Σάρωση της μνήμης για την τρέχουσα υπόθεση (mem_)
     for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
-        if (key !== "gemini_api_key" && key !== "gemini_model") {
+        if (key.startsWith("mem_")) {
             data["ls_" + key] = localStorage.getItem(key);
         }
     }
@@ -643,7 +666,7 @@ function exportWorkspace() {
     a.click();
 }
 
-function importWorkspace(event) {
+function importCaseData(event) {
     let file = event.target.files[0];
     if (!file) return;
     let reader = new FileReader();
@@ -656,9 +679,9 @@ function importWorkspace(event) {
                 if (k.startsWith('mem_')) localStorage.removeItem(k);
             });
 
-            // Γέμισμα όλων των πεδίων ακαριαία χωρίς ανανέωση της σελίδας
+            // Γέμισμα όλων των πεδίων
             for (let key in data) {
-                if (key.startsWith("ls_")) {
+                if (key.startsWith("ls_mem_")) {
                     localStorage.setItem(key.substring(3), data[key]);
                 } else if (key.startsWith("dom_")) {
                     let id = key.substring(4);
@@ -676,11 +699,62 @@ function importWorkspace(event) {
             // Ενημέρωση UI αν πρόκειται για ναρκωτικά
             toggleDrugPanels();
             
-            alert("Η υπόθεση φορτώθηκε επιτυχώς! Όλα τα κείμενά σας βρίσκονται ακριβώς όπως τα αφήσατε.");
+            alert("Η υπόθεση φορτώθηκε επιτυχώς! (Τα πρότυπα και το λεξικό σας δεν επηρεάστηκαν)");
         } catch(err) {
-            alert("Σφάλμα κατά την ανάγνωση του αρχείου JSON.");
+            alert("Σφάλμα κατά την ανάγνωση του αρχείου Υπόθεσης JSON.");
         }
-        event.target.value = ""; // Επαναφορά του file input
+        event.target.value = ""; // Επαναφορά
+    };
+    reader.readAsText(file);
+}
+
+function exportSettingsData() {
+    let data = {};
+    const globalKeys = ["proanakrisi_dict", "police_officers", "person_profiles", "report_text_templates"];
+    
+    globalKeys.forEach(k => {
+        let val = localStorage.getItem(k);
+        if (val !== null) data["ls_" + k] = val;
+    });
+
+    let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    
+    let d = new Date();
+    let dateStr = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
+    
+    a.href = url;
+    a.download = `Ρυθμίσεις_Προανάκρισης_${dateStr}.json`;
+    a.click();
+}
+
+function importSettingsData(event) {
+    let file = event.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            let data = JSON.parse(e.target.result);
+            
+            for (let key in data) {
+                if (key.startsWith("ls_")) {
+                    localStorage.setItem(key.substring(3), data[key]);
+                }
+            }
+            
+            // Refresh UI components that use global settings
+            if (typeof renderSavedPolice === 'function') renderSavedPolice();
+            if (typeof renderSavedPersons === 'function') renderSavedPersons();
+            // Since template tabs might need refreshing, ideally we just reload them if needed.
+            // A simple page reload could be recommended:
+            if(confirm("Οι ρυθμίσεις, τα πρότυπα, το λεξικό και οι αστυνομικοί φορτώθηκαν επιτυχώς! Θέλετε να ανανεωθεί η σελίδα για να εφαρμοστούν σωστά όλα τα πρότυπα; (Συνιστάται)")) {
+                window.location.reload();
+            }
+        } catch(err) {
+            alert("Σφάλμα κατά την ανάγνωση του αρχείου Ρυθμίσεων JSON.");
+        }
+        event.target.value = "";
     };
     reader.readAsText(file);
 }
@@ -1231,9 +1305,9 @@ function initTemplates(textareaId, categoryName) {
         <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
             <span style="font-size: 12px; font-weight: bold; color: #1a365d;">🔖 Πρότυπα:</span>
             ${selectHtml}
-            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white;">Εισαγωγή</button>
-            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">💾 Νέο</button>
-            <button onclick="deleteTemplate('${textareaId}', '${categoryName}')" class="btn-ai" style="background-color: #dc3545; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">🗑️</button>
+            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white;">Εισαγωγή</button>
+            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">💾 Αποθήκ.</button>
+            <button onclick="deleteTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #dc3545; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">🗑️</button>
         </div>
     `;
 }
@@ -1245,6 +1319,24 @@ function applyTemplate(textareaId, categoryName) {
     let text = templates[sel.value];
     if(!text) return;
     
+    // Smart Variables Replacement
+    let d = typeof getD === 'function' ? getD() : null;
+    let defName = d && d.prof ? d.prof : ((document.getElementById('surname') ? document.getElementById('surname').value : "") + " " + (document.getElementById('name') ? document.getElementById('name').value : ""));
+    let victim = document.getElementById('wit_fullname') ? document.getElementById('wit_fullname').value : "";
+    let crime = document.getElementById('apologia_charge_short') ? document.getElementById('apologia_charge_short').value : "";
+    let arrLoc = document.getElementById('arr_loc') ? document.getElementById('arr_loc').value : "";
+    let arrTime = document.getElementById('arr_street_time') ? document.getElementById('arr_street_time').value : "";
+    let eventLoc = document.getElementById('ai_loc') ? document.getElementById('ai_loc').value : "";
+    let eventTime = document.getElementById('ai_time') ? document.getElementById('ai_time').value : "";
+
+    text = text.replace(/\[ΚΑΤΗΓΟΡΟΥΜΕΝΟΣ\]/g, defName);
+    text = text.replace(/\[ΠΑΘΩΝ\]/g, victim);
+    text = text.replace(/\[ΑΔΙΚΗΜΑ\]/g, crime);
+    text = text.replace(/\[ΤΟΠΟΣ_ΣΥΛΛΗΨΗΣ\]/g, arrLoc);
+    text = text.replace(/\[ΩΡΑ_ΣΥΛΛΗΨΗΣ\]/g, arrTime);
+    text = text.replace(/\[ΤΟΠΟΣ_ΣΥΜΒΑΝΤΟΣ\]/g, eventLoc);
+    text = text.replace(/\[ΩΡΑ_ΣΥΜΒΑΝΤΟΣ\]/g, eventTime);
+
     let tArea = document.getElementById(textareaId);
     
     window.undoStacks = window.undoStacks || {};
@@ -1300,6 +1392,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTemplates('doc_testimony_simple', 'testimony');
     initTemplates('apologia_charge_short', 'charge_short');
     initTemplates('apologia_charge_details', 'charge_details');
+    initTemplates('report_text', 'report');
 
     setTimeout(function() {
         renderSavedProfiles();
@@ -1310,5 +1403,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if(isPol) togglePoliceFields();
     }, 500);
 });
+
+window.copyReportText = function() {
+    let tArea = document.getElementById("report_text");
+    if (!tArea) return;
+    tArea.select();
+    tArea.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(tArea.value).then(() => {
+        alert("Το κείμενο της αναφοράς αντιγράφηκε στο πρόχειρο!");
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+};
 
 

@@ -24,16 +24,32 @@
             <span><b>Προστασία Δεδομένων:</b> Το σύστημα αποκρύπτει αυτόματα ΑΔΤ, ΑΦΜ, τηλέφωνα & πινακίδες. Για ασφαλή χρήση AI, χρησιμοποιείτε μόνο αρχικά ονομάτων (π.χ. «Κ»).</span>
         </div>
     </div>
-<div style="display: flex; gap: 8px; justify-content: center; align-items: center; margin: 15px 0; flex-wrap: wrap; background-color: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-    <span style="font-size: 12px; font-weight: bold; color: #6c757d; margin-right: 5px;">ΕΡΓΑΛΕΙΑ ΥΠΟΘΕΣΗΣ:</span>
-    <button onclick="exportWorkspace()" style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Αποθήκευση όλων των δεδομένων σε αρχείο">💾 Αποθήκευση</button>
-    <label style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 0; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Φόρτωση δεδομένων από αρχείο">📂 Φόρτωση<input type="file" id="import_file" accept=".json" style="display: none;" onchange="importWorkspace(event)"></label>
-    <button onclick="clearFields()" style="background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'" title="Πλήρης καθαρισμός δεδομένων (Νέα Υπόθεση)">🗑️ Καθαρισμός</button>
+<div style="display: flex; gap: 15px; justify-content: center; align-items: stretch; margin: 15px 0; flex-wrap: wrap;">
     
-    <div style="width: 1px; height: 24px; background-color: #ced4da; margin: 0 5px;"></div>
-    
-    <button onclick="refreshTimes()" style="background-color: #ffc107; color: #212529; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0a800'" onmouseout="this.style.backgroundColor='#ffc107'" title="Επικαιροποίηση Ώρας Έναρξης (Η τρέχουσα ώρα του υπολογιστή)">🕒 Ανανέωση Ώρας</button>
-    <button onclick="resetExportCounter()" style="background-color: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#dae0e5'" onmouseout="this.style.backgroundColor='#e9ecef'" title="Επαναφορά μετρητή αρχείων στο 1">🔄 Reset Αρίθμησης</button>
+    <!-- CASE DATA -->
+    <div style="display: flex; flex-direction: column; gap: 8px; background-color: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex: 1; min-width: 300px;">
+        <span style="font-size: 13px; font-weight: bold; color: #495057; text-align: center; border-bottom: 1px solid #e9ecef; padding-bottom: 5px;">📁 Φάκελος Υπόθεσης (Κείμενα)</span>
+        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <button onclick="exportCaseData()" style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Αποθήκευση μόνο των κειμένων της τρέχουσας υπόθεσης">💾 Αποθήκευση</button>
+            <label style="background-color: #607d8b; color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 0; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#455a64'" onmouseout="this.style.backgroundColor='#607d8b'" title="Φόρτωση κειμένων από αρχείο υπόθεσης">📂 Φόρτωση<input type="file" id="import_case_file" accept=".json" style="display: none;" onchange="importCaseData(event)"></label>
+            <button onclick="clearFields()" style="background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'" title="Πλήρης καθαρισμός κειμένων (Νέα Υπόθεση)">🗑️ Καθαρισμός</button>
+            
+            <div style="width: 1px; height: 24px; background-color: #ced4da; margin: 0 5px;"></div>
+            
+            <button onclick="refreshTimes()" style="background-color: #ffc107; color: #212529; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0a800'" onmouseout="this.style.backgroundColor='#ffc107'" title="Επικαιροποίηση Ώρας Έναρξης (Η τρέχουσα ώρα του υπολογιστή)">🕒 Ανανέωση Ώρας</button>
+            <button onclick="resetExportCounter()" style="background-color: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#dae0e5'" onmouseout="this.style.backgroundColor='#e9ecef'" title="Επαναφορά μετρητή αρχείων στο 1">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS DATA -->
+    <div style="display: flex; flex-direction: column; gap: 8px; background-color: #f0f4f8; padding: 12px; border-radius: 8px; border: 1px solid #d9e2ec; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex: 1; min-width: 300px;">
+        <span style="font-size: 13px; font-weight: bold; color: #334e68; text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">⚙️ Γενικές Ρυθμίσεις (Πρότυπα, Αστυνομικοί, Λεξικό)</span>
+        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; height: 100%;">
+            <button onclick="exportSettingsData()" style="background-color: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; border: none; font-size: 13px; font-weight: bold; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'" title="Αποθήκευση μόνο των προτύπων, των αστυνομικών και του λεξικού">💾 Αποθήκευση Ρυθμίσεων</button>
+            <label style="background-color: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin: 0; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'" title="Φόρτωση ρυθμίσεων από αρχείο">📂 Φόρτωση Ρυθμίσεων<input type="file" id="import_settings_file" accept=".json" style="display: none;" onchange="importSettingsData(event)"></label>
+        </div>
+    </div>
+
 </div>
 
 <div class="section" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">

@@ -133,7 +133,7 @@ button:hover { background-color: #2563eb; }
 .ai-result { padding: 12px; background: #fdf2f8; border-left: 4px solid #ec4899; min-height: 20px; font-size: 13px; font-weight: 500; border-radius: 0 6px 6px 0; color: #831843; }
 
 /* Flex & Utility */
-.flex-row { display: flex; gap: 12px; margin-top: 15px; }
+.flex-row { display: flex; gap: 12px; margin-top: 15px; align-items: center; flex-wrap: wrap; }
 
 /* ================= DARK MODE ================= */
 .dark-mode { 
@@ -337,4 +337,26 @@ input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:f
 .dark-mode #panel_body_search, .dark-mode #panel_car_search, .dark-mode #panel_surrender { background-color: #1e293b !important; border-color: #334155 !important; }
 .dark-mode #panel_body_search h4, .dark-mode #panel_car_search h4, .dark-mode #panel_surrender h4 { color: #e2e8f0 !important; }
 
+/* FIXING WHITE BOXES IN DARK MODE */
+.dark-mode div[style*="background-color: #f8f9fa"], 
+.dark-mode div[style*="background: #f8f9fa"] { background-color: #0f172a !important; border-color: #334155 !important; }
+
+.dark-mode div[style*="background-color: #eef2f5"], 
+.dark-mode div[style*="background: #eef2f5"] { background-color: #1e293b !important; border-color: #334155 !important; }
+
+.dark-mode div[style*="background-color: #fffdf5"], 
+.dark-mode div[style*="background: #fffdf5"],
+.dark-mode #tab_reports { background-color: transparent !important; }
+
+.dark-mode div[style*="background-color: #f4f8fb"], 
+.dark-mode div[style*="background: #f4f8fb"] { background-color: transparent !important; }
+
+.dark-mode div[style*="background: #fcf1f1"] { background-color: #450a0a !important; border-color: #7f1d1d !important; }
+.dark-mode div[style*="background: #f7f1fc"] { background-color: #3b0764 !important; border-color: #581c87 !important; }
+.dark-mode div[style*="background: #f1fcf3"] { background-color: #052e16 !important; border-color: #14532d !important; }
+.dark-mode div[style*="background: #cce5ff"],
+.dark-mode div[style*="background-color: #cce5ff"] { background-color: #172554 !important; border-color: #1e3a8a !important; }
+.dark-mode div[style*="background-color: #e2e3e5"],
+.dark-mode div[style*="background: #e2e3e5"] { background-color: #1e293b !important; border-color: #334155 !important; }
+.dark-mode div[style*="background-color: #f0f4f8"] { background-color: #0f172a !important; border-color: #1e293b !important; }
 
