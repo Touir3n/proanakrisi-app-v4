@@ -1307,11 +1307,11 @@ function initTemplates(textareaId, categoryName) {
     selectHtml += `</select>`;
 
     container.innerHTML = `
-        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
-            <span style="font-size: 12px; font-weight: bold; color: #1a365d;">🔖 Πρότυπα:</span>
+        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; overflow-x: auto;">
+            <span style="font-size: 12px; font-weight: bold; color: #1a365d; white-space: nowrap;">🔖 Πρότυπα:</span>
             ${selectHtml}
-            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white;">Εισαγωγή</button>
-            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">💾 Αποθήκ.</button>
+            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white; white-space: nowrap;">Εισαγωγή</button>
+            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white; white-space: nowrap;">💾 Αποθήκ.</button>
             <button onclick="deleteTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #dc3545; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">🗑️</button>
         </div>
     `;
@@ -1349,7 +1349,7 @@ function applyTemplate(textareaId, categoryName) {
     window.undoStacks[textareaId].push(tArea.value);
     if (window.undoStacks[textareaId].length > 15) window.undoStacks[textareaId].shift();
     
-    tArea.value = tArea.value + (tArea.value ? "\\n\\n" : "") + text;
+    tArea.value = tArea.value + (tArea.value ? "\n\n" : "") + text;
     sel.value = "";
     if(typeof saveMem === 'function') saveMem(textareaId);
 }
