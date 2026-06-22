@@ -158,12 +158,12 @@
         <div class="profiles-container" style="background-color: #e2e3e5; border-color: #d6d8db; margin-top: 10px;">
             <span style="font-weight: bold; font-size: 13px; color: #383d41;">👮 Αστυνομικοί (Μόνιμη Αποθήκευση):</span>
             <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center; width: 100%; flex-wrap: wrap;">
-                <select id="police_dept_select" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc;">
+                <select id="police_dept_select" style="flex: 2; padding: 10px; font-size: 13px; border-radius: 6px; border: 1px solid #ced4da;">
                     <option value="Α.Τ. Βόλβης">Α.Τ. Βόλβης</option>
                     <option value="Ο.Π.Κ.Ε. Βόλβης">Ο.Π.Κ.Ε. Βόλβης</option>
                     <option value="Άλλη">Άλλη Υπηρεσία</option>
                 </select>
-                <button style="padding: 6px 12px; font-size: 12px; background-color: #004085; border:none; color: white; border-radius: 6px; cursor: pointer; flex: none;" onclick="savePoliceOfficer()">💾 Αποθήκευση Στοιχείων Φόρμας</button>
+                <button style="flex: 1; padding: 10px 12px; font-size: 13px; font-weight: bold; background-color: #004085; border:none; color: white; border-radius: 6px; cursor: pointer;" onclick="savePoliceOfficer()">💾 Αποθήκευση Στοιχείων Φόρμας</button>
             </div>
             <div style="flex-basis: 100%; height: 0;"></div>
             <span style="font-weight: bold; font-size: 13px; color: #383d41;">🔄 Φόρτωση Αστυνομικού:</span>
@@ -757,6 +757,16 @@
                     </div>
                 </div> <!-- End of inner prok flex div -->
             </div> <!-- End of tab_prok -->
+            
+            <div id="tab_reports" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 14px; font-weight: bold; color: #2c3e50;">📄 Σημαντικές Αναφορές (Σήματα)</span>
+                    <div id="tpl_container_report_text"></div>
+                </div>
+                <p style="font-size: 12px; color: #6c757d; margin-top: -5px; margin-bottom: 10px;">Ο παθών αντλείται από τα στοιχεία του Μάρτυρα.</p>
+                <textarea id="report_text" style="width: 100%; height: 350px; border: 1px solid #ced4da; border-radius: 6px; padding: 12px; font-size: 13px;" placeholder="Συντάξτε εδώ το σήμα ή την αναφορά σας..." oninput="saveMem(this.id)"></textarea>
+                <button class="btn-copy" style="margin-top: 15px; width: 100%; background-color: #007bff; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="copyReportText()">📋 Αντιγραφή Κειμένου (Για επικόλληση στο Police On Line)</button>
+            </div>
         </div> <!-- End of step4_content -->
     </div> <!-- End of step4 section -->
 </div> <!-- End of container -->
