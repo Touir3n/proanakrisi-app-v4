@@ -1299,22 +1299,72 @@ function initTemplates(textareaId, categoryName) {
         localStorage.setItem('custom_templates_' + categoryName, JSON.stringify(templates));
     }
 
-    let selectHtml = `<select id="tpl_select_${textareaId}" style="padding: 4px; border-radius: 4px; font-size: 12px; border: 1px solid #ccc; max-width: 180px;">
-                        <option value="">-- Επιλογή Προτύπου --</option>`;
-    for (let title in templates) {
-        selectHtml += `<option value="${title}">${title}</option>`;
-    }
-    selectHtml += `</select>`;
+    // Create the container div
+    let flexDiv = document.createElement('div');
+    flexDiv.style.display = 'flex';
+    flexDiv.style.gap = '5px';
+    flexDiv.style.alignItems = 'center';
+    flexDiv.style.flexWrap = 'nowrap';
+    flexDiv.style.overflowX = 'auto';
 
-    container.innerHTML = `
-        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: nowrap; overflow-x: auto;">
-            <span style="font-size: 12px; font-weight: bold; color: #1a365d; white-space: nowrap;">🔖 Πρότυπα:</span>
-            ${selectHtml}
-            <button onclick="applyTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; margin-top: 0; padding: 4px 8px; font-size: 11px; background-color: #607d8b; color: white; white-space: nowrap;">Εισαγωγή</button>
-            <button onclick="saveTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #28a745; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white; white-space: nowrap;">💾 Αποθήκ.</button>
-            <button onclick="deleteTemplate('${textareaId}', '${categoryName}')" class="btn-tpl" style="border: none; border-radius: 4px; cursor: pointer; background-color: #dc3545; margin-top: 0; padding: 4px 8px; font-size: 11px; color: white;">🗑️</button>
-        </div>
-    `;
+    // Create the label span
+    let spanLabel = document.createElement('span');
+    spanLabel.style.fontSize = '12px';
+    spanLabel.style.fontWeight = 'bold';
+    spanLabel.style.color = '#1a365d';
+    spanLabel.style.whiteSpace = 'nowrap';
+    spanLabel.textContent = '🔖 Πρότυπα:';
+    flexDiv.appendChild(spanLabel);
+
+    // Create the select element programmatically
+    let selectEl = document.createElement('select');
+    selectEl.id = `tpl_select_${textareaId}`;
+    selectEl.style.padding = '4px';
+    selectEl.style.borderRadius = '4px';
+    selectEl.style.fontSize = '12px';
+    selectEl.style.border = '1px solid #ccc';
+    selectEl.style.maxWidth = '180px';
+
+    let defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = '-- Επιλογή Προτύπου --';
+    selectEl.appendChild(defaultOption);
+
+    for (let title in templates) {
+        let opt = document.createElement('option');
+        opt.value = title;
+        opt.textContent = title;
+        selectEl.appendChild(opt);
+    }
+    flexDiv.appendChild(selectEl);
+
+    // Helper for buttons
+    function createBtn(text, bgColor, onClickStr) {
+        let btn = document.createElement('button');
+        btn.className = 'btn-tpl';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '4px';
+        btn.style.cursor = 'pointer';
+        btn.style.marginTop = '0';
+        btn.style.padding = '4px 8px';
+        btn.style.fontSize = '11px';
+        btn.style.backgroundColor = bgColor;
+        btn.style.color = 'white';
+        btn.style.whiteSpace = 'nowrap';
+        btn.setAttribute('onclick', onClickStr);
+        btn.textContent = text;
+        return btn;
+    }
+
+    let applyBtn = createBtn('Εισαγωγή', '#607d8b', `applyTemplate('${textareaId}', '${categoryName}')`);
+    let saveBtn = createBtn('💾 Αποθήκ.', '#28a745', `saveTemplate('${textareaId}', '${categoryName}')`);
+    let delBtn = createBtn('🗑️', '#dc3545', `deleteTemplate('${textareaId}', '${categoryName}')`);
+
+    flexDiv.appendChild(applyBtn);
+    flexDiv.appendChild(saveBtn);
+    flexDiv.appendChild(delBtn);
+
+    container.replaceChildren(flexDiv);
 }
 
 function applyTemplate(textareaId, categoryName) {
