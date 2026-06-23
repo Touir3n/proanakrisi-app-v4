@@ -1095,7 +1095,7 @@ function togglePoliceFields() {
 
 const PERSON_FIELDS = ['gender', 'surname', 'name', 'father', 'mother', 'dob', 'pob', 'area', 'dimos', 'odos', 'arithmos', 'epaggelma', 'adt', 'authDate', 'auth', 'afm', 'doy', 'phone', 'email', 'is_foreigner', 'nationality', 'born_country', 'passport', 'is_police'];
 
-function savePersonProfile(role) {
+function getPersonFormData() {
     let data = {};
     PERSON_FIELDS.forEach(f => {
         let el = document.getElementById(f);
@@ -1104,6 +1104,21 @@ function savePersonProfile(role) {
             else data[f] = el.value;
         }
     });
+    return data;
+}
+
+function setPersonFormData(data) {
+    PERSON_FIELDS.forEach(f => {
+        let el = document.getElementById(f);
+        if (el && data[f] !== undefined) {
+            if (el.type === 'checkbox') el.checked = data[f];
+            else el.value = data[f];
+        }
+    });
+}
+
+function savePersonProfile(role) {
+    let data = getPersonFormData();
     localStorage.setItem('profile_' + role, JSON.stringify(data));
     renderSavedProfiles();
 }
@@ -1112,13 +1127,7 @@ function loadPersonProfile(role) {
     let dataStr = localStorage.getItem('profile_' + role);
     if (!dataStr) return;
     let data = JSON.parse(dataStr);
-    PERSON_FIELDS.forEach(f => {
-        let el = document.getElementById(f);
-        if (el && data[f] !== undefined) {
-            if (el.type === 'checkbox') el.checked = data[f];
-            else el.value = data[f];
-        }
-    });
+    setPersonFormData(data);
     toggleForeignerFields();
 }
 
@@ -1174,14 +1183,7 @@ function getSavedPoliceOfficers() {
 
 function savePoliceOfficer() {
     let dept = document.getElementById('police_dept_select').value;
-    let data = {};
-    PERSON_FIELDS.forEach(f => {
-        let el = document.getElementById(f);
-        if (el) {
-            if (el.type === 'checkbox') data[f] = el.checked;
-            else data[f] = el.value;
-        }
-    });
+    let data = getPersonFormData();
     
     if(!data.surname || !data.name) {
         alert("Συμπληρώστε τουλάχιστον Επώνυμο και Όνομα!");
@@ -1205,13 +1207,7 @@ function loadPoliceOfficer(id) {
     let data = officers.find(o => o.id === id);
     if(!data) return;
     
-    PERSON_FIELDS.forEach(f => {
-        let el = document.getElementById(f);
-        if (el && data[f] !== undefined) {
-            if (el.type === 'checkbox') el.checked = data[f];
-            else el.value = data[f];
-        }
-    });
+    setPersonFormData(data);
     
     toggleForeignerFields();
     togglePoliceFields();
