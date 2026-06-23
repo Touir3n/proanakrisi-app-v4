@@ -88,19 +88,37 @@ async function refineTextAI(elementId, spinnerId, btnId) {
     if (result) { el.value = result.trim(); saveMem(elementId); }
 }
 
+const regexPou = /ΠΟΥ/i;
+const regexPote = /ΠΟΤΕ/i;
+const regexPoios = /ΠΟΙΟΣ/i;
+const regexTi = /ΤΙ/i;
+const regexGiati = /ΓΙΑΤΙ/i;
+
 function normalizeGoldenRuleLines(raw) {
-    let lines = String(raw || "").replace(/```/g, "").split(/\n+/).map(x => x.trim()).filter(Boolean);
-    let labels = [
-        ["ΠΟΥ", "ΠΟΥ (Τόπος)"],
-        ["ΠΟΤΕ", "ΠΟΤΕ (Χρόνος)"],
-        ["ΠΟΙΟΣ", "ΠΟΙΟΣ (Δράστης)"],
-        ["ΤΙ", "ΤΙ (Πράξη)"],
-        ["ΓΙΑΤΙ", "ΓΙΑΤΙ (Κίνητρο)"]
+    let lines = String(raw || "").replace(/```/g, "").split(/\n+/);
+    let resPou, resPote, resPoios, resTi, resGiati;
+    let foundCount = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) continue;
+
+        if (resPou === undefined && regexPou.test(line)) { resPou = line; foundCount++; }
+        else if (resPote === undefined && regexPote.test(line)) { resPote = line; foundCount++; }
+        else if (resPoios === undefined && regexPoios.test(line)) { resPoios = line; foundCount++; }
+        else if (resTi === undefined && regexTi.test(line)) { resTi = line; foundCount++; }
+        else if (resGiati === undefined && regexGiati.test(line)) { resGiati = line; foundCount++; }
+
+        if (foundCount === 5) break;
+    }
+
+    return [
+        resPou || "ΠΟΥ (Τόπος): ❌",
+        resPote || "ΠΟΤΕ (Χρόνος): ❌",
+        resPoios || "ΠΟΙΟΣ (Δράστης): ❌",
+        resTi || "ΤΙ (Πράξη): ❌",
+        resGiati || "ΓΙΑΤΙ (Κίνητρο): ❌"
     ];
-    return labels.map(([needle, fallback]) => {
-        let found = lines.find(line => line.toUpperCase().includes(needle));
-        return found || `${fallback}: ❌`;
-    });
 }
 
 async function checkGoldenRule(sourceId, resultId, spinnerId, btnId) {
