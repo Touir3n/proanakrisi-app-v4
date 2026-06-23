@@ -55,7 +55,7 @@ function makeDoc(title, headerTitle, bodyContent, filename) {
     docExportCounter++;
 
     let finalHtml = `${headerTitle}${bodyContent}`;
-    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0pt; padding: 0pt; } table { border-collapse: collapse; }</style></head><body style="background-color: white; color: black;">${finalHtml}</body></html>`;
+    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='https://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0pt; padding: 0pt; } table { border-collapse: collapse; }</style></head><body>${finalHtml}</body></html>`;
     let blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
     let url = URL.createObjectURL(blob); let link = document.createElement('a'); link.href = url; link.download = finalFilename; 
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
