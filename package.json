@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Μια σύγχρονη, διαδικτυακή εφαρμογή (Web App) σχεδιασμένη αποκλειστικά για την υποβοήθηση του έργου των Προανακριτικών Υπαλλήλων. Σκοπός της εφαρμογής είναι η δραματική μείωση του χρόνου δακτυλογράφησης και η αυτοματοποίηση της σύνταξης δικογραφιών.",
+  "main": "ai.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Touir3n/proanakrisi-app-v4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Touir3n/proanakrisi-app-v4/issues"
+  },
+  "homepage": "https://github.com/Touir3n/proanakrisi-app-v4#readme",
+  "devDependencies": {
+    "mocha": "^11.7.6"
+  }
+}
