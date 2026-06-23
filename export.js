@@ -49,13 +49,29 @@ function getTimeRange(startId, endId, fallbackStart = "doc_start") {
 
 let docExportCounter = 1;
 
+function generateDocumentHtml(title, finalHtml) {
+    return `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='https://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset='utf-8'>
+    <title>${title}</title>
+    <style>
+        body { background: white; color: black; font-family: 'Times New Roman'; }
+        .doc-body { background-color: white; color: black; }
+        p { margin: 0pt; padding: 0pt; }
+        table { border-collapse: collapse; }
+    </style>
+</head>
+<body class="doc-body">${finalHtml}</body>
+</html>`;
+}
+
 function makeDoc(title, headerTitle, bodyContent, filename) {
     let cleanFilename = filename.replace(/^([0-9]+[a-z]?_)/, '');
     let finalFilename = `${docExportCounter}_${cleanFilename}`;
     docExportCounter++;
 
     let finalHtml = `${headerTitle}${bodyContent}`;
-    let fullHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${title}</title><style>body { background: white; color: black; font-family: 'Times New Roman'; } p { margin: 0pt; padding: 0pt; } table { border-collapse: collapse; }</style></head><body style="background-color: white; color: black;">${finalHtml}</body></html>`;
+    let fullHtml = generateDocumentHtml(title, finalHtml);
     let blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
     let url = URL.createObjectURL(blob); let link = document.createElement('a'); link.href = url; link.download = finalFilename; 
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
