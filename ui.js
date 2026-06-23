@@ -1108,10 +1108,7 @@ function savePersonProfile(role) {
     renderSavedProfiles();
 }
 
-function loadPersonProfile(role) {
-    let dataStr = localStorage.getItem('profile_' + role);
-    if (!dataStr) return;
-    let data = JSON.parse(dataStr);
+function applyProfileDataToDOM(data) {
     PERSON_FIELDS.forEach(f => {
         let el = document.getElementById(f);
         if (el && data[f] !== undefined) {
@@ -1120,6 +1117,13 @@ function loadPersonProfile(role) {
         }
     });
     toggleForeignerFields();
+}
+
+function loadPersonProfile(role) {
+    let dataStr = localStorage.getItem('profile_' + role);
+    if (!dataStr) return;
+    let data = JSON.parse(dataStr);
+    applyProfileDataToDOM(data);
 }
 
 function deletePersonProfile(role) {
@@ -1205,15 +1209,7 @@ function loadPoliceOfficer(id) {
     let data = officers.find(o => o.id === id);
     if(!data) return;
     
-    PERSON_FIELDS.forEach(f => {
-        let el = document.getElementById(f);
-        if (el && data[f] !== undefined) {
-            if (el.type === 'checkbox') el.checked = data[f];
-            else el.value = data[f];
-        }
-    });
-    
-    toggleForeignerFields();
+    applyProfileDataToDOM(data);
     togglePoliceFields();
 }
 
