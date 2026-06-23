@@ -832,7 +832,10 @@ function getLocalDict() {
     
     // Merge defaultAccentDict to ensure they always have the basics
     let mergedDict = Object.assign({}, defaultAccentDict, dict);
-    localStorage.setItem('local_accent_dict', JSON.stringify(mergedDict));
+    let newStored = JSON.stringify(mergedDict);
+    if (stored !== newStored) {
+        localStorage.setItem('local_accent_dict', newStored);
+    }
     
     return mergedDict;
 }
