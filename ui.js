@@ -1248,7 +1248,11 @@ function renderSavedPolice() {
     Object.keys(grouped).forEach(dept => {
         let groupDiv = document.createElement('div');
         groupDiv.style = "width: 100%; margin-bottom: 5px;";
-        groupDiv.innerHTML = `<div style="font-size: 12px; font-weight: bold; color: #004085; margin-bottom: 3px;">📍 ${dept}</div>`;
+
+        let headerDiv = document.createElement('div');
+        headerDiv.style = "font-size: 12px; font-weight: bold; color: #004085; margin-bottom: 3px;";
+        headerDiv.textContent = '📍 ' + dept;
+        groupDiv.appendChild(headerDiv);
         
         let chipsDiv = document.createElement('div');
         chipsDiv.style = "display: flex; gap: 6px; flex-wrap: wrap;";
