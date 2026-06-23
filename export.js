@@ -129,6 +129,8 @@ function getD() {
     let banakr_gen = banakr_clean;
     if(banakr_clean.startsWith("της ")) { banakr_gen = banakr_clean.substring(4); } else if(banakr_clean.startsWith("του ")) { banakr_gen = banakr_clean.substring(4); }
     
+    let cachedValues = {};
+
     return {
         v: v, anakr: v("doc_anakr"), banakr: v("doc_banakr"), banakr_genitive: banakr_gen,
         city: c_city !== "" ? c_city : "Ασπροβάλτα", dept: c_dept !== "" ? c_dept : "Α.Τ. Βόλβης", deptFull: c_deptFull !== "" ? c_deptFull : "Αστυνομικό Τμήμα Βόλβης Θεσσαλονίκης",
@@ -160,9 +162,9 @@ function getD() {
         fullDateStr: `${v("doc_date")}-${String(monthsToNum(v("doc_month"))).padStart(2, '0')}-${v("doc_year")}`,
         
         // ΣΗΜΑΝΤΙΚΟ: Προσοχή στα κόμματα σε αυτό το σημείο!
-        prof: getProfileText('nom'),
-        profGen: getProfileText('gen'),
-        profAcc: getProfileText('acc')
+        prof: getProfileText('nom', cachedValues),
+        profGen: getProfileText('gen', cachedValues),
+        profAcc: getProfileText('acc', cachedValues)
     };
 }
 

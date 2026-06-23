@@ -576,24 +576,43 @@ function declineGreek(word, gender, targetCase, isSurname = false) {
 }
 
 
-function getProfileText(caseType = 'nom') {
-    let v = id => { let el = document.getElementById(id); return el ? el.value.trim() : ""; };
+function getProfileText(caseType = 'nom', cachedValues = null) {
+    let cache = cachedValues || {};
+    let v = id => {
+        if (cache[id] !== undefined) return cache[id];
+        let el = document.getElementById(id);
+        let val = el ? el.value.trim() : "";
+        cache[id] = val;
+        return val;
+    };
     
-    let genderDropdown = document.getElementById("gender");
-    let g = genderDropdown ? genderDropdown.value : 'M'; 
+    let g = cache.gender;
+    if (g === undefined) {
+        let genderDropdown = document.getElementById("gender");
+        g = genderDropdown ? genderDropdown.value : 'M';
+        cache.gender = g;
+    }
 
     let surname = declineGreek(v("surname"), g, caseType, true);
     let name = declineGreek(v("name"), g, caseType, false);
     let father = v("father");
     let mother = v("mother");
 
-    let isPol = document.getElementById('is_police') && document.getElementById('is_police').checked;
+    let isPol = cache.is_police;
+    if (isPol === undefined) {
+        isPol = document.getElementById('is_police') && document.getElementById('is_police').checked;
+        cache.is_police = isPol;
+    }
     
     let katoikosStr = caseType === 'nom' ? 'κάτοικος' : (caseType === 'gen' ? 'κατοίκου' : 'κάτοικο');
     let katoxosStr = caseType === 'nom' ? 'κάτοχος' : (caseType === 'gen' ? 'κατόχου' : 'κάτοχο');
     let uphretonStr = caseType === 'nom' ? (g==='M'?'υπηρετών':'υπηρετούσα') : (caseType === 'gen' ? (g==='M'?'υπηρετούντος':'υπηρετούσας') : (g==='M'?'υπηρετούντα':'υπηρετούσα'));
 
-    let isFor = document.getElementById('is_foreigner') && document.getElementById('is_foreigner').checked;
+    let isFor = cache.is_foreigner;
+    if (isFor === undefined) {
+        isFor = document.getElementById('is_foreigner') && document.getElementById('is_foreigner').checked;
+        cache.is_foreigner = isFor;
+    }
     
     let natStr = "";
     if (isFor && v("nationality")) {
