@@ -715,12 +715,10 @@ function importCaseData(event) {
 
 function exportSettingsData() {
     let data = {};
-    const globalKeys = ["proanakrisi_dict", "police_officers", "person_profiles", "report_text_templates"];
-    
-    globalKeys.forEach(k => {
-        let val = localStorage.getItem(k);
-        if (val !== null) data["ls_" + k] = val;
-    });
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        data["ls_" + key] = localStorage.getItem(key);
+    }
 
     let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
     let url = URL.createObjectURL(blob);
