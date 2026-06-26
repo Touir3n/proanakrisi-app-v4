@@ -99,6 +99,14 @@ function saveSettingsField(el) {
     }
 }
 
+function saveSettings() {
+    let fields = ['cfg_city', 'cfg_dept', 'cfg_deptFull', 'cfg_prosecutor', 'cfg_officers'];
+    fields.forEach(id => {
+        let el = document.getElementById(id);
+        if (el) saveSettingsField(el);
+    });
+}
+
 function loadGlobalSettings() {
     applyGlobalAIState();
     let savedOfficers = localStorage.getItem("cfg_officers");
